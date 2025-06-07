@@ -1,0 +1,126 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD.Login"
+             Title="Login">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+
+
+            <!-- Welcome Text -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="SAAD" 
+                       FontSize="35"
+                       TextColor="Gray" 
+                       HorizontalTextAlignment="Center" 
+                       FontAttributes="Bold"/>
+                
+                <Label Text="Sistema de Autenticação Acadêmico Digital" 
+                      FontSize="14" 
+                      TextColor="Gray" 
+                      HorizontalTextAlignment="Center" 
+                      FontAttributes="None"/>
+
+                <!-- Main Logo -->
+                <Image
+                    Source="spinner.png"
+                    SemanticProperties.Description="App logo"
+                    Opacity="0"
+                    Margin="10"
+                    HeightRequest="150"
+                    WidthRequest="150"
+                    HorizontalOptions="Center" />
+
+                <Label Text="Fazer Login na sua conta" 
+                       FontSize="16" 
+                       TextColor="Gray" 
+                       HorizontalTextAlignment="Center"/>
+            </VerticalStackLayout>
+
+            <!-- Username Input -->
+            <StackLayout Orientation="Horizontal" Spacing="-15">
+                    <Frame HasShadow="True" 
+                       Padding="0" 
+                       BorderColor="White" 
+                       MaximumWidthRequest="400"
+                       MinimumHeightRequest="45"
+                       HorizontalOptions="FillAndExpand"
+                       BackgroundColor="White">
+                    <Entry x:Name="Username"
+                           TextColor="Black"
+                           Margin="20,0,0,0" 
+                           VerticalOptions="Center" 
+                           Placeholder="Usuário"  
+                           Keyboard="Email"
+                           ReturnType="Next"
+                           ClearButtonVisibility="WhileEditing"/>
+                </Frame>
+            </StackLayout>
+
+            <!-- Password Input -->
+            <StackLayout Orientation="Horizontal" Spacing="-15">
+                    <Frame HasShadow="True" 
+                       Padding="0" 
+                       BorderColor="White" 
+                       MaximumWidthRequest="400"
+                       MinimumHeightRequest="45"
+                       HorizontalOptions="FillAndExpand"
+                       BackgroundColor="White">
+                    <Entry 
+                           x:Name="Password"
+                           TextColor="Black"
+                           Margin="20,0,0,0" 
+                           VerticalOptions="Center" 
+                           Placeholder="Senha" 
+                           IsPassword="True"
+                           ReturnType="Go" Completed="LoginVerify"
+                           ClearButtonVisibility="WhileEditing"/>
+                </Frame>
+            </StackLayout>
+
+            <!-- Signup Link -->
+            <StackLayout>
+               <Label Text="Registrar-se no Sistema" 
+                   TextColor="#fc0349"
+                   FontAttributes="Bold"
+                   TextDecorations="Underline"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   Margin="0,-10,0,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Registrar"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+            
+            <StackLayout>
+                <Label Text="Esqueci a Senha!" 
+               TextColor="DarkGray"
+               FontAttributes="Bold"
+               TextDecorations="Underline"
+               FontSize="16"
+               HorizontalOptions="Center"
+               Margin="0,-10,0,0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="RecuperarSenha"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+
+            <!-- Login Button -->
+            <Button Text="Login" 
+                    WidthRequest="120" 
+                    CornerRadius="25" 
+                    HorizontalOptions="Center" 
+                    BackgroundColor="#fc0349" 
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    Clicked="LoginVerify"
+                    Margin="0,20,0,0"/>        
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
