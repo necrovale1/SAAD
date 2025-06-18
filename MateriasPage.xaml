@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD.MateriasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="MateriasPage"
+    BindingContext="{x:Reference local:Materias}">
+
+
+    <VerticalStackLayout Padding="10,0" Spacing="15">
+
+        <Label
+            FontAttributes="Bold"
+            FontSize="Header"
+            HorizontalOptions="Center"
+            Text="Página de Matérias"
+            TextColor="{DynamicResource Special}"
+            VerticalOptions="Center" />
+        <Label
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="Nome"
+            TextColor="{DynamicResource Special}"
+            VerticalOptions="Center" />
+        <Label
+            FontAttributes="Bold"
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="{Binding Nome}"
+            TextColor="{DynamicResource Input}"
+            VerticalOptions="Center" />
+        <Label
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="Descrição"
+            TextColor="{DynamicResource Special}"
+            VerticalOptions="Center" />
+        <Label
+            FontAttributes="Bold"
+            FontSize="Small"
+            HorizontalOptions="Center"
+            Text="{Binding Descricao}"
+            TextColor="{DynamicResource Input}"
+            VerticalOptions="Center" />
+        <Label
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="Categoria"
+            TextColor="{DynamicResource Special}"
+            VerticalOptions="Center" />
+        <Label
+            FontAttributes="Bold"
+            FontSize="Large"
+            HorizontalOptions="Center"
+            Text="{Binding Categoria}"
+            TextColor="{DynamicResource Input}"
+            VerticalOptions="Center" />
+        <Button
+            x:Name="btnVoltar"
+            BackgroundColor="{DynamicResource Special}"
+            Clicked="btnVoltar_Clicked"
+            FontAttributes="Bold"
+            FontSize="Large"
+            MaximumWidthRequest="300"
+            Text="Voltar" />
+    </VerticalStackLayout>
+</ContentPage>

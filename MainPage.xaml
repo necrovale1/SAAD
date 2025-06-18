@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Login"
+    BackgroundColor="{DynamicResource BackgroundColor}">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            VerticalOptions="Center">
+
+            <Button
+                x:Name="ThemeToggleButton"
+                Margin="20"
+                BackgroundColor="{DynamicResource TextColor}"
+                Clicked="OnThemeToggleClicked"
+                HorizontalOptions="End"
+                Text="🌞"
+                TextColor="{DynamicResource BackgroundColor}"
+                VerticalOptions="Start" />
+
+            <!--  Welcome Text  -->
+            <VerticalStackLayout Spacing="5">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="35"
+                    HorizontalTextAlignment="Center"
+                    Text="SAAD"
+                    TextColor="{DynamicResource TextColor}" />
+
+                <Label
+                    FontSize="14"
+                    HorizontalTextAlignment="Center"
+                    Text="Sistema de Autenticação Acadêmico Digital"
+                    TextColor="{DynamicResource TextColor}" />
+
+                <Label
+                    Margin="0,50,0,0"
+                    FontSize="16"
+                    HorizontalTextAlignment="Center"
+                    Text="Fazer Login na sua conta"
+                    TextColor="{DynamicResource TextColor}" />
+            </VerticalStackLayout>
+
+            <!--  Username Input  -->
+            <Frame
+                Padding="0"
+                BackgroundColor="{DynamicResource Input}"
+                BorderColor="{DynamicResource Input}"
+                HasShadow="True"
+                HorizontalOptions="Fill"
+                MaximumWidthRequest="400"
+                MinimumHeightRequest="45">
+                <Entry
+                    x:Name="Username"
+                    Margin="20,0,0,0"
+                    ClearButtonVisibility="WhileEditing"
+                    Keyboard="Email"
+                    Placeholder="Usuário"
+                    ReturnType="Next"
+                    TextColor="{DynamicResource TextColor}"
+                    VerticalOptions="Center" />
+            </Frame>
+
+            <!--  Password Input  -->
+            <Frame
+                Padding="0"
+                BackgroundColor="{DynamicResource Input}"
+                BorderColor="{DynamicResource Input}"
+                HasShadow="True"
+                HorizontalOptions="Fill"
+                MaximumWidthRequest="400"
+                MinimumHeightRequest="45">
+                <Entry
+                    x:Name="Password"
+                    Margin="20,0,0,0"
+                    ClearButtonVisibility="WhileEditing"
+                    Completed="LoginVerify"
+                    IsPassword="True"
+                    Placeholder="Senha"
+                    ReturnType="Go"
+                    TextColor="{DynamicResource TextColor}"
+                    VerticalOptions="Center" />
+            </Frame>
+
+            <!--  Signup Link  -->
+            <Label
+                Margin="0,-10,0,0"
+                FontAttributes="Bold"
+                FontSize="16"
+                HorizontalOptions="Center"
+                Text="Registrar-se no Sistema"
+                TextColor="{DynamicResource Special}"
+                TextDecorations="Underline">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="Registrar" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <!--  Forgot Password Link  -->
+            <Label
+                Margin="0,-10,0,0"
+                FontAttributes="Bold"
+                FontSize="16"
+                HorizontalOptions="Center"
+                Text="Esqueci a Senha!"
+                TextColor="{DynamicResource TextColor}"
+                TextDecorations="Underline">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="RecuperarSenha" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <!--  Login Button  -->
+            <Button
+                x:Name="LoginBtn"
+                Margin="0,20,0,0"
+                BackgroundColor="{DynamicResource Special}"
+                Clicked="LoginVerify"
+                CornerRadius="25"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                Text="Login"
+                TextColor="{DynamicResource TextColor}"
+                WidthRequest="120" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
