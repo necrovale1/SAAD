@@ -1,6 +1,4 @@
-﻿using SAAD.Resources.Styles;
-
-namespace SAAD
+﻿namespace SAAD
 {
     public partial class App : Application
     {
@@ -8,9 +6,8 @@ namespace SAAD
         {
             InitializeComponent();
 
-            // Set SplashScreen as the main page
+            // Inicia o aplicativo com a sua tela de splash animada
             MainPage = new SplashScreen();
         }
-    
     }
 }

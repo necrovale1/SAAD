@@ -3,65 +3,33 @@
     x:Class="SAAD.FaltasPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="FaltasPage"
-    BindingContext="{x:Reference local:Faltas}">
+    Title="Controle de Faltas">
+    <Grid RowDefinitions="*, Auto">
+        <CollectionView x:Name="FaltasCollectionView" Grid.Row="0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame
+                        Margin="10"
+                        Padding="10"
+                        BorderColor="LightGray"
+                        CornerRadius="5">
+                        <VerticalStackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding Materia}" />
+                            <Label Text="{Binding Falta, StringFormat='Faltas: {0}'}" />
+                            <Label Text="{Binding Presenca, StringFormat='Presenças: {0}'}" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-
-    <VerticalStackLayout Padding="10,0" Spacing="15">
-
-        <Label
-            FontAttributes="Bold"
-            FontSize="Header"
-            HorizontalOptions="Center"
-            Text="Página de Faltas"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Materia"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontAttributes="Bold"
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="{Binding Materia}"
-            TextColor="{DynamicResource Input}"
-            VerticalOptions="Center" />
-        <Label
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Falta"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontAttributes="Bold"
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="{Binding Falta}"
-            TextColor="{DynamicResource Input}"
-            VerticalOptions="Center" />
-        <Label
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Presença"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontAttributes="Bold"
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="{Binding Presenca}"
-            TextColor="{DynamicResource Input}"
-            VerticalOptions="Center" />
         <Button
-            x:Name="btnVoltar"
-            BackgroundColor="{DynamicResource Special}"
-            Clicked="btnVoltar_Clicked"
-            FontAttributes="Bold"
-            FontSize="Large"
-            MaximumWidthRequest="300"
-            Text="Voltar" />
-    </VerticalStackLayout>
+            Grid.Row="1"
+            Margin="10"
+            Clicked="OnRegistrarFaltasClicked"
+            Text="Registrar Faltas" />
+    </Grid>
 </ContentPage>

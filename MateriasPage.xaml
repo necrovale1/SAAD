@@ -3,65 +3,36 @@
     x:Class="SAAD.MateriasPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Matérias"
-    BindingContext="{x:Reference local:Materias}">
+    Title="Minhas Matérias">
+    <Grid RowDefinitions="*, Auto">
+        <CollectionView x:Name="MateriasCollectionView" Grid.Row="0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame
+                        Margin="10"
+                        Padding="10"
+                        BorderColor="LightGray"
+                        CornerRadius="5">
+                        <VerticalStackLayout>
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="18"
+                                Text="{Binding Nome}" />
+                            <Label Text="{Binding Descricao}" />
+                            <Label
+                                FontAttributes="Italic"
+                                Text="{Binding Categoria}"
+                                TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-
-    <VerticalStackLayout Padding="10,0" Spacing="15">
-
-        <Label
-            FontAttributes="Bold"
-            FontSize="Header"
-            HorizontalOptions="Center"
-            Text="Página de Matérias"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Nome"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontAttributes="Bold"
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="{Binding Nome}"
-            TextColor="{DynamicResource Input}"
-            VerticalOptions="Center" />
-        <Label
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Descrição"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontAttributes="Bold"
-            FontSize="Small"
-            HorizontalOptions="Center"
-            Text="{Binding Descricao}"
-            TextColor="{DynamicResource Input}"
-            VerticalOptions="Center" />
-        <Label
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="Categoria"
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="Center" />
-        <Label
-            FontAttributes="Bold"
-            FontSize="Large"
-            HorizontalOptions="Center"
-            Text="{Binding Categoria}"
-            TextColor="{DynamicResource Input}"
-            VerticalOptions="Center" />
         <Button
-            x:Name="btnVoltar"
-            BackgroundColor="{DynamicResource Special}"
-            Clicked="btnVoltar_Clicked"
-            FontAttributes="Bold"
-            FontSize="Large"
-            MaximumWidthRequest="300"
-            Text="Voltar" />
-    </VerticalStackLayout>
+            Grid.Row="1"
+            Margin="10"
+            Clicked="OnRegistrarMateriaClicked"
+            Text="Registrar Nova Matéria" />
+    </Grid>
 </ContentPage>

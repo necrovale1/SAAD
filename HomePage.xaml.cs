@@ -1,4 +1,3 @@
-using SAAD.Resources.Styles;
 using Microsoft.Maui.Controls;
 using System.Web;
 
@@ -18,56 +17,29 @@ namespace SAAD
             if (!Preferences.Get("UsuarioLogado", false))
             {
                 await DisplayAlert("Aviso", "Você precisa fazer login", "OK");
-                await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+
+                // CORREÇÃO: Adicionada verificação para evitar erro de referência nula.
+                if (Shell.Current != null)
+                {
+                    await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+                }
             }
         }
 
         private async void btnMaterias_Clicked(object sender, EventArgs e)
         {
-            try
-            {
-                var materias = new Materias
-                {
-                    Nome = "Programação Web",
-                    Descricao = "Programação web é o processo de desenvolvimento...",
-                    Categoria = "Web"
-                };
-
-                // Fix: Removed usage of inaccessible 'ShellNavigationParameters' and replaced with query parameters
-                var queryParams = new Dictionary<string, object>
-                    {
-                        { "MateriaData", materias }
-                    };
-                await Shell.Current.GoToAsync($"//{nameof(MateriasPage)}", queryParams);
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", $"Não foi possível acessar as matérias: {ex.Message}", "OK");
-            }
+            await Shell.Current.GoToAsync(nameof(MateriasPage));
         }
 
+        // Dentro da classe HomePage.xaml.cs
         private async void btnFaltas_Clicked(object sender, EventArgs e)
         {
-            try
-            {
-                var faltas = new Faltas
-                {
-                    Materia = "Programação Web",
-                    Falta = 5,
-                    Presenca = 20
-                };
+            await Shell.Current.GoToAsync(nameof(FaltasPage));
+        }
 
-                // Using absolute route with query parameters
-                await Shell.Current.GoToAsync(
-                    $"//{nameof(FaltasPage)}?" +
-                    $"Materia={HttpUtility.UrlEncode(faltas.Materia)}&" +
-                    $"Falta={faltas.Falta}&" +
-                    $"Presenca={faltas.Presenca}");
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", $"Não foi possível acessar as faltas: {ex.Message}", "OK");
-            }
+        private async void OnLogoutClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(LogoutPage));
         }
     }
 }

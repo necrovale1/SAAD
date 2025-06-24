@@ -3,22 +3,24 @@
     x:Class="SAAD.SplashScreen"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="SplashScreen"
-    BackgroundColor="#202020"
-    NavigationPage.HasNavigationBar="False">
+    BackgroundColor="{DynamicResource TextColor}"
+    Shell.NavBarIsVisible="False">
 
     <Grid HorizontalOptions="Center" VerticalOptions="Center">
-        <ActivityIndicator
-            x:Name="Spinner"
-            HeightRequest="60"
-            IsRunning="True"
-            WidthRequest="60"
-            Color="{DynamicResource Special}" />
-        <Label
-            Margin="0,100,0,0"
-            HorizontalOptions="Center"
-            Text="Carregando..."
-            TextColor="{DynamicResource Special}"
-            VerticalOptions="End" />
+        <VerticalStackLayout HorizontalOptions="Center" Spacing="20">
+
+            <ActivityIndicator
+                x:Name="Spinner"
+                HeightRequest="60"
+                IsRunning="True"
+                WidthRequest="60"
+                Color="{DynamicResource Special}" />
+
+            <Label
+                HorizontalOptions="Center"
+                Text="Carregando..."
+                TextColor="{DynamicResource Special}" />
+
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

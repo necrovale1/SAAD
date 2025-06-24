@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAAD
 {
-    internal class Faltas
+    public class Faltas
     {
         public required string Materia { get; set; }
         public int Falta { get; set; }

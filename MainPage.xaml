@@ -12,16 +12,6 @@
             Spacing="25"
             VerticalOptions="Center">
 
-            <Button
-                x:Name="ThemeToggleButton"
-                Margin="20"
-                BackgroundColor="{DynamicResource TextColor}"
-                Clicked="OnThemeToggleClicked"
-                HorizontalOptions="End"
-                Text="🌞"
-                TextColor="{DynamicResource BackgroundColor}"
-                VerticalOptions="Start" />
-
             <!--  Welcome Text  -->
             <VerticalStackLayout Spacing="5">
                 <Label

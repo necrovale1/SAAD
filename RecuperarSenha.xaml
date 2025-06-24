@@ -3,27 +3,30 @@
     x:Class="SAAD.RecuperarSenha"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="RecuperarSenha">
+    Title="Recuperar Senha">
     <VerticalStackLayout
-        HorizontalOptions="Center"
-        Spacing="25"
+        Padding="30"
+        Spacing="15"
         VerticalOptions="Center">
-
         <Label
-            FontSize="22"
+            FontAttributes="Bold"
+            FontSize="24"
             HorizontalOptions="Center"
-            SemanticProperties.HeadingLevel="Level1"
-            Text="Página de Recuperar Senha em Manutenção" />
-
+            Text="Recuperar sua senha" />
         <Label
-            FontSize="16"
             HorizontalOptions="Center"
-            SemanticProperties.Description="Informação adicional sobre a manutenção"
-            Text="Estamos trabalhando para trazer essa funcionalidade em breve!" />
-
-        <Image
-            MaximumHeightRequest="250"
-            MaximumWidthRequest="250"
-            Source="manutencao.png" />
+            HorizontalTextAlignment="Center"
+            Text="Digite seu e-mail para receber o link de recuperação." />
+        <Entry
+            x:Name="EmailEntry"
+            Keyboard="Email"
+            Placeholder="seu.email@exemplo.com" />
+        <Button Clicked="OnEnviarClicked" Text="Enviar Link" />
+        <Button
+            BackgroundColor="Transparent"
+            Clicked="OnVoltarClicked"
+            Text="Voltar"
+            TextColor="{AppThemeBinding Light=Gray,
+                                        Dark=White}" />
     </VerticalStackLayout>
 </ContentPage>

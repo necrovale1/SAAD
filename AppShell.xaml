@@ -3,29 +3,48 @@
     x:Class="SAAD.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SAAD"
-    Title="SAAD"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:local="clr-namespace:SAAD">
 
-    <Shell.TitleView>
-        <HorizontalStackLayout
-            HorizontalOptions="End"
-            Spacing="10"
-            VerticalOptions="End" />
-    </Shell.TitleView>
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage"
+        Shell.FlyoutBehavior="Disabled"
+        Shell.TabBarIsVisible="False" />
 
     <TabBar>
-        <Tab Title="Home" Icon="home.png">
+        <Tab Title="Home">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="OpenSansSemibold"
+                    Glyph="&#xE88A;"
+                    Color="{AppThemeBinding Light=#512BD4,
+                                            Dark=White}" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" Route="HomePage" />
         </Tab>
-        <Tab Title="Matérias" Icon="book.png">
+
+        <Tab Title="Matérias">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="OpenSansSemibold"
+                    Glyph="&#xE865;"
+                    Color="{AppThemeBinding Light=#512BD4,
+                                            Dark=White}" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:MateriasPage}" Route="MateriasPage" />
         </Tab>
-        <Tab Title="Faltas" Icon="attendance.png">
+
+        <Tab Title="Faltas">
+            <Tab.Icon>
+                <FontImageSource
+                    FontFamily="OpenSansSemibold"
+                    Glyph="&#xE916;"
+                    Color="{AppThemeBinding Light=#512BD4,
+                                            Dark=White}" />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate local:FaltasPage}" Route="FaltasPage" />
         </Tab>
-        <Tab Title="Logout" Icon="logout.png">
-            <ShellContent ContentTemplate="{DataTemplate local:LogoutPage}" Route="LogoutPage" />
-        </Tab>
     </TabBar>
+
 </Shell>

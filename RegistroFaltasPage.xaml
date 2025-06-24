@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD.RegistroFaltasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Registrar Faltas">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="Nome da Matéria" />
+        <Entry x:Name="MateriaEntry" Placeholder="Ex: Cálculo I" />
+
+        <Label Text="Número de Faltas" />
+        <Entry x:Name="FaltasEntry" Keyboard="Numeric" />
+
+        <Label Text="Número de Presenças" />
+        <Entry x:Name="PresencasEntry" Keyboard="Numeric" />
+
+        <Button Clicked="OnSalvarClicked" Text="Salvar" />
+        <Button
+            BackgroundColor="Transparent"
+            Clicked="OnVoltarClicked"
+            Text="Voltar"
+            TextColor="Gray" />
+    </VerticalStackLayout>
+</ContentPage>
