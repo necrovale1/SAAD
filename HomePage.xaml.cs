@@ -1,4 +1,6 @@
 using SAAD.Resources.Styles;
+using Microsoft.Maui.Controls;
+using System.Web;
 
 namespace SAAD
 {
@@ -9,48 +11,63 @@ namespace SAAD
             InitializeComponent();
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
             if (!Preferences.Get("UsuarioLogado", false))
             {
-                // Substituição do Device.BeginInvokeOnMainThread obsoleto
-                Dispatcher.Dispatch(async () =>
-                {
-                    await DisplayAlert("Aviso", "Você precisa fazer login", "OK");
-
-                    // Verificação segura para Application.Current
-                    if (Application.Current != null)
-                    {
-                        Application.Current.MainPage = new MainPage();
-                    }
-                });
+                await DisplayAlert("Aviso", "Você precisa fazer login", "OK");
+                await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
             }
         }
 
-        private void btnMaterias_Clicked(object sender, EventArgs e)
+        private async void btnMaterias_Clicked(object sender, EventArgs e)
         {
-            var materias = new Materias
+            try
             {
-                Nome = "Programação Web",
-                Descricao = "Programação web é o processo de desenvolvimento de websites e aplicações web utilizando diversas linguagens de programação e tecnologias para criar funcionalidades e design interativos na internet.",
-                Categoria = "Web"
-            };
+                var materias = new Materias
+                {
+                    Nome = "Programação Web",
+                    Descricao = "Programação web é o processo de desenvolvimento...",
+                    Categoria = "Web"
+                };
 
-            Navigation.PushAsync(new MateriasPage() { BindingContext = materias });
+                // Fix: Removed usage of inaccessible 'ShellNavigationParameters' and replaced with query parameters
+                var queryParams = new Dictionary<string, object>
+                    {
+                        { "MateriaData", materias }
+                    };
+                await Shell.Current.GoToAsync($"//{nameof(MateriasPage)}", queryParams);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Não foi possível acessar as matérias: {ex.Message}", "OK");
+            }
         }
 
-        private void btnFaltas_Clicked(object sender, EventArgs e)
+        private async void btnFaltas_Clicked(object sender, EventArgs e)
         {
-            var faltas = new Faltas
+            try
             {
-                Materia = "Programação Web",
-                Falta = 5,
-                Presenca = 20
-            };
+                var faltas = new Faltas
+                {
+                    Materia = "Programação Web",
+                    Falta = 5,
+                    Presenca = 20
+                };
 
-            Navigation.PushAsync(new FaltasPage() { BindingContext = faltas });
+                // Using absolute route with query parameters
+                await Shell.Current.GoToAsync(
+                    $"//{nameof(FaltasPage)}?" +
+                    $"Materia={HttpUtility.UrlEncode(faltas.Materia)}&" +
+                    $"Falta={faltas.Falta}&" +
+                    $"Presenca={faltas.Presenca}");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Não foi possível acessar as faltas: {ex.Message}", "OK");
+            }
         }
     }
 }

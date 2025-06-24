@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD.LogoutPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Logout">
+    <VerticalStackLayout Padding="10,10,10,10">
+        <Label
+            FontSize="Medium"
+            HorizontalOptions="Center"
+            Text="Deseja sair da aplicação?"
+            VerticalOptions="Center" />
+
+        <Button
+            x:Name="btnConfirmLogout"
+            BackgroundColor="{DynamicResource Special}"
+            Clicked="btnConfirmLogout_Clicked"
+            FontAttributes="Bold"
+            FontSize="Medium"
+            MaximumWidthRequest="300"
+            Text="Confirmar Logout" />
+
+        <Button
+            x:Name="btnCancelLogout"
+            BackgroundColor="{DynamicResource Secondary}"
+            Clicked="btnCancelLogout_Clicked"
+            FontAttributes="Bold"
+            FontSize="Medium"
+            MaximumWidthRequest="300"
+            Text="Cancelar" />
+    </VerticalStackLayout>
+</ContentPage>

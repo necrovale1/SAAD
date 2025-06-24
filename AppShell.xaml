@@ -5,37 +5,27 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:SAAD"
     Title="SAAD"
-    Shell.FlyoutBehavior="Flyout">
+    Shell.FlyoutBehavior="Disabled">
 
     <Shell.TitleView>
         <HorizontalStackLayout
             HorizontalOptions="End"
             Spacing="10"
             VerticalOptions="End" />
-
     </Shell.TitleView>
 
     <TabBar>
-        <Tab Title="Logout" Icon="enter.png">
-            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage" />
-        </Tab>
-
         <Tab Title="Home" Icon="home.png">
             <ShellContent ContentTemplate="{DataTemplate local:HomePage}" Route="HomePage" />
         </Tab>
-
-        <Tab Title="Recuperar" Icon="key.png">
-            <ShellContent ContentTemplate="{DataTemplate local:RecuperarSenha}" Route="RecuperarSenha" />
+        <Tab Title="Matérias" Icon="book.png">
+            <ShellContent ContentTemplate="{DataTemplate local:MateriasPage}" Route="MateriasPage" />
         </Tab>
-
-        <Tab Title="Registro" Icon="user.png">
-            <ShellContent ContentTemplate="{DataTemplate local:Registro}" Route="Registro" />
+        <Tab Title="Faltas" Icon="attendance.png">
+            <ShellContent ContentTemplate="{DataTemplate local:FaltasPage}" Route="FaltasPage" />
+        </Tab>
+        <Tab Title="Logout" Icon="logout.png">
+            <ShellContent ContentTemplate="{DataTemplate local:LogoutPage}" Route="LogoutPage" />
         </Tab>
     </TabBar>
-
-    <ShellContent
-        Title="Início"
-        ContentTemplate="{DataTemplate local:HomePage}"
-        Route="HomePage" />
-
 </Shell>

@@ -1,4 +1,5 @@
 ﻿using SAAD.Resources.Styles;
+using Microsoft.Maui.Controls;
 
 namespace SAAD
 {
@@ -11,6 +12,9 @@ namespace SAAD
         public MainPage()
         {
             InitializeComponent();
+            _isDarkTheme = Preferences.Get("DarkTheme", false);
+            ApplyTheme(_isDarkTheme);
+            UpdateThemeButton();
         }
 
         private async void LoginVerify(object sender, EventArgs e)
@@ -18,38 +22,46 @@ namespace SAAD
             string username = Username.Text?.Trim() ?? string.Empty;
             string password = Password.Text ?? string.Empty;
 
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                await DisplayAlert("Erro", "Por favor, insira o nome de usuário", "OK");
+                await DisplayAlert("Erro", "Por favor, preencha todos os campos", "OK");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                await DisplayAlert("Erro", "Por favor, insira a senha", "OK");
-                return;
-            }
             if (username == ValidUsername && password == ValidPassword)
             {
                 Preferences.Set("UsuarioLogado", true);
                 await DisplayAlert("Sucesso", "Login bem-sucedido!", "OK");
 
+                // Navigate to AppShell
                 if (Application.Current != null)
                 {
-                    // Apenas crie o AppShell. Ele automaticamente carregará a HomePage
-                    // que foi definida como padrão no XAML.
                     Application.Current.MainPage = new AppShell();
                 }
             }
+            else
+            {
+                await DisplayAlert("Erro", "Credenciais inválidas", "OK");
+            }
         }
+
         private async void RecuperarSenha(object sender, EventArgs e)
         {
             try
             {
-                // Verificação segura para Shell.Current
-                if (Shell.Current != null)
+                var shell = Shell.Current;
+                if (shell != null)
                 {
-                    await Shell.Current.GoToAsync($"//{nameof(RecuperarSenha)}");
+                    await shell.GoToAsync($"//{nameof(RecuperarSenha)}");
+                }
+                else if (Application.Current != null)
+                {
+                    Application.Current.MainPage = new AppShell();
+                    shell = Shell.Current;
+                    if (shell != null)
+                    {
+                        await shell.GoToAsync($"//{nameof(RecuperarSenha)}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -62,10 +74,19 @@ namespace SAAD
         {
             try
             {
-                // Verificação segura para Shell.Current
-                if (Shell.Current != null)
+                var shell = Shell.Current;
+                if (shell != null)
                 {
-                    await Shell.Current.GoToAsync($"//{nameof(Registro)}");
+                    await shell.GoToAsync($"//{nameof(Registro)}");
+                }
+                else if (Application.Current != null)
+                {
+                    Application.Current.MainPage = new AppShell();
+                    shell = Shell.Current;
+                    if (shell != null)
+                    {
+                        await shell.GoToAsync($"//{nameof(Registro)}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -73,6 +94,7 @@ namespace SAAD
                 await DisplayAlert("Erro", $"Não foi possível navegar: {ex.Message}", "OK");
             }
         }
+
         private void ApplyTheme(bool isDark)
         {
             if (Application.Current != null)
@@ -92,9 +114,9 @@ namespace SAAD
         private void OnThemeToggleClicked(object sender, EventArgs e)
         {
             _isDarkTheme = !_isDarkTheme;
-            ApplyTheme(_isDarkTheme); // Now properly called
+            ApplyTheme(_isDarkTheme);
             UpdateThemeButton();
-            Preferences.Set("DarkTheme", _isDarkTheme); // Now the field is being used
+            Preferences.Set("DarkTheme", _isDarkTheme);
         }
     }
 }

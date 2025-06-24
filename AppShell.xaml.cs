@@ -1,4 +1,4 @@
-﻿using SAAD.Resources.Styles;
+﻿using Microsoft.Maui.Controls;
 
 namespace SAAD;
 
@@ -6,26 +6,32 @@ public partial class AppShell : Shell
 {
     public AppShell()
     {
-
         InitializeComponent();
-
-        // Use Dispatcher instead of obsolete Device.InvokeOnMainThreadAsync
-        Dispatcher.DispatchAsync(async () =>
-        {
-            await Task.Delay(2000); // Wait for 2 seconds
-
-            // Navigate to main page
-            await Current.GoToAsync("//main");
-
-        });
-
-        // Register navigation routes (moved outside the async block)
-        Routing.RegisterRoute("HomePage", typeof(HomePage));
-        Routing.RegisterRoute("MainPage", typeof(MainPage));
-        Routing.RegisterRoute("Registro", typeof(Registro));
-        Routing.RegisterRoute("RecuperarSenha", typeof(RecuperarSenha));
-        Routing.RegisterRoute("FaltasPage", typeof(FaltasPage));
-        Routing.RegisterRoute("MateriasPage", typeof(MateriasPage));
+        RegisterRoutes();
+        InitializeNavigation();
     }
 
+    private void RegisterRoutes()
+    {
+        Routing.RegisterRoute(nameof(HomePage), typeof(HomePage));
+        Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
+        Routing.RegisterRoute(nameof(Registro), typeof(Registro));
+        Routing.RegisterRoute(nameof(RecuperarSenha), typeof(RecuperarSenha));
+        Routing.RegisterRoute(nameof(MateriasPage), typeof(MateriasPage));
+        Routing.RegisterRoute(nameof(FaltasPage), typeof(FaltasPage));
+        Routing.RegisterRoute(nameof(LogoutPage), typeof(LogoutPage));
+    }
+
+    private void InitializeNavigation()
+    {
+        if (Preferences.Get("UsuarioLogado", false))
+        {
+                        // New way
+            Dispatcher.Dispatch(() =>
+            {
+                Task.Delay(1000); // Small delay for better UX
+                CurrentItem = FindByName("HomePage") as ShellItem;
+            });
+        }
+    }
 }

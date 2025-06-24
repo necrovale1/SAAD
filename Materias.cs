@@ -7,10 +7,10 @@ using SAAD.Resources.Styles;
 
 namespace SAAD
 {
-    internal class Materias
+    public class Materias
     {
-        public required string Nome { get; set; }
-        public required string Descricao { get; set; }
-        public required string Categoria { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Descricao { get; set; } = string.Empty;
+        public string Categoria { get; set; } = string.Empty;
     }
 }
