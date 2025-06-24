@@ -3,6 +3,7 @@
     x:Class="SAAD.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SAAD"
     Title="Login"
     BackgroundColor="{DynamicResource BackgroundColor}">
 
@@ -37,43 +38,53 @@
 
             <!--  Username Input  -->
             <Frame
+                Margin="0,10"
                 Padding="0"
-                BackgroundColor="{DynamicResource Input}"
-                BorderColor="{DynamicResource Input}"
-                HasShadow="True"
-                HorizontalOptions="Fill"
-                MaximumWidthRequest="400"
-                MinimumHeightRequest="45">
-                <Entry
-                    x:Name="Username"
-                    Margin="20,0,0,0"
-                    ClearButtonVisibility="WhileEditing"
-                    Keyboard="Email"
-                    Placeholder="Usuário"
-                    ReturnType="Next"
-                    TextColor="{DynamicResource TextColor}"
-                    VerticalOptions="Center" />
+                BorderColor="LightGray"
+                CornerRadius="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        Padding="10,0"
+                        FontFamily="MaterialOutlined"
+                        FontSize="24"
+                        Text="{x:Static local:MaterialIconFont.User}"
+                        VerticalOptions="Center" />
+                    <Entry
+                        x:Name="Username"
+                        Grid.Column="1"
+                        Placeholder="Usuário"
+                        VerticalOptions="Center" />
+                </Grid>
             </Frame>
 
             <!--  Password Input  -->
             <Frame
+                Margin="0,10"
                 Padding="0"
-                BackgroundColor="{DynamicResource Input}"
-                BorderColor="{DynamicResource Input}"
-                HasShadow="True"
-                HorizontalOptions="Fill"
-                MaximumWidthRequest="400"
-                MinimumHeightRequest="45">
-                <Entry
-                    x:Name="Password"
-                    Margin="20,0,0,0"
-                    ClearButtonVisibility="WhileEditing"
-                    Completed="LoginVerify"
-                    IsPassword="True"
-                    Placeholder="Senha"
-                    ReturnType="Go"
-                    TextColor="{DynamicResource TextColor}"
-                    VerticalOptions="Center" />
+                BorderColor="LightGray"
+                CornerRadius="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        Padding="10,0"
+                        FontFamily="MaterialOutlined"
+                        FontSize="24"
+                        Text="{x:Static local:MaterialIconFont.Lock}"
+                        VerticalOptions="Center" />
+                    <Entry
+                        x:Name="Password"
+                        Grid.Column="1"
+                        IsPassword="True"
+                        Placeholder="Senha"
+                        VerticalOptions="Center" />
+                </Grid>
             </Frame>
 
             <!--  Signup Link  -->

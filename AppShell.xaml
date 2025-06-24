@@ -3,48 +3,43 @@
     x:Class="SAAD.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:SAAD">
+    xmlns:local="clr-namespace:SAAD"
+    Shell.FlyoutBehavior="Flyout">
 
-    <ShellContent
-        Title="Login"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage"
-        Shell.FlyoutBehavior="Disabled"
-        Shell.TabBarIsVisible="False" />
+    <Shell.Resources>
+        <Style TargetType="FlyoutItem">
+            <Setter Property="Shell.TitleColor" Value="Gray" />
+        </Style>
+    </Shell.Resources>
 
-    <TabBar>
-        <Tab Title="Home">
-            <Tab.Icon>
-                <FontImageSource
-                    FontFamily="OpenSansSemibold"
-                    Glyph="&#xE88A;"
-                    Color="{AppThemeBinding Light=#512BD4,
-                                            Dark=White}" />
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate local:HomePage}" Route="HomePage" />
-        </Tab>
+    <FlyoutItem Title="Matérias" Route="MateriasPage">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="MaterialOutlined"
+                Glyph="{x:Static local:MaterialIconFont.Materias}"
+                Color="Black" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:MateriasPage}" />
+    </FlyoutItem>
 
-        <Tab Title="Matérias">
-            <Tab.Icon>
-                <FontImageSource
-                    FontFamily="OpenSansSemibold"
-                    Glyph="&#xE865;"
-                    Color="{AppThemeBinding Light=#512BD4,
-                                            Dark=White}" />
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate local:MateriasPage}" Route="MateriasPage" />
-        </Tab>
+    <FlyoutItem Title="Faltas" Route="FaltasPage">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="MaterialOutlined"
+                Glyph="{x:Static local:MaterialIconFont.Faltas}"
+                Color="Black" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:FaltasPage}" />
+    </FlyoutItem>
 
-        <Tab Title="Faltas">
-            <Tab.Icon>
-                <FontImageSource
-                    FontFamily="OpenSansSemibold"
-                    Glyph="&#xE916;"
-                    Color="{AppThemeBinding Light=#512BD4,
-                                            Dark=White}" />
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate local:FaltasPage}" Route="FaltasPage" />
-        </Tab>
-    </TabBar>
+    <FlyoutItem Title="Sair" Route="LogoutPage">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="MaterialOutlined"
+                Glyph="{x:Static local:MaterialIconFont.Logout}"
+                Color="Black" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:LogoutPage}" />
+    </FlyoutItem>
 
 </Shell>
