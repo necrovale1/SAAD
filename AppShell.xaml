@@ -4,27 +4,40 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:SAAD2.Views"
-    Shell.FlyoutBehavior="Disabled">
+    Shell.BackgroundColor="{DynamicResource PageBackgroundColor}"
+    Shell.FlyoutBehavior="Disabled"
+    Shell.ForegroundColor="{DynamicResource PrimaryTextColor}"
+    Shell.TitleColor="{DynamicResource PrimaryTextColor}">
 
-    <Shell.FlyoutHeader>
-        <Grid BackgroundColor="{DynamicResource PageBackgroundColor}" HeightRequest="50">
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Fill">
+            <Label
+                Grid.Column="0"
+                FontAttributes="Bold"
+                FontSize="18"
+                HorizontalTextAlignment="Start"
+                Text="{Binding Title, Source={RelativeSource AncestorType={x:Type views:HomePage}}}"
+                TextColor="{DynamicResource PrimaryTextColor}"
+                VerticalTextAlignment="Center" />
+
             <Button
-                Margin="0,0,15,0"
+                Grid.Column="1"
+                Margin="0,0,5,0"
                 Clicked="OnThemeToggleButtonClicked"
                 FontAttributes="Bold"
-                FontSize="12"
+                FontSize="10"
+                HeightRequest="40"
                 HorizontalOptions="End"
-                Text="Trocar Tema"
-                VerticalOptions="Center"
-                WidthRequest="120" />
+                Text="Mudar Tema"
+                VerticalOptions="Center" />
         </Grid>
-    </Shell.FlyoutHeader>
+    </Shell.TitleView>
 
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate views:MainPage}"
         Route="MainPage"
-        Shell.TabBarIsVisible="False" />
+        Shell.NavBarIsVisible="False" />
 
     <TabBar Route="HomePage">
         <ShellContent Title="Home" ContentTemplate="{DataTemplate views:HomePage}" />

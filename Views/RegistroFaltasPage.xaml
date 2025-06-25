@@ -3,26 +3,34 @@
     x:Class="SAAD2.Views.RegistroFaltasPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Registrar Falta">
+    Title="Registrar Falta"
+    BackgroundColor="{DynamicResource PageBackgroundColor}">
     <VerticalStackLayout Padding="20" Spacing="15">
-        <Label Text="Nome da Matéria" />
-        <Entry x:Name="MateriaEntry" Placeholder="Ex: Cálculo I" />
+        <Label Text="Nome da Matéria" TextColor="{DynamicResource PrimaryTextColor}" />
+        <Entry
+            x:Name="MateriaEntry"
+            Placeholder="Ex: Cálculo I"
+            TextColor="{DynamicResource PrimaryTextColor}" />
 
-        <Label Text="Quantidade de Faltas" />
+        <Label Text="Quantidade de Faltas" TextColor="{DynamicResource PrimaryTextColor}" />
         <Entry
             x:Name="FaltasEntry"
             Keyboard="Numeric"
-            Placeholder="Ex: 2" />
+            Placeholder="Ex: 2"
+            TextColor="{DynamicResource PrimaryTextColor}" />
 
-        <Label Text="Quantidade de Presenças" />
+        <Label Text="Quantidade de Presenças" TextColor="{DynamicResource PrimaryTextColor}" />
         <Entry
             x:Name="PresencasEntry"
             Keyboard="Numeric"
-            Placeholder="Ex: 18" />
+            Placeholder="Ex: 18"
+            TextColor="{DynamicResource PrimaryTextColor}" />
 
         <Button
             Margin="0,20,0,0"
+            BackgroundColor="{DynamicResource AccentColor}"
             Clicked="OnSalvarClicked"
-            Text="Salvar" />
+            Text="Salvar"
+            TextColor="{DynamicResource PrimaryTextColor}" />
     </VerticalStackLayout>
 </ContentPage>

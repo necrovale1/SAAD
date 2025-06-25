@@ -3,7 +3,8 @@
     x:Class="SAAD2.Views.LogoutPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Logout">
+    Title="Logout"
+    BackgroundColor="{DynamicResource PageBackgroundColor}">
     <VerticalStackLayout
         Padding="30"
         Spacing="15"
@@ -11,16 +12,21 @@
         <Label
             FontSize="Medium"
             HorizontalOptions="Center"
-            Text="Você tem certeza que deseja sair?" />
-
-        <Button Clicked="OnConfirmLogoutClicked" Text="Confirmar Logout" />
+            Text="Você tem certeza que deseja sair?"
+            TextColor="{DynamicResource PrimaryTextColor}" />
 
         <Button
-            BackgroundColor="Transparent"
+            BackgroundColor="{DynamicResource AccentColor}"
+            Clicked="OnConfirmLogoutClicked"
+            Text="Confirmar Logout"
+            TextColor="{DynamicResource PrimaryTextColor}" />
+
+        <Button
+            BackgroundColor="{DynamicResource Accent Color}"
             BorderColor="{DynamicResource AccentColor}"
             BorderWidth="1"
             Clicked="OnCancelClicked"
             Text="Cancelar"
-            TextColor="{DynamicResource AccentColor}" />
+            TextColor="{DynamicResource PrimaryTextColor}" />
     </VerticalStackLayout>
 </ContentPage>

@@ -3,7 +3,8 @@
     x:Class="SAAD2.Views.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Home">
+    Title="Home"
+    BackgroundColor="{DynamicResource PageBackgroundColor}">
     <VerticalStackLayout
         Padding="30"
         Spacing="20"
@@ -13,10 +14,19 @@
             FontAttributes="Bold"
             FontSize="24"
             HorizontalOptions="Center"
-            Text="Menu Principal" />
+            Text="Menu Principal"
+            TextColor="{DynamicResource PrimaryTextColor}" />
 
-        <Button Clicked="OnMateriasClicked" Text="Gerenciar Matérias" />
-        <Button Clicked="OnFaltasClicked" Text="Controlar Faltas" />
+        <Button
+            BackgroundColor="{DynamicResource AccentColor}"
+            Clicked="OnMateriasClicked"
+            Text="Gerenciar Matérias"
+            TextColor="{DynamicResource PrimaryTextColor}" />
+        <Button
+            BackgroundColor="{DynamicResource AccentColor}"
+            Clicked="OnFaltasClicked"
+            Text="Controlar Faltas"
+            TextColor="{DynamicResource PrimaryTextColor}" />
 
     </VerticalStackLayout>
 </ContentPage>
