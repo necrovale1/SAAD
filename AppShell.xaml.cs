@@ -1,4 +1,5 @@
-﻿namespace SAAD;
+﻿
+namespace SAAD;
 
 public partial class AppShell : Shell
 {
@@ -19,6 +20,8 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(RegistroFaltasPage), typeof(RegistroFaltasPage));
         Routing.RegisterRoute(nameof(FaltasPage), typeof(FaltasPage));
         Routing.RegisterRoute(nameof(LogoutPage), typeof(LogoutPage));
+        // FIXED: Added the missing route registration
+        Routing.RegisterRoute(nameof(RegistroMateriasPage), typeof(RegistroMateriasPage));
     }
 
     protected override void OnNavigating(ShellNavigatingEventArgs args)

@@ -1,4 +1,3 @@
-
 namespace SAAD;
 
 public partial class SplashScreen : ContentPage
