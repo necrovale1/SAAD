@@ -13,9 +13,9 @@ public partial class SplashScreen : ContentPage
         base.OnAppearing();
 
         // Aguarda 3 segundos para simular carregamento
-        await Task.Delay(3000);
+        await Task.Delay(3000); //
 
-        // Safely check if Application.Current is not null before accessing MainPage
+        // Define a página principal como o AppShell, que controla a navegação.
         if (Application.Current != null)
         {
             Application.Current.MainPage = new AppShell();

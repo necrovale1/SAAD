@@ -25,16 +25,24 @@ public partial class AppShell : Shell
     {
         base.OnNavigating(args);
 
-        var protectedRoutes = new[] { nameof(HomePage), nameof(MateriasPage), nameof(FaltasPage) };
-        var targetRoute = args.Target.Location.OriginalString;
-        var routeName = targetRoute.Contains("?") ? targetRoute.Split('?')[0] : targetRoute;
-        routeName = routeName.Replace("//", "");
+        // Rotas que exigem que o usuário esteja logado.
+        var protectedRoutes = new[] { nameof(HomePage), nameof(MateriasPage), nameof(FaltasPage), nameof(RegistroMateriasPage), nameof(RegistroFaltasPage) };
 
+        // Extrai o nome da rota base, removendo o prefixo "//" e parâmetros de query.
+        string targetRoute = args.Target.Location.OriginalString;
+        if (targetRoute.StartsWith("//"))
+        {
+            targetRoute = targetRoute.Substring(2);
+        }
+        var routeName = targetRoute.Contains("?") ? targetRoute.Split('?')[0] : targetRoute;
+
+        // Verifica se o usuário está logado.
         bool isUserLoggedIn = Preferences.Get("UsuarioLogado", false);
 
+        // Se o usuário não estiver logado e tentar acessar uma rota protegida...
         if (!isUserLoggedIn && protectedRoutes.Contains(routeName))
         {
-            args.Cancel();
+            args.Cancel(); // Cancela a navegação atual.
 
             // Esta é a mudança crucial. Agendamos a navegação para ocorrer
             // logo após o término do evento atual, evitando o deadlock.
