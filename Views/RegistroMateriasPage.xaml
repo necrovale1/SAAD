@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD2.Views.RegistroMateriasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Registrar Matéria">
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Label Text="Nome da Matéria" />
+        <Entry x:Name="NomeEntry" Placeholder="Ex: Engenharia de Software" />
+
+        <Label Text="Descrição" />
+        <Entry x:Name="DescricaoEntry" Placeholder="Uma breve descrição da matéria" />
+
+        <Label Text="Categoria" />
+        <Entry x:Name="CategoriaEntry" Placeholder="Ex: Obrigatória" />
+
+        <Button
+            Margin="0,20,0,0"
+            Clicked="OnSalvarClicked"
+            Text="Salvar Matéria" />
+    </VerticalStackLayout>
+</ContentPage>

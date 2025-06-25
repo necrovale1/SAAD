@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD2.Views.RecuperarSenhaPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Recuperar Senha">
+    <VerticalStackLayout
+        Padding="30"
+        Spacing="15"
+        VerticalOptions="Center">
+        <Label Text="Insira seu e-mail para receber o link de recuperação." />
+        <Entry Keyboard="Email" Placeholder="E-mail" />
+        <Button Clicked="OnEnviarLinkClicked" Text="Enviar Link" />
+        <Button
+            BackgroundColor="Transparent"
+            BorderColor="{StaticResource AccentColor}"
+            BorderWidth="1"
+            Clicked="OnVoltarClicked"
+            Text="Voltar"
+            TextColor="{StaticResource AccentColor}" />
+    </VerticalStackLayout>
+</ContentPage>

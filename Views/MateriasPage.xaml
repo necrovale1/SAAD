@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD2.Views.MateriasPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Matérias">
+    <Grid RowDefinitions="*,Auto">
+
+        <ListView
+            x:Name="MateriasListView"
+            Grid.Row="0"
+            HasUnevenRows="True"
+            ItemsSource="{Binding Materias}"
+            SeparatorVisibility="None">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame
+                            Margin="15,10"
+                            Padding="15"
+                            BackgroundColor="{DynamicResource CardBackgroundColor}"
+                            BorderColor="Transparent"
+                            CornerRadius="8">
+                            <VerticalStackLayout Spacing="5">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="18"
+                                    Text="{Binding Nome}" />
+                                <Label
+                                    FontSize="14"
+                                    Text="{Binding Descricao}"
+                                    TextColor="{DynamicResource SecondaryTextColor}" />
+                                <Label
+                                    FontAttributes="Italic"
+                                    FontSize="12"
+                                    HorizontalOptions="End"
+                                    Text="{Binding Categoria}" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button
+            Grid.Row="1"
+            Margin="15"
+            Clicked="OnRegistrarClicked"
+            Text="Registrar Nova Matéria" />
+    </Grid>
+</ContentPage>

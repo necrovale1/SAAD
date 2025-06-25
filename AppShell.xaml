@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SAAD2.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:SAAD2.Views"
+    Shell.FlyoutBehavior="Disabled">
+
+    <Shell.FlyoutHeader>
+        <Grid BackgroundColor="{DynamicResource PageBackgroundColor}" HeightRequest="50">
+            <Button
+                Margin="0,0,15,0"
+                Clicked="OnThemeToggleButtonClicked"
+                FontAttributes="Bold"
+                FontSize="12"
+                HorizontalOptions="End"
+                Text="Trocar Tema"
+                VerticalOptions="Center"
+                WidthRequest="120" />
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate views:MainPage}"
+        Route="MainPage"
+        Shell.TabBarIsVisible="False" />
+
+    <TabBar Route="HomePage">
+        <ShellContent Title="Home" ContentTemplate="{DataTemplate views:HomePage}" />
+        <ShellContent Title="Matérias" ContentTemplate="{DataTemplate views:MateriasPage}" />
+        <ShellContent Title="Faltas" ContentTemplate="{DataTemplate views:FaltasPage}" />
+        <ShellContent Title="Logout" ContentTemplate="{DataTemplate views:LogoutPage}" />
+    </TabBar>
+
+</Shell>

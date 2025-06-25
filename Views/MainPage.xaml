@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SAAD2.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Shell.NavBarIsVisible="False">
+
+    <VerticalStackLayout
+        Padding="30,0"
+        Spacing="25"
+        VerticalOptions="Center">
+        <Label
+            FontAttributes="Bold"
+            FontSize="32"
+            HorizontalOptions="Center"
+            Text="Bem-vindo ao SAAD2" />
+
+        <Entry x:Name="UsernameEntry" Placeholder="Usuário" />
+        <Entry
+            x:Name="PasswordEntry"
+            IsPassword="True"
+            Placeholder="Senha" />
+
+        <Button Clicked="OnLoginButtonClicked" Text="Login" />
+
+        <Label
+            HorizontalOptions="Center"
+            Text="Esqueceu a senha?"
+            TextColor="{DynamicResource AccentColor}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnForgotPasswordTapped" />
+            </Label.GestureRecognizers>
+        </Label>
+
+        <Label HorizontalOptions="Center">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Não tem uma conta? " TextColor="{DynamicResource SecondaryTextColor}" />
+                    <Span
+                        Text="Registre-se"
+                        TextColor="{DynamicResource AccentColor}"
+                        TextDecorations="Underline">
+                        <Span.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRegisterTapped" />
+                        </Span.GestureRecognizers>
+                    </Span>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+    </VerticalStackLayout>
+</ContentPage>
