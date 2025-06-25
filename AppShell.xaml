@@ -6,18 +6,27 @@
     xmlns:local="clr-namespace:SAAD"
     Shell.FlyoutBehavior="Flyout">
 
-    <Shell.Resources>
-        <Style TargetType="FlyoutItem">
-            <Setter Property="Shell.TitleColor" Value="Gray" />
-        </Style>
-    </Shell.Resources>
+    <!--  A estilização geral do Shell foi movida para Styles.xaml  -->
+    <!--  para manter este arquivo limpo e focado na estrutura.  -->
+
+    <FlyoutItem Title="Início" Route="HomePage">
+        <FlyoutItem.Icon>
+            <FontImageSource
+                FontFamily="MaterialOutlined"
+                Glyph="{x:Static local:MaterialIconFont.User}"
+                Color="{AppThemeBinding Light={StaticResource TextColor_Light},
+                                        Dark={StaticResource TextColor_Dark}}" />
+        </FlyoutItem.Icon>
+        <ShellContent ContentTemplate="{DataTemplate local:HomePage}" />
+    </FlyoutItem>
 
     <FlyoutItem Title="Matérias" Route="MateriasPage">
         <FlyoutItem.Icon>
             <FontImageSource
                 FontFamily="MaterialOutlined"
                 Glyph="{x:Static local:MaterialIconFont.Materias}"
-                Color="Black" />
+                Color="{AppThemeBinding Light={StaticResource TextColor_Light},
+                                        Dark={StaticResource TextColor_Dark}}" />
         </FlyoutItem.Icon>
         <ShellContent ContentTemplate="{DataTemplate local:MateriasPage}" />
     </FlyoutItem>
@@ -27,19 +36,10 @@
             <FontImageSource
                 FontFamily="MaterialOutlined"
                 Glyph="{x:Static local:MaterialIconFont.Faltas}"
-                Color="Black" />
+                Color="{AppThemeBinding Light={StaticResource TextColor_Light},
+                                        Dark={StaticResource TextColor_Dark}}" />
         </FlyoutItem.Icon>
         <ShellContent ContentTemplate="{DataTemplate local:FaltasPage}" />
-    </FlyoutItem>
-
-    <FlyoutItem Title="Sair" Route="LogoutPage">
-        <FlyoutItem.Icon>
-            <FontImageSource
-                FontFamily="MaterialOutlined"
-                Glyph="{x:Static local:MaterialIconFont.Logout}"
-                Color="Black" />
-        </FlyoutItem.Icon>
-        <ShellContent ContentTemplate="{DataTemplate local:LogoutPage}" />
     </FlyoutItem>
 
 </Shell>

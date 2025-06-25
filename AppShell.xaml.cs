@@ -19,10 +19,9 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(RegistroFaltasPage), typeof(RegistroFaltasPage));
         Routing.RegisterRoute(nameof(FaltasPage), typeof(FaltasPage));
         Routing.RegisterRoute(nameof(LogoutPage), typeof(LogoutPage));
-
     }
 
-    protected override async void OnNavigating(ShellNavigatingEventArgs args)
+    protected override void OnNavigating(ShellNavigatingEventArgs args)
     {
         base.OnNavigating(args);
 
@@ -37,11 +36,15 @@ public partial class AppShell : Shell
         {
             args.Cancel();
 
-            // 2. Correção: Adicionada verificação de nulo para Shell.Current (que é "this" ou "Current" neste contexto).
-            if (Current != null)
+            // Esta é a mudança crucial. Agendamos a navegação para ocorrer
+            // logo após o término do evento atual, evitando o deadlock.
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
-                await Current.GoToAsync($"//{nameof(MainPage)}", false);
-            }
+                if (Current != null)
+                {
+                    await Current.GoToAsync($"//{nameof(MainPage)}", false);
+                }
+            });
         }
     }
 

@@ -1,4 +1,3 @@
-using SAAD.Resources.Styles;
 
 namespace SAAD;
 
@@ -19,7 +18,7 @@ public partial class SplashScreen : ContentPage
         // Safely check if Application.Current is not null before accessing MainPage
         if (Application.Current != null)
         {
-            Application.Current.MainPage = new MainPage();
+            Application.Current.MainPage = new AppShell();
         }
     }
 }
