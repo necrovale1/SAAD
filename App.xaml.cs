@@ -7,7 +7,7 @@
             InitializeComponent();
 
             // Inicia o aplicativo com a sua tela de splash animada
-            MainPage = new SplashScreen();
+            MainPage = new SplashScreen(); //
         }
     }
 }

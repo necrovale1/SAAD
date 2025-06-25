@@ -3,7 +3,9 @@
     x:Class="SAAD.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Início">
+    Title="Início"
+    BackgroundColor="{StaticResource PageBackgroundColor}">
+
     <ScrollView>
         <VerticalStackLayout Padding="30" Spacing="20">
             <Label

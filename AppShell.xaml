@@ -8,7 +8,7 @@
 
     <Shell.Resources>
         <Style TargetType="FlyoutItem">
-            <Setter Property="Shell.TitleColor" Value="Gray" />
+            <Setter Property="Shell.TitleColor" Value="{StaticResource PageBackgroundColor}" />
         </Style>
     </Shell.Resources>
 

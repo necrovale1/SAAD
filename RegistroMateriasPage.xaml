@@ -3,21 +3,43 @@
     x:Class="SAAD.RegistroMateriasPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Registrar Nova Matéria">
-    <VerticalStackLayout Padding="20" Spacing="10">
-        <Label Text="Nome da Matéria" />
-        <Entry x:Name="NomeEntry" Placeholder="Ex: Cálculo I" />
+    Title="Registrar Nova Matéria"
+    BackgroundColor="{StaticResource PageBackgroundColor}">
 
-        <Label Text="Descrição" />
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="Nome da Matéria" TextColor="{StaticResource TextColor}" />
+
+        <Entry
+            x:Name="NomeEntry"
+            BackgroundColor="{StaticResource Input}"
+            Placeholder="Ex: Cálculo I"
+            TextColor="{StaticResource TextColor}" />
+
+        <Label Text="Descrição" TextColor="{StaticResource TextColor}" />
+
         <Editor
             x:Name="DescricaoEditor"
+            BackgroundColor="{StaticResource Input}"
             HeightRequest="100"
-            Placeholder="Descreva a matéria" />
+            Placeholder="Descreva a matéria"
+            TextColor="{StaticResource TextColor}" />
 
-        <Label Text="Categoria" />
-        <Entry x:Name="CategoriaEntry" Placeholder="Ex: Ciências Exatas" />
+        <Label Text="Categoria" TextColor="{StaticResource TextColor}" />
 
-        <Button Clicked="OnSalvarClicked" Text="Salvar Matéria" />
-        <Button Clicked="OnVoltarClicked" Text="Voltar" />
+        <Entry
+            x:Name="CategoriaEntry"
+            BackgroundColor="{StaticResource Input}"
+            Placeholder="Ex: Ciências Exatas"
+            TextColor="{StaticResource TextColor}" />
+
+        <Button
+            BackgroundColor="{StaticResource Special}"
+            Clicked="OnSalvarClicked"
+            Text="Salvar Matéria" />
+
+        <Button
+            BackgroundColor="{StaticResource Special}"
+            Clicked="OnVoltarClicked"
+            Text="Voltar" />
     </VerticalStackLayout>
 </ContentPage>
