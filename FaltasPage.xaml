@@ -3,7 +3,9 @@
     x:Class="SAAD.FaltasPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Controle de Faltas">
+    Title="Controle de Faltas"
+    BackgroundColor="{StaticResource PageBackgroundColor}">
+
     <Grid RowDefinitions="*, Auto">
         <CollectionView x:Name="FaltasCollectionView" Grid.Row="0">
             <CollectionView.ItemTemplate>

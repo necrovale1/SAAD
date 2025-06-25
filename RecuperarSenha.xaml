@@ -3,7 +3,8 @@
     x:Class="SAAD.RecuperarSenha"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Recuperar Senha">
+    Title="Recuperar Senha"
+    BackgroundColor="{StaticResource PageBackgroundColor}">
     <VerticalStackLayout
         Padding="30"
         Spacing="15"
@@ -12,21 +13,27 @@
             FontAttributes="Bold"
             FontSize="24"
             HorizontalOptions="Center"
-            Text="Recuperar sua senha" />
+            Text="Recuperar sua senha"
+            TextColor="{StaticResource TextColor}" />
+
         <Label
             HorizontalOptions="Center"
             HorizontalTextAlignment="Center"
-            Text="Digite seu e-mail para receber o link de recuperação." />
+            Text="Digite seu e-mail para receber o link de recuperação."
+            TextColor="{StaticResource TextColor}" />
+
         <Entry
             x:Name="EmailEntry"
+            BackgroundColor="{StaticResource Input}"
             Keyboard="Email"
-            Placeholder="seu.email@exemplo.com" />
+            Placeholder="seu.email@exemplo.com"
+            TextColor="{StaticResource TextColor}" />
         <Button Clicked="OnEnviarClicked" Text="Enviar Link" />
+
         <Button
-            BackgroundColor="Transparent"
+            BackgroundColor="{StaticResource Special}"
             Clicked="OnVoltarClicked"
             Text="Voltar"
-            TextColor="{AppThemeBinding Light=Gray,
-                                        Dark=White}" />
+            TextColor="{StaticResource TextColor}" />
     </VerticalStackLayout>
 </ContentPage>

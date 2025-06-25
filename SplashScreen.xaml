@@ -17,6 +17,7 @@
                 Color="{DynamicResource Special}" />
 
             <Label
+                FontSize="20"
                 HorizontalOptions="Center"
                 Text="Carregando..."
                 TextColor="{DynamicResource Special}" />

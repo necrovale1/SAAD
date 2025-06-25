@@ -4,6 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
+    <Color x:Key="PageBackgroundColor">#202020</Color>
+    <Color x:Key="PrimaryTextColor">#C0C0C0</Color>
     <Color x:Key="BackgroundColor">#202020</Color>
     <Color x:Key="TextColor">#C0C0C0</Color>
     <Color x:Key="Special">#fc0349</Color>
