@@ -18,7 +18,7 @@ namespace SAAD2
             SetTheme(CurrentTheme);
 
             // DEPOIS, cria a página principal
-            MainPage = new AppShell(); // DEPOIS DA CORREÇÃO
+            MainPage = new Views.SplashPage(); ; // DEPOIS DA CORREÇÃO
         }
 
         public void SetTheme(Theme theme)

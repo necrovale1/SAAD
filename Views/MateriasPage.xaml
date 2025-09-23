@@ -31,7 +31,7 @@
                                 <Label
                                     FontSize="14"
                                     Text="{Binding Descricao}"
-                                    TextColor="{DynamicResource SecondaryTextColor}" />
+                                    TextColor="{DynamicResource PrimaryTextColor}" />
                                 <Label
                                     FontAttributes="Italic"
                                     FontSize="12"

@@ -36,7 +36,7 @@
                                     <Label HorizontalTextAlignment="End">
                                         <Label.FormattedText>
                                             <FormattedString>
-                                                <Span Text="Faltas: " TextColor="{DynamicResource SecondaryTextColor}" />
+                                                <Span Text="Faltas: " TextColor="{DynamicResource PrimaryTextColor}" />
                                                 <Span FontAttributes="Bold" Text="{Binding Faltas}" />
                                             </FormattedString>
                                         </Label.FormattedText>
@@ -44,7 +44,7 @@
                                     <Label HorizontalTextAlignment="End">
                                         <Label.FormattedText>
                                             <FormattedString>
-                                                <Span Text="Presenças: " TextColor="{DynamicResource SecondaryTextColor}" />
+                                                <Span Text="Presenças: " TextColor="{DynamicResource PrimaryTextColor}" />
                                                 <Span FontAttributes="Bold" Text="{Binding Presencas}" />
                                             </FormattedString>
                                         </Label.FormattedText>
