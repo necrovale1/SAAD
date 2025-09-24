@@ -6,30 +6,41 @@ using System.Threading.Tasks;
 using SAAD2.Views;
 using SAAD2.Helpers;
 using SAAD2.Models;
-
 using System.Collections.ObjectModel;
+using Firebase.Database;
+using Firebase.Database.Query;
 
-namespace SAAD2.Services
+namespace SAAD2.Services;
+public class FaltaService
 {
-    public class FaltaService
+    private static FaltaService _instance;
+    public static FaltaService Instance => _instance ??= new FaltaService();
+
+    private readonly FirebaseClient firebaseClient;
+    public ObservableCollection<Falta> Faltas { get; private set; }
+
+    private FaltaService()
     {
-        private static FaltaService _instance;
-        public static FaltaService Instance => _instance ??= new FaltaService();
+        firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
+        Faltas = new ObservableCollection<Falta>();
+        LoadFaltas();
+    }
 
-        public ObservableCollection<Falta> Faltas { get; private set; }
+    private async void LoadFaltas()
+    {
+        var faltas = await firebaseClient
+            .Child("faltas")
+            .OnceAsync<Falta>();
 
-        private FaltaService()
+        foreach (var falta in faltas)
         {
-            Faltas = new ObservableCollection<Falta>
-            {
-                new Falta { Materia = "Engenharia de Software", Faltas = 2, Presencas = 18 },
-                new Falta { Materia = "Banco de Dados", Faltas = 1, Presencas = 19 }
-            };
+            Faltas.Add(falta.Object);
         }
+    }
 
-        public void AddFalta(Falta falta)
-        {
-            Faltas.Add(falta);
-        }
+    public async void AddFalta(Falta falta)
+    {
+        await firebaseClient.Child("faltas").PostAsync(falta);
+        Faltas.Add(falta);
     }
 }

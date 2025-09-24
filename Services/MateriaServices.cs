@@ -7,28 +7,40 @@ using SAAD2.Views;
 using SAAD2.Helpers;
 using SAAD2.Models;
 using System.Collections.ObjectModel;
+using Firebase.Database;
+using Firebase.Database.Query;
 
-namespace SAAD2.Services
+namespace SAAD2.Services;
+public class MateriaService
 {
-    public class MateriaService
+    private static MateriaService _instance;
+    public static MateriaService Instance => _instance ??= new MateriaService();
+
+    private readonly FirebaseClient firebaseClient;
+    public ObservableCollection<Materia> Materias { get; private set; }
+
+    private MateriaService()
     {
-        private static MateriaService _instance;
-        public static MateriaService Instance => _instance ??= new MateriaService();
+        firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
+        Materias = new ObservableCollection<Materia>();
+        LoadMaterias();
+    }
 
-        public ObservableCollection<Materia> Materias { get; private set; }
+    private async void LoadMaterias()
+    {
+        var materias = await firebaseClient
+            .Child("materias")
+            .OnceAsync<Materia>();
 
-        private MateriaService()
+        foreach (var materia in materias)
         {
-            Materias = new ObservableCollection<Materia>
-            {
-                new Materia { Nome = "Engenharia de Software", Descricao = "Estudo de metodologias e práticas para desenvolvimento de software.", Categoria = "Obrigatória" },
-                new Materia { Nome = "Banco de Dados", Descricao = "Conceitos e práticas de sistemas de gerenciamento de bancos de dados.", Categoria = "Obrigatória" }
-            };
+            Materias.Add(materia.Object);
         }
+    }
 
-        public void AddMateria(Materia materia)
-        {
-            Materias.Add(materia);
-        }
+    public async void AddMateria(Materia materia)
+    {
+        await firebaseClient.Child("materias").PostAsync(materia);
+        Materias.Add(materia);
     }
 }
