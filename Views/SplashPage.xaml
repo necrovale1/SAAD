@@ -5,15 +5,23 @@
              BackgroundColor="#303030">
 
     <Grid>
-        <Image x:Name="LogoImage"
-               Source="logo.png"
-               WidthRequest="120"
-               HeightRequest="120"
-               HorizontalOptions="Center"
-               VerticalOptions="Center" />
-        <ActivityIndicator IsRunning="True"
-                           VerticalOptions="End"
-                           HorizontalOptions="Center"
-                           Margin="0,0,0,40" />
+        <VerticalStackLayout
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Spacing="20">
+
+            <Label
+                Text="SAAD"
+                FontSize="48"
+                FontAttributes="Bold"
+                TextColor="#fc0349"
+                HorizontalOptions="Center" />
+
+            <ActivityIndicator
+                IsRunning="True"
+                Color="#fc0349"
+                HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>
