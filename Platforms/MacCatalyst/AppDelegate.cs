@@ -1,6 +1,6 @@
 ﻿using Foundation;
 
-namespace SAAD22
+namespace SAAD2
 {
     [Register("AppDelegate")]
     public class AppDelegate : MauiUIApplicationDelegate

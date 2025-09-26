@@ -14,10 +14,10 @@ namespace SAAD2.Views
         {
             InitializeComponent();
 
-            // CORREÇÃO: Use FirebaseAuthConfig em vez de FirebaseConfig
             client = new FirebaseAuthClient(new FirebaseAuthConfig()
             {
-                ApiKey = FirebaseApiKey
+                ApiKey = FirebaseApiKey,
+                AuthDomain = "saad-1fd38.firebaseapp.com"
             });
         }
 
@@ -31,7 +31,6 @@ namespace SAAD2.Views
 
             try
             {
-                // CORREÇÃO: A chamada de login é feita diretamente no cliente
                 var userCredential = await client.SignInWithEmailAndPasswordAsync(UsernameEntry.Text, PasswordEntry.Text);
 
                 if (userCredential != null && !string.IsNullOrEmpty(userCredential.User.Uid))
@@ -42,7 +41,15 @@ namespace SAAD2.Views
             }
             catch (FirebaseAuthException ex)
             {
-                await DisplayAlert("Erro de Login", $"Não foi possível fazer o login: {ex.Reason}", "OK");
+                // Mensagem de erro mais amigável para o usuário
+                var friendlyMessage = ex.Reason switch
+                {
+                    AuthErrorReason.InvalidEmailAddress => "O formato do e-mail é inválido.",
+                    AuthErrorReason.WrongPassword => "A senha está incorreta.",
+                    AuthErrorReason.UserNotFound => "Usuário não encontrado.",
+                    _ => "Ocorreu um erro de login. Verifique suas credenciais."
+                };
+                await DisplayAlert("Erro de Login", friendlyMessage, "OK");
             }
             catch (Exception ex)
             {
