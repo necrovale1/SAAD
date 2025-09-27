@@ -34,8 +34,8 @@ namespace SAAD2.Views
                 Presencas = presencas
             };
 
-            FaltaService.Instance.AddFalta(novaFalta);
-            await Shell.Current.GoToAsync(".."); // Volta para a página anterior
+            await FaltaService.Instance.AddFaltaAsync(novaFalta); 
+            await Shell.Current.GoToAsync("..");
         }
     }
 }

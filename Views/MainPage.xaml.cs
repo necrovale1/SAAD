@@ -1,5 +1,6 @@
 ﻿using SAAD2.Views;
 using Firebase.Auth;
+using Firebase.Auth.Providers;
 using System.Threading;
 using Plugin.Maui.Biometric;
 
@@ -17,8 +18,24 @@ namespace SAAD2.Views
             client = new FirebaseAuthClient(new FirebaseAuthConfig()
             {
                 ApiKey = FirebaseApiKey,
-                AuthDomain = "saad-1fd38.firebaseapp.com"
+                AuthDomain = "saad-1fd38.firebaseapp.com",
+                Providers = new FirebaseAuthProvider[]
+                {
+                    new EmailProvider()
+                }
             });
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+
+            var biometricEnabled = Preferences.Get("BiometricEnabled", false);
+            if (biometricEnabled)
+            {
+                await Task.Delay(250);
+                await PerformBiometricLoginAsync(true); // true = login automático
+            }
         }
 
         private async void OnLoginButtonClicked(object sender, EventArgs e)
@@ -35,13 +52,14 @@ namespace SAAD2.Views
 
                 if (userCredential != null && !string.IsNullOrEmpty(userCredential.User.Uid))
                 {
+                    await PromptToEnableBiometricsAsync();
+
                     Preferences.Set("IsLoggedIn", true);
                     await Shell.Current.GoToAsync("//HomePage");
                 }
             }
             catch (FirebaseAuthException ex)
             {
-                // Mensagem de erro mais amigável para o usuário
                 var friendlyMessage = ex.Reason switch
                 {
                     AuthErrorReason.InvalidEmailAddress => "O formato do e-mail é inválido.",
@@ -57,23 +75,74 @@ namespace SAAD2.Views
             }
         }
 
-        private async void OnBiometricLoginButtonClicked(object sender, EventArgs e)
+        private async Task PromptToEnableBiometricsAsync()
         {
-            var result = await BiometricAuthenticationService.Default.AuthenticateAsync(
-                new AuthenticationRequest
-                {
-                    Title = "Login Biométrico",
-                    NegativeText = "Cancelar"
-                }, CancellationToken.None);
+            bool enableBiometrics = await DisplayAlert("Login Rápido", "Deseja habilitar o login com biometria (Facial/Digital) para o próximo acesso?", "Sim", "Não");
 
-            if (result.Status == BiometricResponseStatus.Success)
+            if (enableBiometrics)
             {
-                Preferences.Set("IsLoggedIn", true);
-                await Shell.Current.GoToAsync("//HomePage");
+                Preferences.Set("BiometricEnabled", true);
+                await SecureStorage.Default.SetAsync("auth_email", UsernameEntry.Text);
+                await SecureStorage.Default.SetAsync("auth_password", PasswordEntry.Text);
             }
             else
             {
-                await DisplayAlert("Erro", "Autenticação biométrica falhou.", "OK");
+                Preferences.Set("BiometricEnabled", false);
+                SecureStorage.Default.Remove("auth_email");
+                SecureStorage.Default.Remove("auth_password");
+            }
+        }
+
+        private async void OnBiometricLoginButtonClicked(object sender, EventArgs e)
+        {
+            await PerformBiometricLoginAsync(false); // false = clique no botão
+        }
+
+        private async Task PerformBiometricLoginAsync(bool isAutomatic)
+        {
+            var request = new AuthenticationRequest
+            {
+                Title = "Login Biométrico",
+                // A propriedade Subtitle não existe na v0.0.4, então a removemos.
+                NegativeText = "Cancelar"
+            };
+
+            var result = await BiometricAuthenticationService.Default.AuthenticateAsync(request, CancellationToken.None);
+
+            // A única verificação possível e necessária é o sucesso.
+            if (result.Status == BiometricResponseStatus.Success)
+            {
+                try
+                {
+                    var email = await SecureStorage.Default.GetAsync("auth_email");
+                    var password = await SecureStorage.Default.GetAsync("auth_password");
+
+                    if (!string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(password))
+                    {
+                        var userCredential = await client.SignInWithEmailAndPasswordAsync(email, password);
+                        if (userCredential != null && !string.IsNullOrEmpty(userCredential.User.Uid))
+                        {
+                            Preferences.Set("IsLoggedIn", true);
+                            await Shell.Current.GoToAsync("//HomePage");
+                        }
+                    }
+                    else if (!isAutomatic)
+                    {
+                        await DisplayAlert("Erro", "Credenciais não encontradas. Faça login com usuário e senha primeiro para habilitar.", "OK");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (!isAutomatic)
+                    {
+                        await DisplayAlert("Erro", $"Falha no login automático: {ex.Message}", "OK");
+                    }
+                }
+            }
+            else if (!isAutomatic)
+            {
+                // Qualquer status que não seja 'Success' será tratado como uma falha geral.
+                await DisplayAlert("Falha", "Autenticação biométrica não disponível, falhou ou foi cancelada.", "OK");
             }
         }
 

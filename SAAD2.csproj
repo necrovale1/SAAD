@@ -33,6 +33,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Remove="Platforms\Android\Resources\values\styles.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<MauiXaml Update="Resources\Styles\DarkTheme.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

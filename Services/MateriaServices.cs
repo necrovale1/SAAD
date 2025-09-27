@@ -10,37 +10,43 @@ using System.Collections.ObjectModel;
 using Firebase.Database;
 using Firebase.Database.Query;
 
-namespace SAAD2.Services;
-public class MateriaService
+namespace SAAD2.Services
 {
-    private static MateriaService _instance;
-    public static MateriaService Instance => _instance ??= new MateriaService();
-
-    private readonly FirebaseClient firebaseClient;
-    public ObservableCollection<Materia> Materias { get; private set; }
-
-    private MateriaService()
+    public class MateriaService
     {
-        firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
-        Materias = new ObservableCollection<Materia>();
-        LoadMaterias();
-    }
+        private static MateriaService _instance;
+        public static MateriaService Instance => _instance ??= new MateriaService();
 
-    private async void LoadMaterias()
-    {
-        var materias = await firebaseClient
-            .Child("materias")
-            .OnceAsync<Materia>();
+        private readonly FirebaseClient firebaseClient;
+        public ObservableCollection<Materia> Materias { get; private set; }
+        private bool isLoaded = false;
 
-        foreach (var materia in materias)
+        private MateriaService()
         {
-            Materias.Add(materia.Object);
+            firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
+            Materias = new ObservableCollection<Materia>();
         }
-    }
 
-    public async void AddMateria(Materia materia)
-    {
-        await firebaseClient.Child("materias").PostAsync(materia);
-        Materias.Add(materia);
+        public async Task LoadMateriasAsync()
+        {
+            if (isLoaded) return; // Carrega os dados apenas uma vez
+
+            var materias = await firebaseClient
+                .Child("materias")
+                .OnceAsync<Materia>();
+
+            Materias.Clear();
+            foreach (var materia in materias)
+            {
+                Materias.Add(materia.Object);
+            }
+            isLoaded = true;
+        }
+
+        public async Task AddMateriaAsync(Materia materia)
+        {
+            await firebaseClient.Child("materias").PostAsync(materia);
+            Materias.Add(materia);
+        }
     }
 }

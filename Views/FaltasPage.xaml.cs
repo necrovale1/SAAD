@@ -12,12 +12,13 @@ namespace SAAD2.Views
         }
 
         // Garante que a lista seja atualizada sempre que a página aparecer
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
-            (BindingContext as FaltaService).Faltas.CollectionChanged += (s, e) => { };
+            await FaltaService.Instance.LoadFaltasAsync(); // Carrega os dados de forma assíncrona
+                                                           // A linha abaixo não é mais necessária, pois o BindingContext já cuida disso
+                                                           // (BindingContext as FaltaService).Faltas.CollectionChanged += (s, e) => { };
         }
-
         private async void OnRegistrarFaltaClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync(nameof(RegistroFaltasPage));

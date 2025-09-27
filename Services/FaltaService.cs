@@ -10,37 +10,43 @@ using System.Collections.ObjectModel;
 using Firebase.Database;
 using Firebase.Database.Query;
 
-namespace SAAD2.Services;
-public class FaltaService
+namespace SAAD2.Services
 {
-    private static FaltaService _instance;
-    public static FaltaService Instance => _instance ??= new FaltaService();
-
-    private readonly FirebaseClient firebaseClient;
-    public ObservableCollection<Falta> Faltas { get; private set; }
-
-    private FaltaService()
+    public class FaltaService
     {
-        firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
-        Faltas = new ObservableCollection<Falta>();
-        LoadFaltas();
-    }
+        private static FaltaService _instance;
+        public static FaltaService Instance => _instance ??= new FaltaService();
 
-    private async void LoadFaltas()
-    {
-        var faltas = await firebaseClient
-            .Child("faltas")
-            .OnceAsync<Falta>();
+        private readonly FirebaseClient firebaseClient;
+        public ObservableCollection<Falta> Faltas { get; private set; }
+        private bool isLoaded = false;
 
-        foreach (var falta in faltas)
+        private FaltaService()
         {
-            Faltas.Add(falta.Object);
+            firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
+            Faltas = new ObservableCollection<Falta>();
         }
-    }
 
-    public async void AddFalta(Falta falta)
-    {
-        await firebaseClient.Child("faltas").PostAsync(falta);
-        Faltas.Add(falta);
+        public async Task LoadFaltasAsync()
+        {
+            if (isLoaded) return; // Carrega os dados apenas uma vez
+
+            var faltas = await firebaseClient
+                .Child("faltas")
+                .OnceAsync<Falta>();
+
+            Faltas.Clear();
+            foreach (var falta in faltas)
+            {
+                Faltas.Add(falta.Object);
+            }
+            isLoaded = true;
+        }
+
+        public async Task AddFaltaAsync(Falta falta)
+        {
+            await firebaseClient.Child("faltas").PostAsync(falta);
+            Faltas.Add(falta);
+        }
     }
 }

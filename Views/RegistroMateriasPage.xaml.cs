@@ -30,7 +30,7 @@ namespace SAAD2.Views
                 Categoria = CategoriaEntry.Text
             };
 
-            MateriaService.Instance.AddMateria(novaMateria);
+            await MateriaService.Instance.AddMateriaAsync(novaMateria);
             await Shell.Current.GoToAsync("..");
         }
     }
