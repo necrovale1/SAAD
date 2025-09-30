@@ -1,9 +1,3 @@
-using SAAD2.Services;
-using SAAD2.Views;
-using SAAD2.Helpers;
-using SAAD2.Models;
-
-
 namespace SAAD2.Views
 {
     public partial class HomePage : ContentPage

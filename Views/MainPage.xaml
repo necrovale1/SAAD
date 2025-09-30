@@ -8,17 +8,18 @@
     Shell.NavBarIsVisible="False">
 
     <Grid>
-        <Button
-            x:Name="ThemeButton"
-            Clicked="OnThemeToggleButtonClicked"
-            FontFamily="MaterialDesignIcons"
+        <Label
+            x:Name="ThemeIconLabel"
+            FontFamily="FontAwesomeSolid"
             FontSize="28"
             HorizontalOptions="End"
             VerticalOptions="Start"
             Margin="0,15,15,0"
-            BackgroundColor="Transparent"
-            BorderColor="Transparent"
-            TextColor="{DynamicResource AccentColor}" />
+            TextColor="{DynamicResource AccentColor}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnThemeIconTapped" />
+            </Label.GestureRecognizers>
+        </Label>
 
         <VerticalStackLayout
             Padding="30,0"

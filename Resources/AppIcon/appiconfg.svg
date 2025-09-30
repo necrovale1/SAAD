@@ -1,3 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fc0349" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-	<path d="m4 17 6-6-6-6m8 14h8"/>
+<?xml version="1.0" encoding="utf-8" ?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 454 454" style="enable-background:new 0 0 454 454;" xml:space="preserve">
+	<style type="text/css">
+		.st0{fill:#FC0349;}
+		.st1{font-family:'OpenSans-Semibold';}
+		.st2{font-size:150px;}
+	</style>
+	<text transform="matrix(1 0 0 1 70 280)" class="st0 st1 st2">SAAD</text>
 </svg>
