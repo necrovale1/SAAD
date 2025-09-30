@@ -10,7 +10,7 @@ namespace SAAD2
         {
             InitializeComponent();
             RegisterRoutes();
-            UpdateThemeIcon(); // Define o ícone correto na inicialização
+            UpdateThemeIcon();
         }
 
         private void RegisterRoutes()
@@ -43,18 +43,19 @@ namespace SAAD2
             }
         }
 
-        private void OnThemeToggleButtonClicked(object sender, EventArgs e)
+        // CORREÇÃO APLICADA AQUI: EventArgs foi trocado por TappedEventArgs
+        private void OnThemeIconTapped(object sender, TappedEventArgs e)
         {
             var app = (App)Application.Current;
-            var novoTema = app.CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
-            app.SetTheme(novoTema);
-            UpdateThemeIcon();
+            ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
+            ? FontAwesomeIcons.Sun
+            : FontAwesomeIcons.Moon;
         }
 
         private void UpdateThemeIcon()
         {
             var app = (App)Application.Current;
-            ThemeButton.Text = app.CurrentTheme == Theme.Light
+            ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
                 ? MaterialIconFont.WhiteBalanceSunny
                 : MaterialIconFont.WeatherNight;
         }

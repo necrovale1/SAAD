@@ -1,7 +1,4 @@
-﻿using ObjCRuntime;
-using UIKit;
-
-namespace SAAD22
+﻿namespace SAAD22
 {
     public class Program
     {

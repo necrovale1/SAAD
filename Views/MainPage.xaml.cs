@@ -1,15 +1,12 @@
-﻿using SAAD2.Views;
-using Firebase.Auth;
+﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
-using System.Threading;
-using SAAD2.Enums;   // Adicionado
-using SAAD2.Helpers; // Adicionado
+using SAAD2.Enums;
+using SAAD2.Helpers;
 
 namespace SAAD2.Views
 {
     public partial class MainPage : ContentPage
     {
-        // Conteúdo original mesclado com as novas adições
         private const string FirebaseApiKey = "AIzaSyCW4PQCcScohZJTo4IfevkCRxxXbmQY7HA";
         private readonly FirebaseAuthClient client;
 
@@ -79,8 +76,8 @@ namespace SAAD2.Views
             }
         }
 
-        // Métodos do botão de tema
-        private void OnThemeToggleButtonClicked(object sender, EventArgs e)
+        // Método para o evento Tapped do Label de tema
+        private void OnThemeIconTapped(object sender, TappedEventArgs e)
         {
             var app = (App)Application.Current;
             var novoTema = app.CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
@@ -88,12 +85,15 @@ namespace SAAD2.Views
             UpdateThemeIcon();
         }
 
+        // Método que atualiza o ícone
         private void UpdateThemeIcon()
         {
             var app = (App)Application.Current;
-            ThemeButton.Text = app.CurrentTheme == Theme.Light
-                ? MaterialIconFont.WhiteBalanceSunny
-                : MaterialIconFont.WeatherNight;
+            // Usa o nome x:Name="ThemeIconLabel" do arquivo XAML
+            ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
+           ? FontAwesomeIcons.Sun
+           : FontAwesomeIcons.Moon;
+
         }
 
         private async void OnForgotPasswordTapped(object sender, EventArgs e)

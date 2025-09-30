@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using SAAD2.Services;
-using SAAD2.Views;
-using SAAD2.Helpers;
-using SAAD2.Models;
+﻿using SAAD2.Services;
 
 namespace SAAD2
 {
@@ -18,7 +14,11 @@ namespace SAAD2
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("materialdesignicons-webfont.ttf", "MaterialDesignIcons");
+                    fonts.AddFont("Font Awesome 7 Free-Solid-900.otf", "FontAwesomeSolid");
+                    fonts.AddFont("Font Awesome 7 Free-Regular-400.otf", "FontAwesome");
+                    fonts.AddFont("Font Awesome 7 Free-Brands-400.otf", "FontAwesomeBrands");
                 });
+
 
 #if DEBUG
             builder.Logging.AddDebug();

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>SAAD2</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -13,7 +13,7 @@
 		<ApplicationVersion>1</ApplicationVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 	<ItemGroup>
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#303030" />
@@ -27,9 +27,9 @@
 	<ItemGroup>
 		<PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
 		<PackageReference Include="FirebaseDatabase.net" Version="5.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.110" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.110" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Views\SplashPage.xaml.cs">
@@ -38,5 +38,10 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Resources\Images\" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+	  <PackageReference Include="Xamarin.Google.MLKit.FaceDetection">
+	    <Version>116.1.7.5</Version>
+	  </PackageReference>
 	</ItemGroup>
 </Project>

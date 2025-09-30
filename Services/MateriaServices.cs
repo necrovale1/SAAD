@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SAAD2.Views;
-using SAAD2.Helpers;
+﻿using Firebase.Database;
+using Firebase.Database.Query;
 using SAAD2.Models;
 using System.Collections.ObjectModel;
-using Firebase.Database;
-using Firebase.Database.Query;
 
 namespace SAAD2.Services
 {

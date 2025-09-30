@@ -1,7 +1,4 @@
 // Views/SplashPage.xaml.cs
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
-
 namespace SAAD2.Views
 {
     public partial class SplashPage : ContentPage
