@@ -3,52 +3,69 @@
     x:Class="SAAD2.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:helpers="clr-namespace:SAAD2.Helpers"
     BackgroundColor="{DynamicResource PageBackgroundColor}"
     Shell.NavBarIsVisible="False">
 
-    <VerticalStackLayout
-        Padding="30,0"
-        Spacing="25"
-        VerticalOptions="Center">
-        <Label
-            FontAttributes="Bold"
-            FontSize="38"
-            HorizontalOptions="Center"
-            Text="SAAD"
-            TextColor="{DynamicResource AccentColor}"/>
-        <Label Text="Sistema de Autenticação Acadêmico" FontSize="18" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="{DynamicResource PrimaryTextColor}" Padding="0,0,0,30" />
-
-        <Entry x:Name="UsernameEntry" Placeholder="Usuário" />
-        <Entry x:Name="PasswordEntry" IsPassword="True" Placeholder="Senha" />
-
+    <Grid>
         <Button
-            BackgroundColor="{DynamicResource AccentColor}"
-            Clicked="OnLoginButtonClicked"
-            Text="Login" />
+            x:Name="ThemeButton"
+            Clicked="OnThemeToggleButtonClicked"
+            FontFamily="MaterialDesignIcons"
+            FontSize="28"
+            HorizontalOptions="End"
+            VerticalOptions="Start"
+            Margin="0,15,15,0"
+            BackgroundColor="Transparent"
+            BorderColor="Transparent"
+            TextColor="{DynamicResource AccentColor}" />
 
-        <Label
-            HorizontalOptions="Center"
-            Text="Esqueceu a senha?"
-            TextColor="{DynamicResource PrimaryTextColor}">
-            <Label.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnForgotPasswordTapped" />
-            </Label.GestureRecognizers>
-        </Label>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25"
+            VerticalOptions="Center">
 
-        <Label HorizontalOptions="Center">
-            <Label.FormattedText>
-                <FormattedString>
-                    <Span Text="Não tem uma conta? " TextColor="{DynamicResource SecondaryTextColor}" />
-                    <Span
-                        Text="Registre-se"
-                        TextColor="{DynamicResource AccentColor}"
-                        TextDecorations="Underline">
-                        <Span.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnRegisterTapped" />
-                        </Span.GestureRecognizers>
-                    </Span>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-    </VerticalStackLayout>
+            <Label
+                FontAttributes="Bold"
+                FontSize="38"
+                HorizontalOptions="Center"
+                Text="SAAD"
+                TextColor="{DynamicResource AccentColor}"/>
+
+            <Label Text="Sistema de Autenticação Acadêmico" FontSize="18" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="{DynamicResource PrimaryTextColor}" Padding="0,0,0,30" />
+
+            <Entry x:Name="UsernameEntry" Placeholder="Usuário" />
+            <Entry x:Name="PasswordEntry" IsPassword="True" Placeholder="Senha" />
+
+            <Button
+                BackgroundColor="{DynamicResource AccentColor}"
+                Clicked="OnLoginButtonClicked"
+                Text="Login" />
+
+            <Label
+                HorizontalOptions="Center"
+                Text="Esqueceu a senha?"
+                TextColor="{DynamicResource PrimaryTextColor}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnForgotPasswordTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <Label HorizontalOptions="Center">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Não tem uma conta? " TextColor="{DynamicResource SecondaryTextColor}" />
+                        <Span
+                            Text="Registre-se"
+                            TextColor="{DynamicResource AccentColor}"
+                            TextDecorations="Underline">
+                            <Span.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnRegisterTapped" />
+                            </Span.GestureRecognizers>
+                        </Span>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>

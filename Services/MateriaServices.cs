@@ -29,11 +29,21 @@ namespace SAAD2.Services
 
         public async Task LoadMateriasAsync()
         {
-            if (isLoaded) return; // Carrega os dados apenas uma vez
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid))
+            {
+                Materias.Clear();
+                return;
+            }
 
+            if (isLoaded) return;
+
+            // --- MODIFIQUE A CONSULTA AQUI ---
             var materias = await firebaseClient
                 .Child("materias")
+                .Child(userUid) // Adiciona o ID do usuário ao caminho
                 .OnceAsync<Materia>();
+            // ---------------------------------
 
             Materias.Clear();
             foreach (var materia in materias)
@@ -45,7 +55,10 @@ namespace SAAD2.Services
 
         public async Task AddMateriaAsync(Materia materia)
         {
-            await firebaseClient.Child("materias").PostAsync(materia);
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid)) return;
+
+            await firebaseClient.Child("materias").Child(userUid).PostAsync(materia);
             Materias.Add(materia);
         }
     }

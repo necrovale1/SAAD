@@ -2,11 +2,14 @@
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using System.Threading;
+using SAAD2.Enums;   // Adicionado
+using SAAD2.Helpers; // Adicionado
 
 namespace SAAD2.Views
 {
     public partial class MainPage : ContentPage
     {
+        // Conteúdo original mesclado com as novas adições
         private const string FirebaseApiKey = "AIzaSyCW4PQCcScohZJTo4IfevkCRxxXbmQY7HA";
         private readonly FirebaseAuthClient client;
 
@@ -21,16 +24,15 @@ namespace SAAD2.Views
             });
         }
 
-        // A lógica de biometria automática no OnAppearing pode ser mantida por enquanto,
-        // mas você pode querer removê-la depois.
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            UpdateThemeIcon(); // Garante que o ícone esteja correto quando a página aparece
+
             var biometricEnabled = Preferences.Get("BiometricEnabled", false);
             if (biometricEnabled)
             {
                 await Task.Delay(250);
-                
             }
         }
 
@@ -46,7 +48,9 @@ namespace SAAD2.Views
                 var userCredential = await client.SignInWithEmailAndPasswordAsync(UsernameEntry.Text, PasswordEntry.Text);
                 if (userCredential != null && !string.IsNullOrEmpty(userCredential.User.Uid))
                 {
-                    // A lógica de perguntar se quer habilitar biometria permanece
+                    // Salva o ID do usuário para o acesso ao Firebase
+                    Preferences.Set("UserUid", userCredential.User.Uid);
+
                     await PromptToEnableBiometricsAsync();
                     Preferences.Set("IsLoggedIn", true);
                     await Shell.Current.GoToAsync("//HomePage");
@@ -75,7 +79,22 @@ namespace SAAD2.Views
             }
         }
 
-        
+        // Métodos do botão de tema
+        private void OnThemeToggleButtonClicked(object sender, EventArgs e)
+        {
+            var app = (App)Application.Current;
+            var novoTema = app.CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
+            app.SetTheme(novoTema);
+            UpdateThemeIcon();
+        }
+
+        private void UpdateThemeIcon()
+        {
+            var app = (App)Application.Current;
+            ThemeButton.Text = app.CurrentTheme == Theme.Light
+                ? MaterialIconFont.WhiteBalanceSunny
+                : MaterialIconFont.WeatherNight;
+        }
 
         private async void OnForgotPasswordTapped(object sender, EventArgs e)
         {

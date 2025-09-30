@@ -15,5 +15,7 @@ namespace SAAD2.Helpers
         public const string Lock = "\ue897";
         public const string Save = "\ue161";
         public const string ArrowLeft = "\ue5c4";
+        public const string WhiteBalanceSunny = "\uf059";
+        public const string WeatherNight = "\uf594";
     }
 }

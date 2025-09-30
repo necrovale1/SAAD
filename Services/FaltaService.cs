@@ -29,11 +29,22 @@ namespace SAAD2.Services
 
         public async Task LoadFaltasAsync()
         {
-            if (isLoaded) return; // Carrega os dados apenas uma vez
+            // Pega o ID do usuário salvo
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid))
+            {
+                Faltas.Clear(); // Limpa a lista se não houver usuário logado
+                return;
+            }
 
+            if (isLoaded) return;
+
+            // --- MODIFIQUE A CONSULTA AQUI ---
             var faltas = await firebaseClient
                 .Child("faltas")
+                .Child(userUid) // Adiciona o ID do usuário ao caminho
                 .OnceAsync<Falta>();
+            // ---------------------------------
 
             Faltas.Clear();
             foreach (var falta in faltas)
@@ -45,7 +56,11 @@ namespace SAAD2.Services
 
         public async Task AddFaltaAsync(Falta falta)
         {
-            await firebaseClient.Child("faltas").PostAsync(falta);
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid)) return; // Não salva se não estiver logado
+
+            // Adiciona a falta sob o ID do usuário
+            await firebaseClient.Child("faltas").Child(userUid).PostAsync(falta);
             Faltas.Add(falta);
         }
     }
