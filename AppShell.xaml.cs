@@ -24,6 +24,7 @@ namespace SAAD2
             Routing.RegisterRoute("RegistroMateriasPage", typeof(RegistroMateriasPage));
             Routing.RegisterRoute("FaltasPage", typeof(FaltasPage));
             Routing.RegisterRoute("RegistroFaltasPage", typeof(RegistroFaltasPage));
+            Routing.RegisterRoute(nameof(FaceAuthPage), typeof(FaceAuthPage));
         }
 
         protected override void OnNavigating(ShellNavigatingEventArgs args)

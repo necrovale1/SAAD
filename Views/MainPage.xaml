@@ -14,22 +14,18 @@
             FontAttributes="Bold"
             FontSize="38"
             HorizontalOptions="Center"
-            VerticalOptions="Start"
             Text="SAAD"
             TextColor="{DynamicResource AccentColor}"/>
         <Label Text="Sistema de Autenticação Acadêmico" FontSize="18" VerticalOptions="Center" HorizontalOptions="Center"  TextColor="{DynamicResource PrimaryTextColor}" Padding="0,0,0,30" />
+
         <Entry x:Name="UsernameEntry" Placeholder="Usuário" />
-        <Entry
-             x:Name="PasswordEntry"
-            IsPassword="True"
-            Placeholder="Senha"
-            TextColor="{DynamicResource PrimaryTextColor}" />
-        
+        <Entry x:Name="PasswordEntry" IsPassword="True" Placeholder="Senha" />
+
         <Button
             BackgroundColor="{DynamicResource AccentColor}"
             Clicked="OnLoginButtonClicked"
             Text="Login" />
-        
+
         <Label
             HorizontalOptions="Center"
             Text="Esqueceu a senha?"
@@ -38,7 +34,7 @@
                 <TapGestureRecognizer Tapped="OnForgotPasswordTapped" />
             </Label.GestureRecognizers>
         </Label>
-        
+
         <Label HorizontalOptions="Center">
             <Label.FormattedText>
                 <FormattedString>

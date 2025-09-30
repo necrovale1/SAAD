@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="SAAD2.Views.RegistroPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Registro de Usuário"
-    BackgroundColor="{DynamicResource PageBackgroundColor}">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD2.Views.RegistroPage"
+             Title="Registro de Novo Usuário"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
     <VerticalStackLayout
-        Padding="30"
-        Spacing="20"
+        Spacing="15"
+        Padding="30,0"
         VerticalOptions="Center">
-        <Label
-            HorizontalOptions="Center"
-            HorizontalTextAlignment="Center"
-            Text="Esta é a página de registro. A lógica ainda não foi implementada."
-            TextColor="{DynamicResource PrimaryTextColor}"
-            VerticalOptions="Center" />
 
-        <Button
-            BackgroundColor="Transparent"
-            BorderColor="{DynamicResource AccentColor}"
-            BorderWidth="1"
-            Clicked="OnVoltarClicked"
-            Text="Voltar"
+        <Label 
+            Text="Crie sua Conta"
+            FontSize="24"
+            FontAttributes="Bold"
+            HorizontalOptions="Center"
             TextColor="{DynamicResource PrimaryTextColor}" />
+
+        <Entry x:Name="UsernameEntry" Placeholder="Nome de usuário" />
+        <Entry x:Name="EmailEntry" Placeholder="E-mail" Keyboard="Email" />
+        <Entry x:Name="PasswordEntry" Placeholder="Senha" IsPassword="True" />
+        <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirmar Senha" IsPassword="True" />
+
+        <Button Text="Registrar" Clicked="OnRegisterButtonClicked" BackgroundColor="{DynamicResource AccentColor}" Margin="0,20,0,0"/>
+        <Button Text="Voltar" Clicked="OnVoltarClicked" BackgroundColor="Transparent" TextColor="{DynamicResource AccentColor}" BorderColor="{DynamicResource AccentColor}" BorderWidth="1"/>
+
     </VerticalStackLayout>
 </ContentPage>
