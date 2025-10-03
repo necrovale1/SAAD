@@ -23,6 +23,7 @@ namespace SAAD2
             Routing.RegisterRoute("FaltasPage", typeof(FaltasPage));
             Routing.RegisterRoute("RegistroFaltasPage", typeof(RegistroFaltasPage));
             Routing.RegisterRoute(nameof(FaceAuthPage), typeof(FaceAuthPage));
+
         }
 
         protected override void OnNavigating(ShellNavigatingEventArgs args)
@@ -43,18 +44,21 @@ namespace SAAD2
             }
         }
 
-        // CORREÇÃO APLICADA AQUI: EventArgs foi trocado por TappedEventArgs
         private void OnThemeIconTapped(object sender, TappedEventArgs e)
         {
             var app = (App)Application.Current;
-            ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
-            ? FontAwesomeIcons.Sun
-            : FontAwesomeIcons.Moon;
+            // Lógica de troca de tema
+            var novoTema = app.CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
+            app.SetTheme(novoTema);
+
+            // Atualiza o ícone
+            UpdateThemeIcon();
         }
 
         private void UpdateThemeIcon()
         {
             var app = (App)Application.Current;
+            // Padronizando para MaterialIconFont
             ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
                 ? MaterialIconFont.WhiteBalanceSunny
                 : MaterialIconFont.WeatherNight;

@@ -1,4 +1,5 @@
-﻿using Camera.MAUI;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Camera; 
 using SAAD2.Services;
 
 namespace SAAD2
@@ -10,7 +11,7 @@ namespace SAAD2
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMauiCameraView()
+                 .UseMauiCommunityToolkitCamera()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

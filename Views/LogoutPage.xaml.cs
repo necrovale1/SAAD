@@ -1,4 +1,5 @@
 namespace SAAD2.Views
+
 {
     public partial class LogoutPage : ContentPage
     {

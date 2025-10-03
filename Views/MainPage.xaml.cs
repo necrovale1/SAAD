@@ -1,12 +1,11 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
-using SAAD2.Views; // Garante que as outras páginas da pasta Views sejam encontradas
+using SAAD2.Views;
 
 namespace SAAD2;
 
 public partial class MainPage : ContentPage
 {
-    // Sua Web API Key do Firebase
     private const string FirebaseWebAppKey = "AIzaSyCW4PQCcScohZJTo4IfevkCRxxXbmQY7HA";
 
     public MainPage()
@@ -27,27 +26,23 @@ public partial class MainPage : ContentPage
                 return;
             }
 
-            // --- LÓGICA DE AUTENTICAÇÃO REAL ---
             var config = new FirebaseConfig(FirebaseWebAppKey);
             var authProvider = new FirebaseAuthProvider(config);
 
-            // Tenta fazer o login com o email e senha fornecidos
             var auth = await authProvider.SignInWithEmailAndPasswordAsync(email, senha);
 
-            // Se a linha acima não gerou um erro, o login foi bem-sucedido.
-            // Agora, navega para a página de verificação facial.
-            // Usamos PushAsync porque a MainPage foi envolvida em um NavigationPage
+            // A navegação aqui foi mantida como PushAsync, pois você ainda não tem um AppShell
+            // quando o app é aberto pela primeira vez. Esta é a abordagem correta neste cenário.
             await Navigation.PushAsync(new FaceAuthPage());
-
         }
-        catch (FirebaseAuthException ex)
+        catch (FirebaseAuthException firebaseEx) // Variável firebaseEx utilizada no Debug
         {
-            // Trata erros específicos do Firebase, como senha errada ou usuário não encontrado
+            System.Diagnostics.Debug.WriteLine($"Erro Firebase: {firebaseEx.Message}");
             await DisplayAlert("Erro de Login", "Email ou senha inválidos. Por favor, tente novamente.", "OK");
         }
-        catch (Exception ex)
+        catch (Exception ex) // Variável ex utilizada no Debug
         {
-            // Trata outros erros genéricos (como falta de conexão com a internet)
+            // Correção do aviso CS0168: Usando a variável 'ex' para registrar o erro.
             System.Diagnostics.Debug.WriteLine($"Erro inesperado no login: {ex}");
             await DisplayAlert("Erro", "Ocorreu um problema. Verifique sua conexão com a internet e tente novamente.", "OK");
         }
@@ -55,13 +50,11 @@ public partial class MainPage : ContentPage
 
     private async void OnRegistroClicked(object sender, EventArgs e)
     {
-        // Navega para a página de registro de novo usuário
         await Navigation.PushAsync(new RegistroPage());
     }
 
     private async void OnRecuperarSenhaClicked(object sender, EventArgs e)
     {
-        // Navega para a página de recuperação de senha
         await Navigation.PushAsync(new RecuperarSenhaPage());
     }
 }

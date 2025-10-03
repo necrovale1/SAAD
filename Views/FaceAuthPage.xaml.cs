@@ -1,4 +1,4 @@
-using Camera.MAUI;
+using CommunityToolkit.Maui.Views;
 
 namespace SAAD2.Views;
 

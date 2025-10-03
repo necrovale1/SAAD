@@ -1,7 +1,6 @@
 using SAAD2.Models;
 using SAAD2.Services;
 
-
 namespace SAAD2.Views
 {
     public partial class RegistroMateriasPage : ContentPage

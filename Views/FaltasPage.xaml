@@ -1,68 +1,24 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="SAAD2.Views.FaltasPage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Controle de Faltas"
-    BackgroundColor="{DynamicResource PageBackgroundColor}">
-    <Grid RowDefinitions="*, Auto">
-
-        <ListView
-            Grid.Row="0"
-            HasUnevenRows="True"
-            ItemsSource="{Binding Faltas}"
-            SeparatorVisibility="None">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD2.Views.FaltasPage"
+             Title="Faltas">
+    <StackLayout>
+        <ListView ItemsSource="{Binding Faltas}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Frame
-                            Margin="15,10"
-                            Padding="15"
-                            BackgroundColor="{DynamicResource AccentColor}"
-                            BorderColor="Transparent"
-                            CornerRadius="8">
-                            <Grid ColumnDefinitions="*, Auto">
-                                <Label
-                                    Grid.Column="0"
-                                    FontAttributes="Bold"
-                                    FontSize="18"
-                                    Text="{Binding Materia}"
-                                    TextColor="{DynamicResource PrimaryTextColor}"
-                                    VerticalOptions="Center" />
-                                <VerticalStackLayout
-                                    Grid.Column="1"
-                                    HorizontalOptions="End"
-                                    Spacing="5">
-                                    <Label HorizontalTextAlignment="End">
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="Faltas: " TextColor="{DynamicResource PrimaryTextColor}" />
-                                                <Span FontAttributes="Bold" Text="{Binding Faltas}" />
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                    <Label HorizontalTextAlignment="End">
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="Presenças: " TextColor="{DynamicResource PrimaryTextColor}" />
-                                                <Span FontAttributes="Bold" Text="{Binding Presencas}" />
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
-                                </VerticalStackLayout>
-                            </Grid>
-                        </Frame>
+                        <Border Margin="10" Padding="10" StrokeShape="RoundRectangle 10" Stroke="LightGray" StrokeThickness="1">
+                            <StackLayout>
+                                <Label Text="{Binding Materia}" FontAttributes="Bold" />
+                                <Label Text="{Binding Faltas, StringFormat='Faltas: {0}'}" />
+                                <Label Text="{Binding Presencas, StringFormat='Presenças: {0}'}" />
+                            </StackLayout>
+                        </Border>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
-        <Button
-            Grid.Row="1"
-            Margin="15"
-            BackgroundColor="{DynamicResource AccentColor}"
-            Clicked="OnRegistrarFaltaClicked"
-            Text="Registrar Falta"
-            TextColor="{DynamicResource PrimaryTextColor}" />
-    </Grid>
+        <Button Text="Registrar Falta" Clicked="OnRegistrarFaltaClicked" />
+    </StackLayout>
 </ContentPage>
