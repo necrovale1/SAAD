@@ -5,10 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Home"
     BackgroundColor="{DynamicResource PageBackgroundColor}">
-    <VerticalStackLayout
+    <ScrollView>
+        <VerticalStackLayout
         Padding="30"
         Spacing="20"
         VerticalOptions="Center">
+            
+            
         <Label
             Margin="0,0,0,20"
             FontAttributes="Bold"
@@ -17,7 +20,41 @@
             Text="Menu Principal"
             TextColor="{DynamicResource PrimaryTextColor}" />
 
-        <Button
+            <StackLayout>
+                <Grid RowDefinitions="400,*">
+                    <Frame Grid.Row="0"
+               BackgroundColor="{DynamicResource AccentColor}"
+               CornerRadius="15"
+               Padding="20"
+               HasShadow="False"
+               Margin="20">
+
+                        <Grid Grid.Row="0" BackgroundColor="{DynamicResource AccentColor}">
+                            <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                                <Frame 
+                                    CornerRadius="50"
+                                    BackgroundColor="White"
+                                    HeightRequest="155"
+                    WidthRequest="135">
+                                    <Image
+        Source="boneco.png"
+        HeightRequest="120"
+        WidthRequest="120"
+                                             
+        />
+                       </Frame>
+                          <Label 
+                             Text="Bem Vindo usuario: Professor Professor"
+                           FontSize="24"
+                         Padding="30"
+                        TextColor="White"/>
+                </StackLayout>
+                    </Grid>
+                  </Frame>
+                </Grid>
+            </StackLayout>
+
+            <Button
             BackgroundColor="{DynamicResource AccentColor}"
             Clicked="OnMateriasClicked"
             Text="Gerenciar Matérias"
@@ -28,5 +65,105 @@
             Text="Controlar Faltas"
             TextColor="{DynamicResource PrimaryTextColor}" />
 
-    </VerticalStackLayout>
+            
+
+            <Frame
+                    Margin="15,10"
+                    Padding="15"
+                    BackgroundColor="{DynamicResource CardBackgroundColor}"
+                    BorderColor="Transparent"
+                    CornerRadius="8">
+                <VerticalStackLayout Spacing="5">
+                    <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Organize suas matérias"
+                            TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Label
+                            FontSize="14"
+                            Text="Para organizar as matérias, crie um cronograma de estudos realista, defina um espaço de estudo adequado e organizado, e use ferramentas como anotações coloridas, mapas mentais ou aplicativos para gerir o tempo e o conteúdo."
+                            TextColor="{DynamicResource SecondaryTextColor}" />
+                    <Image 
+                    Source="materiasimage.png"
+                    MaximumWidthRequest="80"
+                    MaximumHeightRequest="80"
+                    />
+                    <Button
+                            FontAttributes="Italic"
+                            FontSize="16"
+                            HorizontalOptions="End"
+                            Text="Ir para"
+                            BackgroundColor="Red"
+                            TextColor="White" />
+                </VerticalStackLayout>
+            </Frame>
+
+
+            <Frame
+                    Margin="15,10"
+                    Padding="15"
+                    BackgroundColor="{DynamicResource CardBackgroundColor}"
+                    BorderColor="Transparent"
+                    CornerRadius="8">
+                <VerticalStackLayout Spacing="5">
+                    <Label
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            Text="Verifique suas faltas"
+                            TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Label
+                            FontSize="14"
+                            Text="A Lei de Diretrizes e Bases (LDB) estabelece que um aluno não pode ser aprovado se tiver mais de 25% de faltas em relação às horas-aula do ano letivo."
+                            TextColor="{DynamicResource SecondaryTextColor}" />
+                    <Image 
+                    Source="materiasimage.png"
+                    MaximumWidthRequest="80"
+                    MaximumHeightRequest="80"
+                    />
+                    <Button
+                            FontAttributes="Italic"
+                            FontSize="16"
+                            HorizontalOptions="End"
+                            Text="Ir para"
+                            BackgroundColor="Red"
+                            TextColor="White" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame
+            Margin="15,10"
+            Padding="15"
+            BackgroundColor="{DynamicResource CardBackgroundColor}"
+            BorderColor="Transparent"
+            CornerRadius="8">
+                <VerticalStackLayout Spacing="5">
+                    <Label
+                    FontAttributes="Bold"
+                    FontSize="18"
+                    Text="Faça seu reconhecimento da face"
+                    TextColor="{DynamicResource PrimaryTextColor}" />
+                    <Label
+                    FontSize="14"
+                    Text="O reconhecimento facial do aplicativo gov.br compara a foto tirada no dispositivo do cidadão com as bases de biometria facial disponíveis."
+                    TextColor="{DynamicResource SecondaryTextColor}" />
+                    <Image 
+            Source="facial.png"
+            MaximumWidthRequest="100"
+            MaximumHeightRequest="100"/>
+                    <Button
+                    FontAttributes="Italic"
+                    FontSize="16"
+                    HorizontalOptions="End"
+                    Text="Ir para"
+                    BackgroundColor="Red"
+                    TextColor="White" />
+                </VerticalStackLayout>
+            </Frame>
+
+       
+     
+
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

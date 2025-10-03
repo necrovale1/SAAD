@@ -15,14 +15,18 @@ namespace SAAD2
 
         private void RegisterRoutes()
         {
-            Routing.RegisterRoute("RecuperarSenhaPage", typeof(RecuperarSenhaPage));
-            Routing.RegisterRoute("RegistroPage", typeof(RegistroPage));
-            Routing.RegisterRoute("LogoutPage", typeof(LogoutPage));
-            Routing.RegisterRoute("MateriasPage", typeof(MateriasPage));
-            Routing.RegisterRoute("RegistroMateriasPage", typeof(RegistroMateriasPage));
-            Routing.RegisterRoute("FaltasPage", typeof(FaltasPage));
-            Routing.RegisterRoute("RegistroFaltasPage", typeof(RegistroFaltasPage));
-            Routing.RegisterRoute(nameof(FaceAuthPage), typeof(FaceAuthPage));
+            Routing.RegisterRoute(nameof(HomePage), typeof(Views.HomePage));
+            Routing.RegisterRoute(nameof(MainPage), typeof(Views.MainPage));
+            Routing.RegisterRoute(nameof(Views.LoginPage), typeof(Views.LoginPage));
+            Routing.RegisterRoute(nameof(Views.RegistroPage), typeof(Views.RegistroPage));
+            Routing.RegisterRoute(nameof(Views.RecuperarSenhaPage), typeof(Views.RecuperarSenhaPage));
+            Routing.RegisterRoute(nameof(Views.FaltasPage), typeof(Views.FaltasPage));
+            Routing.RegisterRoute(nameof(Views.RegistroFaltasPage), typeof(Views.RegistroFaltasPage));
+            Routing.RegisterRoute(nameof(Views.MateriasPage), typeof(Views.MateriasPage));
+            Routing.RegisterRoute(nameof(Views.RegistroMateriasPage), typeof(Views.RegistroMateriasPage));
+            Routing.RegisterRoute(nameof(Views.FaceAuthPage), typeof(Views.FaceAuthPage));
+            Routing.RegisterRoute(nameof(Views.LogoutPage), typeof(Views.LogoutPage));
+            Routing.RegisterRoute(nameof(Views.UserConfigPage), typeof(Views.UserConfigPage));
 
         }
 
@@ -44,21 +48,18 @@ namespace SAAD2
             }
         }
 
+        // CORREÇÃO APLICADA AQUI: EventArgs foi trocado por TappedEventArgs
         private void OnThemeIconTapped(object sender, TappedEventArgs e)
         {
             var app = (App)Application.Current;
-            // Lógica de troca de tema
-            var novoTema = app.CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
-            app.SetTheme(novoTema);
-
-            // Atualiza o ícone
-            UpdateThemeIcon();
+            ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
+            ? FontAwesomeIcons.Sun
+            : FontAwesomeIcons.Moon;
         }
 
         private void UpdateThemeIcon()
         {
             var app = (App)Application.Current;
-            // Padronizando para MaterialIconFont
             ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
                 ? MaterialIconFont.WhiteBalanceSunny
                 : MaterialIconFont.WeatherNight;
