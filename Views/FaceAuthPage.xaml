@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:camera="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
              x:Class="SAAD2.Views.FaceAuthPage"
-             Title="Autenticação Facial"
-             Shell.NavBarIsVisible="False">
+             Title="Câmera">
+
     <Grid>
-          <VerticalStackLayout 
-            VerticalOptions="End" 
-            HorizontalOptions="Center"
-            Padding="30"
-            Spacing="15">
+        <camera:CameraView
+            x:Name="cameraView"
+            CamerasLoaded="CameraView_CamerasLoaded"
+            AutoStartPreview="True" />
 
-            <Label 
-                Text="Centralize seu rosto no círculo"
-                TextColor="White"
-                FontSize="18"
-                FontAttributes="Bold"
-                HorizontalTextAlignment="Center"
-                Margin="0,0,0,10"/>
-
-            <Button
-                x:Name="VerifyFaceButton"
-                Text="Verificar Rosto"
-                BackgroundColor="{StaticResource AccentColor}"
-                TextColor="White"
-                CornerRadius="10"
-                Padding="20,10"/>
-
-        </VerticalStackLayout>
+        <Label
+            Text="Câmera Ativa"
+            TextColor="White"
+            BackgroundColor="#80000000"
+            HorizontalTextAlignment="Center"
+            VerticalOptions="End"
+            Padding="10"/>
     </Grid>
+
 </ContentPage>

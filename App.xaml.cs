@@ -1,4 +1,5 @@
-﻿using SAAD2.Enums; // Adicione esta linha
+﻿using SAAD2.Enums;
+using SAAD2.Views; // Adicione esta linha
 
 namespace SAAD2
 {
@@ -18,7 +19,7 @@ namespace SAAD2
             SetTheme(CurrentTheme);
 
             // DEPOIS, cria a página principal
-            MainPage = new Views.SplashPage(); ; // DEPOIS DA CORREÇÃO
+            MainPage = new NavigationPage(new MainPage());
         }
 
         public void SetTheme(Theme theme)

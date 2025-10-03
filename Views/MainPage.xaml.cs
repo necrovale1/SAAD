@@ -1,109 +1,67 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
-using SAAD2.Enums;
-using SAAD2.Helpers;
+using SAAD2.Views; // Garante que as outras páginas da pasta Views sejam encontradas
 
-namespace SAAD2.Views
+namespace SAAD2;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    // Sua Web API Key do Firebase
+    private const string FirebaseWebAppKey = "AIzaSyCW4PQCcScohZJTo4IfevkCRxxXbmQY7HA";
+
+    public MainPage()
     {
-        private const string FirebaseApiKey = "AIzaSyCW4PQCcScohZJTo4IfevkCRxxXbmQY7HA";
-        private readonly FirebaseAuthClient client;
+        InitializeComponent();
+    }
 
-        public MainPage()
+    private async void OnLoginClicked(object sender, EventArgs e)
+    {
+        try
         {
-            InitializeComponent();
-            client = new FirebaseAuthClient(new FirebaseAuthConfig()
-            {
-                ApiKey = FirebaseApiKey,
-                AuthDomain = "saad-1fd38.firebaseapp.com",
-                Providers = new FirebaseAuthProvider[] { new EmailProvider() }
-            });
-        }
+            string email = EmailEntry.Text?.Trim();
+            string senha = SenhaEntry.Text?.Trim();
 
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-            UpdateThemeIcon(); // Garante que o ícone esteja correto quando a página aparece
-
-            var biometricEnabled = Preferences.Get("BiometricEnabled", false);
-            if (biometricEnabled)
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(senha))
             {
-                await Task.Delay(250);
-            }
-        }
-
-        private async void OnLoginButtonClicked(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(UsernameEntry.Text) || string.IsNullOrWhiteSpace(PasswordEntry.Text))
-            {
-                await DisplayAlert("Erro", "Usuário e senha são obrigatórios.", "OK");
+                await DisplayAlert("Erro", "Por favor, preencha o email e a senha.", "OK");
                 return;
             }
-            try
-            {
-                var userCredential = await client.SignInWithEmailAndPasswordAsync(UsernameEntry.Text, PasswordEntry.Text);
-                if (userCredential != null && !string.IsNullOrEmpty(userCredential.User.Uid))
-                {
-                    // Salva o ID do usuário para o acesso ao Firebase
-                    Preferences.Set("UserUid", userCredential.User.Uid);
 
-                    await PromptToEnableBiometricsAsync();
-                    Preferences.Set("IsLoggedIn", true);
-                    await Shell.Current.GoToAsync("//HomePage");
-                }
-            }
-            catch (FirebaseAuthException)
-            {
-                await DisplayAlert("Erro de Login", "Credenciais inválidas.", "OK");
-            }
+            // --- LÓGICA DE AUTENTICAÇÃO REAL ---
+            var config = new FirebaseConfig(FirebaseWebAppKey);
+            var authProvider = new FirebaseAuthProvider(config);
+
+            // Tenta fazer o login com o email e senha fornecidos
+            var auth = await authProvider.SignInWithEmailAndPasswordAsync(email, senha);
+
+            // Se a linha acima não gerou um erro, o login foi bem-sucedido.
+            // Agora, navega para a página de verificação facial.
+            // Usamos PushAsync porque a MainPage foi envolvida em um NavigationPage
+            await Navigation.PushAsync(new FaceAuthPage());
+
         }
-
-        private async Task PromptToEnableBiometricsAsync()
+        catch (FirebaseAuthException ex)
         {
-            bool enableBiometrics = await DisplayAlert("Login Rápido", "Deseja habilitar o login com biometria (Facial/Digital) para o próximo acesso?", "Sim", "Não");
-            if (enableBiometrics)
-            {
-                Preferences.Set("BiometricEnabled", true);
-                await SecureStorage.Default.SetAsync("auth_email", UsernameEntry.Text);
-                await SecureStorage.Default.SetAsync("auth_password", PasswordEntry.Text);
-            }
-            else
-            {
-                Preferences.Set("BiometricEnabled", false);
-                SecureStorage.Default.Remove("auth_email");
-                SecureStorage.Default.Remove("auth_password");
-            }
+            // Trata erros específicos do Firebase, como senha errada ou usuário não encontrado
+            await DisplayAlert("Erro de Login", "Email ou senha inválidos. Por favor, tente novamente.", "OK");
         }
-
-        // Método para o evento Tapped do Label de tema
-        private void OnThemeIconTapped(object sender, TappedEventArgs e)
+        catch (Exception ex)
         {
-            var app = (App)Application.Current;
-            var novoTema = app.CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
-            app.SetTheme(novoTema);
-            UpdateThemeIcon();
+            // Trata outros erros genéricos (como falta de conexão com a internet)
+            System.Diagnostics.Debug.WriteLine($"Erro inesperado no login: {ex}");
+            await DisplayAlert("Erro", "Ocorreu um problema. Verifique sua conexão com a internet e tente novamente.", "OK");
         }
+    }
 
-        // Método que atualiza o ícone
-        private void UpdateThemeIcon()
-        {
-            var app = (App)Application.Current;
-            // Usa o nome x:Name="ThemeIconLabel" do arquivo XAML
-            ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
-           ? FontAwesomeIcons.Sun
-           : FontAwesomeIcons.Moon;
+    private async void OnRegistroClicked(object sender, EventArgs e)
+    {
+        // Navega para a página de registro de novo usuário
+        await Navigation.PushAsync(new RegistroPage());
+    }
 
-        }
-
-        private async void OnForgotPasswordTapped(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("RecuperarSenhaPage");
-        }
-
-        private async void OnRegisterTapped(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("RegistroPage");
-        }
+    private async void OnRecuperarSenhaClicked(object sender, EventArgs e)
+    {
+        // Navega para a página de recuperação de senha
+        await Navigation.PushAsync(new RecuperarSenhaPage());
     }
 }
