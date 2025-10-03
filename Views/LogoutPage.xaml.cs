@@ -1,5 +1,4 @@
 namespace SAAD2.Views
-
 {
     public partial class LogoutPage : ContentPage
     {
@@ -18,6 +17,11 @@ namespace SAAD2.Views
         private async void OnCancelClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync(".."); // Apenas volta para a página anterior
+        }
+
+        private  void Button_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new alterarInformacao());
         }
     }
 }

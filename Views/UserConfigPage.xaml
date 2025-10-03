@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD2.Views.UserConfigPage"
+             Title="Configurações do Usuário">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="15">
+
+            <Label Text="Meu Perfil" FontSize="34" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20"/>
+
+            <Image x:Name="ProfileImage" Source="user_placeholder.png" WidthRequest="120" HeightRequest="120" Aspect="AspectFill" HorizontalOptions="Center" Clip="{OnPlatform WinUI='EllipseGeometry Center=60,60 RadiusX=60 RadiusY=60', MacCatalyst={x:Null}, iOS={x:Null}, Android={x:Null}}"/>
+            <Button Text="Alterar Foto" Clicked="OnAlterarFotoClicked" HorizontalOptions="Center" FontSize="Small"/>
+
+            <Label Text="Dados Pessoais" FontSize="20" FontAttributes="Bold" Margin="0,20,0,5"/>
+            <Frame Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Entry x:Name="NomeEntry" Placeholder="Nome Completo"/>
+                    <Entry x:Name="IdadeEntry" Placeholder="Idade" Keyboard="Numeric"/>
+                    <Entry x:Name="TelefoneEntry" Placeholder="Telefone" Keyboard="Telephone"/>
+                    <Entry x:Name="RgEntry" Placeholder="RG" />
+                    <Entry x:Name="CpfEntry" Placeholder="CPF" Keyboard="Numeric"/>
+                    <Picker x:Name="SexoPicker" Title="Sexo/Gênero">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Feminino</x:String>
+                                <x:String>Masculino</x:String>
+                                <x:String>Neutro</x:String>
+                                <x:String>Não-binário</x:String>
+                                <x:String>Prefiro não informar</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label Text="Dados Acadêmicos" FontSize="20" FontAttributes="Bold" Margin="0,20,0,5"/>
+            <Frame Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Entry x:Name="RegistroAcademicoEntry" Placeholder="Registro Acadêmico (RA)"/>
+                    <Entry x:Name="InstituicaoEntry" Placeholder="Instituição de Ensino"/>
+                    <Entry x:Name="CursoEntry" Placeholder="Curso"/>
+                    <Entry x:Name="SemestreEntry" Placeholder="Semestre" Keyboard="Numeric"/>
+                    <Picker x:Name="PeriodoPicker" Title="Período">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Matutino</x:String>
+                                <x:String>Vespertino</x:String>
+                                <x:String>Noturno</x:String>
+                                <x:String>Integral</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label Text="Acessibilidade" FontSize="20" FontAttributes="Bold" Margin="0,20,0,5"/>
+            <Frame Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="10">
+                    <Picker x:Name="NecessidadesPicker" Title="Necessidades Especiais" SelectedIndexChanged="OnNecessidadesPickerChanged">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Nenhuma</x:String>
+                                <x:String>Deficiência Visual</x:String>
+                                <x:String>Deficiência Auditiva</x:String>
+                                <x:String>Deficiência Física/Motora</x:String>
+                                <x:String>Transtorno do Espectro Autista (TEA)</x:String>
+                                <x:String>Outra</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                    <Editor x:Name="ObservacoesEditor" Placeholder="Descreva aqui sua necessidade específica..." IsVisible="False" AutoSize="TextChanges"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Button Text="Salvar Alterações" Clicked="OnSaveButtonClicked" Margin="0,30,0,0" CornerRadius="20"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

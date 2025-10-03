@@ -20,22 +20,24 @@ namespace SAAD2.Services
             Faltas = new ObservableCollection<Falta>();
         }
 
-        public async Task LoadFaltasAsync(bool forceRefresh = false)
+        public async Task LoadFaltasAsync()
         {
+            // Pega o ID do usuário salvo
             var userUid = Preferences.Get("UserUid", string.Empty);
             if (string.IsNullOrWhiteSpace(userUid))
             {
-                Faltas.Clear();
+                Faltas.Clear(); // Limpa a lista se não houver usuário logado
                 return;
             }
 
-            // Se não for para forçar, e já estiver carregado, não faz nada
-            if (!forceRefresh && isLoaded) return;
+            if (isLoaded) return;
 
+            // --- MODIFIQUE A CONSULTA AQUI ---
             var faltas = await firebaseClient
                 .Child("faltas")
-                .Child(userUid)
+                .Child(userUid) // Adiciona o ID do usuário ao caminho
                 .OnceAsync<Falta>();
+            // ---------------------------------
 
             Faltas.Clear();
             foreach (var falta in faltas)
