@@ -4,48 +4,38 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:SAAD2.Views"
-    xmlns:helpers="clr-namespace:SAAD2.Helpers"
-    Shell.BackgroundColor="{DynamicResource PageBackgroundColor}"
     Shell.FlyoutBehavior="Disabled"
-    Shell.ForegroundColor="{DynamicResource PrimaryTextColor}"
-    Shell.TitleColor="{DynamicResource PrimaryTextColor}">
+    Title="SAAD2">
 
-    <Shell.TitleView>
-        <Grid ColumnDefinitions="*,Auto" VerticalOptions="Fill">
-            <Label
-            Grid.Column="0"
-            FontAttributes="Bold"
-            FontSize="18"
-            Text="{Binding Title, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-            TextColor="{DynamicResource PrimaryTextColor}"
-            VerticalTextAlignment="Center"
-            Margin="10,0,0,0"/>
+    <!-- Define a LoginPage como a primeira página visível do aplicativo. -->
+    <!-- Ela não está dentro de uma TabBar para aparecer sozinha. -->
+    <ShellContent
+        Title="Login"
+        ContentTemplate="{DataTemplate views:LoginPage}"
+        Route="LoginPage" />
 
-            <Label
-            x:Name="ThemeIconLabel"
-            FontFamily="FontAwesomeSolid"
-            FontSize="28"
-            HorizontalOptions="End"
-            VerticalOptions="Center"
-            Margin="0,0,15,0"
-            TextColor="{DynamicResource AccentColor}">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnThemeIconTapped" />
-                </Label.GestureRecognizers>
-            </Label>
-        </Grid>
-    </Shell.TitleView>
-
-    <TabBar Route="HomePage">
+    <!-- A TabBar contém as páginas principais que aparecem APÓS o login. -->
+    <!-- Damos a ela uma rota "main" para podermos navegar até ela. -->
+    <TabBar Route="main">
         <ShellContent
-            Title="Login"
-            ContentTemplate="{DataTemplate views:MainPage}"
-            Route="MainPage"
-            Shell.NavBarIsVisible="False" />
-        <ShellContent Title="Home" ContentTemplate="{DataTemplate views:HomePage}" />
-        <ShellContent Title="Matérias" ContentTemplate="{DataTemplate views:MateriasPage}" />
-        <ShellContent Title="Faltas" ContentTemplate="{DataTemplate views:FaltasPage}" />
-        <ShellContent Title="Logout" ContentTemplate="{DataTemplate views:LogoutPage}" />
+            Title="Home"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Icon="{OnPlatform 'icon_home.png', iOS='icon_home_ios.png'}" />
+
+        <ShellContent
+            Title="Matérias"
+            ContentTemplate="{DataTemplate views:MateriasPage}"
+            Icon="{OnPlatform 'icon_book.png', iOS='icon_book_ios.png'}" />
+
+        <ShellContent
+            Title="Faltas"
+            ContentTemplate="{DataTemplate views:FaltasPage}"
+            Icon="{OnPlatform 'icon_calendar.png', iOS='icon_calendar_ios.png'}" />
+
+        <ShellContent
+            Title="Sair"
+            ContentTemplate="{DataTemplate views:LogoutPage}"
+            Icon="{OnPlatform 'icon_logout.png', iOS='icon_logout_ios.png'}" />
     </TabBar>
 
 </Shell>

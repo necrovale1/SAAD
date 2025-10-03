@@ -1,6 +1,4 @@
-﻿using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Camera; 
-using SAAD2.Services;
+﻿using SAAD2.Services;
 
 namespace SAAD2
 {
@@ -11,18 +9,19 @@ namespace SAAD2
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                 .UseMauiCommunityToolkitCamera()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("materialdesignicons-webfont.ttf", "MaterialDesignIcons");
                     fonts.AddFont("Font Awesome 7 Free-Solid-900.otf", "FontAwesomeSolid");
+                    fonts.AddFont("Font Awesome 7 Free-Regular-400.otf", "FontAwesome");
+                    fonts.AddFont("Font Awesome 7 Free-Brands-400.otf", "FontAwesomeBrands");
                 });
 
 
 #if DEBUG
-            builder.Logging.AddDebug();
+            //builder.Logging.AddDebug();
 #endif
             // Register Services
             builder.Services.AddSingleton<MateriaService>();

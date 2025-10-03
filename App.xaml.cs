@@ -1,5 +1,4 @@
-﻿using SAAD2.Enums;
-using SAAD2.Views;
+﻿using SAAD2.Enums; // Adicione esta linha
 
 namespace SAAD2
 {
@@ -18,8 +17,7 @@ namespace SAAD2
             // Primeiro, define o tema
             SetTheme(CurrentTheme);
 
-            // DEPOIS, cria a página principal
-            MainPage = new NavigationPage(new MainPage());
+            MainPage = new AppShell();
         }
 
         public void SetTheme(Theme theme)
