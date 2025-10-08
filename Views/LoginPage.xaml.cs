@@ -2,6 +2,7 @@ using Firebase.Auth;
 using Firebase.Auth.Providers;
 using SAAD2.Enums;
 using SAAD2.Helpers;
+using UserModel = SAAD2.Models.User;
 
 namespace SAAD2.Views
 {
@@ -48,7 +49,9 @@ namespace SAAD2.Views
                 {
                     // Salva o ID e o email do usuário para uso futuro
                     Preferences.Set("UserUid", userCredential.User.Uid);
-                    Preferences.Set("UserEmail", userCredential.User.Email);
+
+                    // Use the email from the entry field, not the Firebase user object
+                    Preferences.Set("UserEmail", UsernameEntry.Text);
 
                     await PromptToEnableBiometricsAsync();
                     Preferences.Set("IsLoggedIn", true);

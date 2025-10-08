@@ -7,15 +7,26 @@
     Shell.FlyoutBehavior="Disabled"
     Title="SAAD2">
 
-    <!-- Define a LoginPage como a primeira página visível do aplicativo. -->
-    <!-- Ela não está dentro de uma TabBar para aparecer sozinha. -->
+    <Shell.TitleView>
+        <Grid>
+            <Label x:Name="ThemeIconLabel"
+                   FontFamily="MaterialIcons"
+                   FontSize="24"
+                   HorizontalOptions="End"
+                   VerticalOptions="Center"
+                   Margin="0,0,20,0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnThemeIconTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
+    </Shell.TitleView>
+
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate views:LoginPage}"
         Route="LoginPage" />
 
-    <!-- A TabBar contém as páginas principais que aparecem APÓS o login. -->
-    <!-- Damos a ela uma rota "main" para podermos navegar até ela. -->
     <TabBar Route="main">
         <ShellContent
             Title="Home"

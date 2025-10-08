@@ -1,7 +1,7 @@
 using Firebase.Database;
 using Firebase.Database.Query;
 using Firebase.Storage;
-// using SAAD2.Models; // Removido para evitar ambiguidade
+using SAAD2.Models;
 using System.Threading.Tasks;
 
 namespace SAAD2.Views;
