@@ -1,9 +1,9 @@
 ﻿#if ANDROID
 using Android.Gms.Tasks;
 using Android.Graphics;
-using Com.Google.MLkit.Vision.Common;
-using Com.Google.MLkit.Vision.Face;
-using Java.Util;
+using Google.MLKit.Vision.Common;
+using Google.MLKit.Vision.Face;
+using Java.Util; // Importante para a lista de rostos
 
 #endif
 
@@ -26,17 +26,17 @@ namespace SAAD2.Services
 
                 var detector = FaceDetection.GetClient(options);
                 var result = await detector.Process(image).ToMauiTask();
-                
+
                 var faces = result as IList;
 
-                // CORRIGIDO: Usamos .Size() para listas Java
+                // Para listas Java, usamos a propriedade .Size() em vez de .Count
                 if (faces != null && faces.Size() > 0)
                 {
                     if (faces.Size() == 1) return (true, "Rosto detetado com sucesso!");
-                    
+
                     return (false, $"Foram detetados {faces.Size()} rostos. Por favor, tire uma foto com apenas uma pessoa.");
                 }
-                
+
                 return (false, "Nenhum rosto foi detetado na imagem. Tente novamente.");
             }
             catch (Exception ex)
