@@ -73,7 +73,12 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <Button Text="Salvar Alterações" Clicked="OnSaveButtonClicked" Margin="0,30,0,0" CornerRadius="20"/>
+            <ActivityIndicator x:Name="LoadingIndicator" 
+                               IsRunning="False" 
+                               IsVisible="False"
+                               Color="{DynamicResource AccentColor}"/>
+            
+            <Button Text="Salvar Alterações" Clicked="OnSaveButtonClicked" Margin="0,30,0,0" CornerRadius="20" x:Name="SaveButton"/>
 
         </VerticalStackLayout>
     </ScrollView>

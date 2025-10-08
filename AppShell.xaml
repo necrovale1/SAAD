@@ -43,10 +43,6 @@
             ContentTemplate="{DataTemplate views:FaltasPage}"
             Icon="{OnPlatform 'icon_calendar.png', iOS='icon_calendar_ios.png'}" />
 
-        <ShellContent
-            Title="Sair"
-            ContentTemplate="{DataTemplate views:LogoutPage}"
-            Icon="{OnPlatform 'icon_logout.png', iOS='icon_logout_ios.png'}" />
     </TabBar>
 
 </Shell>

@@ -8,6 +8,9 @@ namespace SAAD2.Models
 {
     public class User
     {
+        // cargo do usuario (Aluno, Professor, Administrador)
+        public string UserType { get; set; }
+
         // Informações Pessoais
         public string Nome { get; set; }
         public string Email { get; set; }

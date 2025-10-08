@@ -79,39 +79,65 @@ public partial class UserConfigPage : ContentPage
 
     private async void OnSaveButtonClicked(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(userUid)) return;
-
-        var existingUser = await firebaseClient.Child("Users").Child(userUid).OnceSingleAsync<SAAD2.Models.User>();
-        string fotoUrl = existingUser?.FotoPerfilUrl;
-
-        if (photo != null)
+        // Validação de campos essenciais
+        if (string.IsNullOrWhiteSpace(NomeEntry.Text))
         {
-            var stream = await photo.OpenReadAsync();
-            fotoUrl = await firebaseStorage.Child("profile_pictures").Child($"{userUid}.jpg").PutAsync(stream);
+            await DisplayAlert("Campo Obrigatório", "Por favor, preencha o seu nome completo.", "OK");
+            return; // Para a execução do método aqui
         }
 
-        // Usando o nome completo para desambiguação
-        var userProfile = new SAAD2.Models.User
-        {
-            Nome = NomeEntry.Text,
-            Idade = int.TryParse(IdadeEntry.Text, out var idade) ? idade : 0,
-            Telefone = TelefoneEntry.Text,
-            Rg = RgEntry.Text,
-            Cpf = CpfEntry.Text,
-            Sexo = SexoPicker.SelectedItem as string,
-            FotoPerfilUrl = fotoUrl,
-            RegistroAcademico = RegistroAcademicoEntry.Text,
-            Instituicao = InstituicaoEntry.Text,
-            Curso = CursoEntry.Text,
-            Semestre = int.TryParse(SemestreEntry.Text, out var semestre) ? semestre : 0,
-            Periodo = PeriodoPicker.SelectedItem as string,
-            TipoNecessidadeEspecial = NecessidadesPicker.SelectedItem as string,
-            Observacoes = ObservacoesEditor.Text,
-            Email = Preferences.Get("UserEmail", string.Empty)
-        };
+        if (string.IsNullOrEmpty(userUid)) return;
 
-        await firebaseClient.Child("Users").Child(userUid).PutAsync(userProfile);
-        await DisplayAlert("Sucesso", "Seu perfil foi atualizado!", "OK");
+        // Desativa o botão e mostra o indicador
+        SaveButton.IsEnabled = false;
+        LoadingIndicator.IsVisible = true;
+        LoadingIndicator.IsRunning = true;
+
+        try
+        {
+            var existingUser = await firebaseClient.Child("Users").Child(userUid).OnceSingleAsync<SAAD2.Models.User>();
+            string fotoUrl = existingUser?.FotoPerfilUrl;
+
+            // Se uma nova foto foi escolhida, faz o upload
+            if (photo != null)
+            {
+                using var stream = await photo.OpenReadAsync();
+                fotoUrl = await firebaseStorage.Child("profile_pictures").Child($"{userUid}.jpg").PutAsync(stream);
+            }
+
+            var userProfile = new SAAD2.Models.User
+            {
+                Nome = NomeEntry.Text,
+                Idade = int.TryParse(IdadeEntry.Text, out var idade) ? idade : 0,
+                Telefone = TelefoneEntry.Text,
+                Rg = RgEntry.Text,
+                Cpf = CpfEntry.Text,
+                Sexo = SexoPicker.SelectedItem as string,
+                FotoPerfilUrl = fotoUrl,
+                RegistroAcademico = RegistroAcademicoEntry.Text,
+                Instituicao = InstituicaoEntry.Text,
+                Curso = CursoEntry.Text,
+                Semestre = int.TryParse(SemestreEntry.Text, out var semestre) ? semestre : 0,
+                Periodo = PeriodoPicker.SelectedItem as string,
+                TipoNecessidadeEspecial = NecessidadesPicker.SelectedItem as string,
+                Observacoes = ObservacoesEditor.Text,
+                Email = Preferences.Get("UserEmail", string.Empty)
+            };
+
+            await firebaseClient.Child("Users").Child(userUid).PutAsync(userProfile);
+            await DisplayAlert("Sucesso", "Seu perfil foi atualizado!", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", $"Ocorreu um erro ao salvar o perfil: {ex.Message}", "OK");
+        }
+        finally
+        {
+            // Reativa o botão e esconde o indicador
+            SaveButton.IsEnabled = true;
+            LoadingIndicator.IsVisible = false;
+            LoadingIndicator.IsRunning = false;
+        }
     }
 
     private void OnNecessidadesPickerChanged(object sender, EventArgs e)

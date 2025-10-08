@@ -8,7 +8,7 @@
         Spacing="15"
         Padding="30,0"
         VerticalOptions="Center">
-
+        
         <Label 
             Text="Crie sua Conta"
             FontSize="24"
@@ -16,12 +16,18 @@
             HorizontalOptions="Center"
             TextColor="{DynamicResource PrimaryTextColor}" />
 
-        <Entry x:Name="UsernameEntry" Placeholder="Nome de usuário" />
+        <Entry x:Name="NomeEntry" Placeholder="Nome de usuário" />
         <Entry x:Name="EmailEntry" Placeholder="E-mail" Keyboard="Email" />
         <Entry x:Name="PasswordEntry" Placeholder="Senha" IsPassword="True" />
         <Entry x:Name="ConfirmPasswordEntry" Placeholder="Confirmar Senha" IsPassword="True" />
 
-        <Button Text="Registrar" Clicked="OnRegisterButtonClicked" BackgroundColor="{DynamicResource AccentColor}" Margin="0,20,0,0"/>
+
+        <ActivityIndicator x:Name="LoadingIndicator" 
+            IsRunning="False" 
+            IsVisible="False" 
+            Color="{DynamicResource AccentColor}"/>
+
+        <Button Text="Registrar" Clicked="OnRegisterButtonClicked" BackgroundColor="{DynamicResource AccentColor}" Margin="0,20,0,0" x:Name="RegisterButton"/>
         <Button Text="Voltar" Clicked="OnVoltarClicked" BackgroundColor="Transparent" TextColor="{DynamicResource AccentColor}" BorderColor="{DynamicResource AccentColor}" BorderWidth="1"/>
 
     </VerticalStackLayout>

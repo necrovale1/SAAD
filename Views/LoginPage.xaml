@@ -27,13 +27,18 @@
             <Entry x:Name="UsernameEntry" Placeholder="E-mail" Keyboard="Email" />
             <Entry x:Name="PasswordEntry" Placeholder="Senha" IsPassword="True" />
 
-            <Button Text="Entrar" Clicked="OnLoginButtonClicked" />
+            <ActivityIndicator x:Name="LoadingIndicator" 
+                   IsRunning="False" 
+                   IsVisible="False" 
+                   Color="{DynamicResource AccentColor}"/>
+            
+            <Button Text="Entrar" Clicked="OnLoginButtonClicked" x:Name="LoginButton"/>
 
             <Label HorizontalOptions="Center">
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="Não tem uma conta? "/>
-                        <Span Text="Registre-se" TextColor="{StaticResource Primary}" FontAttributes="Bold">
+                        <Span Text="Registre-se" TextColor="{DynamicResource AccentColor}" FontAttributes="Bold">
                             <Span.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="OnRegisterTapped"/>
                             </Span.GestureRecognizers>
@@ -42,7 +47,7 @@
                 </Label.FormattedText>
             </Label>
 
-            <Label Text="Esqueceu a senha?" TextColor="Gray" HorizontalOptions="Center">
+            <Label Text="Esqueceu a senha?" TextColor="{DynamicResource PrimaryTextColor}" HorizontalOptions="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnForgotPasswordTapped" />
                 </Label.GestureRecognizers>

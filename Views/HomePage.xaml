@@ -1,169 +1,51 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="SAAD2.Views.HomePage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Home"
-    BackgroundColor="{DynamicResource PageBackgroundColor}">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD2.Views.HomePage"
+             Title="Home">
+
     <ScrollView>
-        <VerticalStackLayout
-        Padding="30"
-        Spacing="20"
-        VerticalOptions="Center">
-            
-            
-        <Label
-            Margin="0,0,0,20"
-            FontAttributes="Bold"
-            FontSize="24"
-            HorizontalOptions="Center"
-            Text="Menu Principal"
-            TextColor="{DynamicResource PrimaryTextColor}" />
+        <VerticalStackLayout Padding="20" Spacing="25">
 
-            <StackLayout>
-                <Grid RowDefinitions="400,*">
-                    <Frame Grid.Row="0"
-               BackgroundColor="{DynamicResource AccentColor}"
-               CornerRadius="15"
-               Padding="20"
-               HasShadow="False"
-               Margin="20">
+            <Label 
+                x:Name="WelcomeLabel"
+                Text="Bem-vindo(a)!"
+                FontSize="32"
+                FontAttributes="Bold"
+                SemanticProperties.HeadingLevel="Level1"
+                HorizontalOptions="Center" />
 
-                        <Grid Grid.Row="0" BackgroundColor="{DynamicResource AccentColor}">
-                            <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
-                                <Frame 
-                                    CornerRadius="50"
-                                    BackgroundColor="White"
-                                    HeightRequest="155"
-                    WidthRequest="135">
-                                    <Image
-        Source="boneco.png"
-        HeightRequest="120"
-        WidthRequest="120"
-                                             
-        />
-                       </Frame>
-                          <Label 
-                             Text="Bem Vindo usuario: Professor Professor"
-                           FontSize="24"
-                         Padding="30"
-                        TextColor="White"/>
-                </StackLayout>
-                    </Grid>
-                  </Frame>
-                </Grid>
-            </StackLayout>
+            <Label 
+                Text="Utilize os botões abaixo para navegar pelo aplicativo."
+                FontSize="18"
+                SemanticProperties.Description="Help text for navigating the app"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"/>
 
-            <Button
-            BackgroundColor="{DynamicResource AccentColor}"
-            Clicked="OnMateriasClicked"
-            Text="Gerenciar Matérias"
-            TextColor="{DynamicResource PrimaryTextColor}" />
-        <Button
-            BackgroundColor="{DynamicResource AccentColor}"
-            Clicked="OnFaltasClicked"
-            Text="Controlar Faltas"
-            TextColor="{DynamicResource PrimaryTextColor}" />
+            <Button 
+                Text="Minhas Configurações"
+                Clicked="OnConfigClicked"
+                HorizontalOptions="Fill" />
 
-            
+            <Button 
+                Text="Gerenciar Matérias"
+                Clicked="OnMateriasClicked"
+                HorizontalOptions="Fill" />
 
-            <Frame
-                    Margin="15,10"
-                    Padding="15"
-                    BackgroundColor="{DynamicResource CardBackgroundColor}"
-                    BorderColor="Transparent"
-                    CornerRadius="8">
-                <VerticalStackLayout Spacing="5">
-                    <Label
-                            FontAttributes="Bold"
-                            FontSize="18"
-                            Text="Organize suas matérias"
-                            TextColor="{DynamicResource PrimaryTextColor}" />
-                    <Label
-                            FontSize="14"
-                            Text="Para organizar as matérias, crie um cronograma de estudos realista, defina um espaço de estudo adequado e organizado, e use ferramentas como anotações coloridas, mapas mentais ou aplicativos para gerir o tempo e o conteúdo."
-                            TextColor="{DynamicResource SecondaryTextColor}" />
-                    <Image 
-                    Source="materiasimage.png"
-                    MaximumWidthRequest="80"
-                    MaximumHeightRequest="80"
-                    />
-                    <Button
-                            FontAttributes="Italic"
-                            FontSize="16"
-                            HorizontalOptions="End"
-                            Text="Ir para"
-                            BackgroundColor="Red"
-                            TextColor="White" />
-                </VerticalStackLayout>
-            </Frame>
+            <Button 
+                Text="Registrar Faltas"
+                Clicked="OnFaltasClicked"
+                HorizontalOptions="Fill" />
 
-
-            <Frame
-                    Margin="15,10"
-                    Padding="15"
-                    BackgroundColor="{DynamicResource CardBackgroundColor}"
-                    BorderColor="Transparent"
-                    CornerRadius="8">
-                <VerticalStackLayout Spacing="5">
-                    <Label
-                            FontAttributes="Bold"
-                            FontSize="18"
-                            Text="Verifique suas faltas"
-                            TextColor="{DynamicResource PrimaryTextColor}" />
-                    <Label
-                            FontSize="14"
-                            Text="A Lei de Diretrizes e Bases (LDB) estabelece que um aluno não pode ser aprovado se tiver mais de 25% de faltas em relação às horas-aula do ano letivo."
-                            TextColor="{DynamicResource SecondaryTextColor}" />
-                    <Image 
-                    Source="materiasimage.png"
-                    MaximumWidthRequest="80"
-                    MaximumHeightRequest="80"
-                    />
-                    <Button
-                            FontAttributes="Italic"
-                            FontSize="16"
-                            HorizontalOptions="End"
-                            Text="Ir para"
-                            BackgroundColor="Red"
-                            TextColor="White" />
-                </VerticalStackLayout>
-            </Frame>
-
-            <Frame
-            Margin="15,10"
-            Padding="15"
-            BackgroundColor="{DynamicResource CardBackgroundColor}"
-            BorderColor="Transparent"
-            CornerRadius="8">
-                <VerticalStackLayout Spacing="5">
-                    <Label
-                    FontAttributes="Bold"
-                    FontSize="18"
-                    Text="Faça seu reconhecimento da face"
-                    TextColor="{DynamicResource PrimaryTextColor}" />
-                    <Label
-                    FontSize="14"
-                    Text="O reconhecimento facial do aplicativo gov.br compara a foto tirada no dispositivo do cidadão com as bases de biometria facial disponíveis."
-                    TextColor="{DynamicResource SecondaryTextColor}" />
-                    <Image 
-            Source="facial.png"
-            MaximumWidthRequest="100"
-            MaximumHeightRequest="100"/>
-                    <Button
-                    FontAttributes="Italic"
-                    FontSize="16"
-                    HorizontalOptions="End"
-                    Text="Ir para"
-                    BackgroundColor="Red"
-                    TextColor="White" />
-                </VerticalStackLayout>
-            </Frame>
-
-       
-     
-
+            <Button 
+                Text="Sair"
+                Clicked="OnLogoutButtonClicked"
+                BackgroundColor="{DynamicResource AccentColor}"
+                TextColor="{DynamicResource PrimaryTextColor}"
+                Margin="0,20,0,0"
+                HorizontalOptions="Fill" />
 
         </VerticalStackLayout>
     </ScrollView>
+
 </ContentPage>

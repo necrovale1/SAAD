@@ -12,7 +12,7 @@ namespace SAAD2.Views
 
         private async void OnSalvarClicked(object sender, EventArgs e)
         {
-            // Validação simples
+            // Validações que você já tinha (estão ótimas!)
             if (string.IsNullOrWhiteSpace(MateriaEntry.Text) ||
                 string.IsNullOrWhiteSpace(FaltasEntry.Text) ||
                 string.IsNullOrWhiteSpace(PresencasEntry.Text))
@@ -27,15 +27,34 @@ namespace SAAD2.Views
                 return;
             }
 
-            var novaFalta = new Falta
-            {
-                Materia = MateriaEntry.Text,
-                Faltas = faltas,
-                Presencas = presencas
-            };
+            SaveButton.IsEnabled = false;
+            LoadingIndicator.IsVisible = true;
+            LoadingIndicator.IsRunning = true;
 
-            await FaltaService.Instance.AddFaltaAsync(novaFalta);
-            await Shell.Current.GoToAsync("..");
+            try
+            {
+                var novaFalta = new Falta
+                {
+                    Materia = MateriaEntry.Text,
+                    Faltas = faltas,
+                    Presencas = presencas
+                };
+
+                await FaltaService.Instance.AddFaltaAsync(novaFalta);
+
+                await DisplayAlert("Sucesso", "Falta registrada com sucesso!", "OK");
+                await Shell.Current.GoToAsync("..");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Ocorreu um erro ao salvar: {ex.Message}", "OK");
+            }
+            finally
+            {
+                SaveButton.IsEnabled = true;
+                LoadingIndicator.IsVisible = false;
+                LoadingIndicator.IsRunning = false;
+            }
         }
     }
 }

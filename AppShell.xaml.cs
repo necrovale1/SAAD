@@ -25,7 +25,6 @@ namespace SAAD2
             Routing.RegisterRoute(nameof(Views.MateriasPage), typeof(Views.MateriasPage));
             Routing.RegisterRoute(nameof(Views.RegistroMateriasPage), typeof(Views.RegistroMateriasPage));
             Routing.RegisterRoute(nameof(Views.FaceAuthPage), typeof(Views.FaceAuthPage));
-            Routing.RegisterRoute(nameof(Views.LogoutPage), typeof(Views.LogoutPage));
             Routing.RegisterRoute(nameof(Views.UserConfigPage), typeof(Views.UserConfigPage));
 
         }

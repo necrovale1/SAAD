@@ -2,6 +2,7 @@
 using Firebase.Database.Query;
 using SAAD2.Models;
 using System.Collections.ObjectModel;
+using System.Linq; // Adicione este using
 
 namespace SAAD2.Services
 {
@@ -12,7 +13,6 @@ namespace SAAD2.Services
 
         private readonly FirebaseClient firebaseClient;
         public ObservableCollection<Materia> Materias { get; private set; }
-        private bool isLoaded = false;
 
         private MateriaService()
         {
@@ -29,21 +29,19 @@ namespace SAAD2.Services
                 return;
             }
 
-            if (isLoaded) return;
-
-            // --- MODIFIQUE A CONSULTA AQUI ---
-            var materias = await firebaseClient
+            // A consulta foi modificada para capturar a chave
+            var materiasFirebase = await firebaseClient
                 .Child("materias")
-                .Child(userUid) // Adiciona o ID do usuário ao caminho
+                .Child(userUid)
                 .OnceAsync<Materia>();
-            // ---------------------------------
 
             Materias.Clear();
-            foreach (var materia in materias)
+            foreach (var item in materiasFirebase)
             {
-                Materias.Add(materia.Object);
+                var materia = item.Object;
+                materia.Key = item.Key; // Guarda a chave única do Firebase
+                Materias.Add(materia);
             }
-            isLoaded = true;
         }
 
         public async Task AddMateriaAsync(Materia materia)
@@ -52,7 +50,29 @@ namespace SAAD2.Services
             if (string.IsNullOrWhiteSpace(userUid)) return;
 
             await firebaseClient.Child("materias").Child(userUid).PostAsync(materia);
-            Materias.Add(materia);
+            // Recarrega a lista para obter a nova matéria com a sua chave
+            await LoadMateriasAsync();
+        }
+
+        // --- NOVO MÉTODO PARA EXCLUIR ---
+        public async Task DeleteMateriaAsync(Materia materia)
+        {
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid) || string.IsNullOrEmpty(materia.Key)) return;
+
+            // Usa a chave da matéria para excluí-la
+            await firebaseClient
+                .Child("materias")
+                .Child(userUid)
+                .Child(materia.Key)
+                .DeleteAsync();
+
+            // Remove da lista local
+            var materiaParaRemover = Materias.FirstOrDefault(m => m.Key == materia.Key);
+            if (materiaParaRemover != null)
+            {
+                Materias.Remove(materiaParaRemover);
+            }
         }
     }
 }

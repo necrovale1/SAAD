@@ -42,6 +42,11 @@ namespace SAAD2.Views
                 await DisplayAlert("Erro", "Usuário e senha são obrigatórios.", "OK");
                 return;
             }
+
+            LoginButton.IsEnabled = false;
+            LoadingIndicator.IsVisible = true;
+            LoadingIndicator.IsRunning = true;
+
             try
             {
                 var userCredential = await client.SignInWithEmailAndPasswordAsync(UsernameEntry.Text, PasswordEntry.Text);
@@ -61,6 +66,12 @@ namespace SAAD2.Views
             catch (FirebaseAuthException)
             {
                 await DisplayAlert("Erro de Login", "Credenciais inválidas.", "OK");
+            }
+            finally
+            {
+                LoginButton.IsEnabled = true;
+                LoadingIndicator.IsVisible = false;
+                LoadingIndicator.IsRunning = false;
             }
         }
 
