@@ -21,7 +21,7 @@ namespace SAAD2.Views
 
         private  void Button_Clicked(object sender, EventArgs e)
         {
-            Navigation.PushAsync(new alterarInformacao());
+            Navigation.PushAsync(new UserConfigPage());
         }
     }
 }
