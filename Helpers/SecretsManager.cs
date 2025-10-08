@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
 
-namespace SAAD2.Helpers
+namespace SAAD.Helpers
 {
         public static class SecretsManager
         {

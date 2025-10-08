@@ -1,4 +1,4 @@
-﻿namespace SAAD2.Helpers
+﻿namespace SAAD.Helpers
 {
     public static class MaterialIconFont
     {

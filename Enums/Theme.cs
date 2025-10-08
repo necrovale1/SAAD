@@ -1,4 +1,4 @@
-﻿namespace SAAD2.Enums
+﻿namespace SAAD.Enums
 {
     public enum Theme
     {

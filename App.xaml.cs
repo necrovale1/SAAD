@@ -1,6 +1,6 @@
-﻿using SAAD2.Enums;
+﻿using SAAD.Enums;
 
-namespace SAAD2
+namespace SAAD
 {
     public partial class App : Application
     {

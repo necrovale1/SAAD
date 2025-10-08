@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAAD2.Services
+namespace SAAD.Services
 {
     public class VisionRequest
     {

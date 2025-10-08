@@ -1,4 +1,4 @@
-namespace SAAD2.Resources.Styles;
+namespace SAAD.Resources.Styles;
 
 public partial class DarkTheme : ResourceDictionary
 {

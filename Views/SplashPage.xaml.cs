@@ -1,4 +1,4 @@
-namespace SAAD2.Views
+namespace SAAD.Views
 {
     public partial class SplashPage : ContentPage
     {

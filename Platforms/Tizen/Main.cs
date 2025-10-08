@@ -2,7 +2,7 @@ using System;
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
-namespace SAAD22
+namespace SAAD2
 {
     internal class Program : MauiApplication
     {

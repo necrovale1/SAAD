@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAAD2.Services
+namespace SAAD.Services
 {
     public class FaceService
     {

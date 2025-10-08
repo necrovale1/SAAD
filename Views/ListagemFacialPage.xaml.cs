@@ -1,11 +1,11 @@
 using Firebase.Database;
 using Firebase.Database.Query;
-using SAAD2.Models;
+using SAAD.Models;
 using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
-using SAAD2.Helpers;
+using SAAD.Helpers;
 
-namespace SAAD2.Views
+namespace SAAD.Views
 {
     public partial class ListagemFacialPage : ContentPage
     {

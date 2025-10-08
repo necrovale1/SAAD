@@ -1,4 +1,4 @@
-﻿namespace SAAD2
+﻿namespace SAAD
 {
     public partial class AppShell : Shell
     {

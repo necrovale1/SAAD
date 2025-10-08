@@ -1,4 +1,4 @@
-﻿namespace SAAD22
+﻿namespace SAAD2
 {
     public class Program
     {

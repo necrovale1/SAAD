@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Runtime;
 
-namespace SAAD2
+namespace SAAD
 {
     [Application]
     public class MainApplication : MauiApplication

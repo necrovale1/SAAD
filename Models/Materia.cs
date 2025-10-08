@@ -1,4 +1,4 @@
-﻿namespace SAAD2.Models
+﻿namespace SAAD.Models
 {
     public class Materia
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SAAD2.Services
+namespace SAAD.Services
 {
-    using SAAD2.Helpers;
+    using SAAD.Helpers;
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Text.Json;

@@ -1,14 +1,14 @@
 using Firebase.Database;
 using Firebase.Database.Query;
-using SAAD2.Enums;
-using SAAD2.Helpers;
-using SAAD2.Models;
-using SAAD2.Services; // Importa o nosso novo serviço de deteção facial
+using SAAD.Enums;
+using SAAD.Helpers;
+using SAAD.Models;
+using SAAD.Services; // Importa o nosso novo serviço de deteção facial
 using System.Linq;
 using System.Text;
-using UserModel = SAAD2.Models.User;
+using UserModel = SAAD.Models.User;
 
-namespace SAAD2.Views
+namespace SAAD.Views
 {
     public partial class RegistroPresencaPage : ContentPage
     {

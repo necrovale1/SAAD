@@ -2,7 +2,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace SAAD2.Services
+namespace SAAD.Services
 {
     public class FaceDetectionService
     {

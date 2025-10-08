@@ -1,10 +1,10 @@
 using Firebase.Database;
 using Firebase.Database.Query;
-using SAAD2.Models;
+using SAAD.Models;
 using System.Text;
-using SAAD2.Helpers;
+using SAAD.Helpers;
 
-namespace SAAD2.Views
+namespace SAAD.Views
 {
     public partial class CadastroFacialPage : ContentPage
     {

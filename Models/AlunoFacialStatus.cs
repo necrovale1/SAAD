@@ -1,7 +1,7 @@
 ﻿using Microsoft.Maui.Graphics;
-using SAAD2.Helpers;
+using SAAD.Helpers;
 
-namespace SAAD2.Models
+namespace SAAD.Models
 {
     public class AlunoFacialStatus
     {
