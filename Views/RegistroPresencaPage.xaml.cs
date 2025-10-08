@@ -1,21 +1,24 @@
 using Firebase.Database;
 using Firebase.Database.Query;
-using SAAD2.Models;
-using System.Linq;
-using UserModel = SAAD2.Models.User;
 using SAAD2.Enums;
 using SAAD2.Helpers;
+using SAAD2.Models;
+using SAAD2.Services; // Importa o nosso novo serviço de deteção facial
+using System.Linq;
+using UserModel = SAAD2.Models.User;
 
 namespace SAAD2.Views
 {
     public partial class RegistroPresencaPage : ContentPage
     {
         private readonly FirebaseClient firebaseClient;
+        private readonly FaceDetectionService _faceDetectionService;
 
         public RegistroPresencaPage()
         {
             InitializeComponent();
             firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
+            _faceDetectionService = new FaceDetectionService();
         }
 
         protected override void OnAppearing()
@@ -23,6 +26,53 @@ namespace SAAD2.Views
             base.OnAppearing();
             UpdateThemeIcon();
         }
+
+        // --- LÓGICA DO RECONHECIMENTO FACIAL ---
+        private async void OnFacialRecognitionClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!MediaPicker.Default.IsCaptureSupported)
+                {
+                    await DisplayAlert("Erro", "Nenhuma câmara disponível neste dispositivo.", "OK");
+                    return;
+                }
+
+                FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
+                if (photo == null) return; // Utilizador cancelou a captura
+
+                // Exibe a foto tirada
+                using var stream = await photo.OpenReadAsync();
+                var photoBytes = ReadStream(stream);
+                PhotoImage.Source = ImageSource.FromStream(() => new MemoryStream(photoBytes));
+                PhotoImage.IsVisible = true;
+
+                SetUIState(true); // Bloqueia a UI enquanto processa
+
+                // Usa o nosso serviço de deteção de rosto
+                using var detectionStream = new MemoryStream(photoBytes);
+                var (hasFace, message) = await _faceDetectionService.DetectFaceAsync(detectionStream);
+
+                await DisplayAlert("Resultado da Deteção", message, "OK");
+
+                if (hasFace)
+                {
+                    // ---- PRÓXIMO PASSO LÓGICO ----
+                    // Se encontrámos um rosto, aqui chamaríamos o serviço de RECONHECIMENTO
+                    // para saber QUEM é a pessoa. Por agora, apenas confirmamos a deteção.
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro Inesperado", $"Ocorreu um erro: {ex.Message}", "OK");
+            }
+            finally
+            {
+                SetUIState(false); // Desbloqueia a UI
+            }
+        }
+
+        // --- LÓGICA DO REGISTO POR RA ---
         private async void OnEntradaClicked(object sender, EventArgs e)
         {
             await HandlePresenceRegistration(isEntrada: true);
@@ -45,7 +95,6 @@ namespace SAAD2.Views
 
             try
             {
-                // 1. Encontrar o Aluno pelo RA
                 var aluno = await FindStudentByRA(RaEntry.Text);
                 if (aluno == null)
                 {
@@ -53,7 +102,6 @@ namespace SAAD2.Views
                     return;
                 }
 
-                // 2. Encontrar a aula atual baseada no horário
                 var aulaAtual = await GetCurrentClass();
                 if (aulaAtual == null)
                 {
@@ -63,12 +111,10 @@ namespace SAAD2.Views
 
                 if (isEntrada)
                 {
-                    // Lógica de ENTRADA
                     await RegisterEntrada(aluno, aulaAtual);
                 }
                 else
                 {
-                    // Lógica de SAÍDA
                     await RegisterSaida(aluno);
                 }
             }
@@ -79,17 +125,17 @@ namespace SAAD2.Views
             finally
             {
                 SetUIState(isLoading: false);
-                RaEntry.Text = string.Empty; // Limpa o campo para o próximo utilizador
+                RaEntry.Text = string.Empty;
             }
         }
 
+        // --- MÉTODOS AUXILIARES ---
         private async Task<UserModel> FindStudentByRA(string ra)
         {
             var users = await firebaseClient.Child("users").OnceAsync<UserModel>();
             return users
                 .Where(u => u.Object.RegistroAcademico == ra && u.Object.UserType == "Aluno")
-                .Select(u =>
-                {
+                .Select(u => {
                     u.Object.Uid = u.Key;
                     return u.Object;
                 })
@@ -109,7 +155,6 @@ namespace SAAD2.Views
 
         private async Task RegisterEntrada(UserModel aluno, Horario aula)
         {
-            // Verifica se já não há uma entrada aberta para este aluno hoje
             var presencasHoje = await firebaseClient.Child("presencas").OnceAsync<Presenca>();
             var entradaAberta = presencasHoje
                 .FirstOrDefault(p => p.Object.StudentUid == aluno.Uid && p.Object.Data.Date == DateTime.Today && p.Object.HoraSaida == null);
@@ -124,7 +169,7 @@ namespace SAAD2.Views
             {
                 StudentUid = aluno.Uid,
                 StudentName = aluno.Nome,
-                HorarioKey = aula.MateriaKey, // Assumindo que o Horario terá uma Key
+                HorarioKey = aula.MateriaKey,
                 MateriaName = aula.MateriaName,
                 Data = DateTime.Today,
                 HoraEntrada = DateTime.Now
@@ -157,16 +202,25 @@ namespace SAAD2.Views
             LoadingIndicator.IsRunning = isLoading;
             EntradaButton.IsEnabled = !isLoading;
             SaidaButton.IsEnabled = !isLoading;
+            FacialButton.IsEnabled = !isLoading; // Controla o novo botão também
         }
 
+        private byte[] ReadStream(Stream stream)
+        {
+            using var memoryStream = new MemoryStream();
+            stream.Position = 0;
+            stream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
+        }
+
+        // --- LÓGICA DO TEMA ---
         private void OnThemeIconTapped(object sender, TappedEventArgs e)
         {
             var app = (App)Application.Current;
-            app.ToggleTheme(); // O método que criámos no App.xaml.cs
+            app.ToggleTheme();
             UpdateThemeIcon();
         }
 
-        // ADICIONE ESTE MÉTODO
         private void UpdateThemeIcon()
         {
             var app = (App)Application.Current;

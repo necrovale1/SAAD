@@ -1,4 +1,3 @@
-// Views/SplashPage.xaml.cs
 namespace SAAD2.Views
 {
     public partial class SplashPage : ContentPage
@@ -11,10 +10,11 @@ namespace SAAD2.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            // Apenas espere o tempo do splash
-            await Task.Delay(2000); // 2 segundos de splash
-            // Navegue para a página principal
-            Application.Current.MainPage = new AppShell();
+            await Task.Delay(3000); // Aguarda 3 segundos
+
+            // Acede à primeira (e única) janela da aplicação e define a sua página.
+            if (Application.Current != null)
+                Application.Current.Windows[0].Page = new AppShell();
         }
     }
 }

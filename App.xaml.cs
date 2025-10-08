@@ -1,4 +1,4 @@
-﻿using SAAD2.Enums; // Adicione esta linha
+﻿using SAAD2.Enums;
 
 namespace SAAD2
 {
@@ -9,15 +9,15 @@ namespace SAAD2
         public App()
         {
             InitializeComponent();
-
-            // Carrega o tema salvo ou usa o padrão (Claro)
             string themePreference = Preferences.Get("AppTheme", nameof(Theme.Light));
             CurrentTheme = (Theme)Enum.Parse(typeof(Theme), themePreference);
-
-            // Primeiro, define o tema
             SetTheme(CurrentTheme);
+        }
 
-            MainPage = new AppShell();
+        // Este é agora o local correto para definir a janela principal.
+        protected override Window CreateWindow(IActivationState activationState)
+        {
+            return new Window(new AppShell());
         }
 
         public void SetTheme(Theme theme)
@@ -26,7 +26,6 @@ namespace SAAD2
             if (mergedDictionaries != null)
             {
                 mergedDictionaries.Clear();
-
                 switch (theme)
                 {
                     case Theme.Dark:
@@ -37,13 +36,12 @@ namespace SAAD2
                         mergedDictionaries.Add(new Resources.Styles.LightTheme());
                         break;
                 }
-
                 CurrentTheme = theme;
-                // Salva a preferência do usuário
                 Preferences.Set("AppTheme", theme.ToString());
             }
         }
-              public void ToggleTheme()
+
+        public void ToggleTheme()
         {
             CurrentTheme = CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
             SetTheme(CurrentTheme);

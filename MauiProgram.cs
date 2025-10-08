@@ -1,4 +1,5 @@
-﻿using SAAD2.Services;
+﻿using Microsoft.Extensions.Logging;
+using SAAD2.Views;
 
 namespace SAAD2
 {
@@ -13,20 +14,14 @@ namespace SAAD2
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                    fonts.AddFont("materialdesignicons-webfont.ttf", "MaterialDesignIcons");
-                    fonts.AddFont("Font Awesome 7 Free-Solid-900.otf", "FontAwesomeSolid");
-                    fonts.AddFont("Font Awesome 7 Free-Regular-400.otf", "FontAwesome");
-                    fonts.AddFont("Font Awesome 7 Free-Brands-400.otf", "FontAwesomeBrands");
+                    fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
+                    fonts.AddFont("Font Awesome 7 Free-Solid-900.otf", "FASolid");
                 });
 
-
 #if DEBUG
-            //builder.Logging.AddDebug();
+    		builder.Logging.AddDebug();
 #endif
-            // Register Services
-            builder.Services.AddSingleton<MateriaService>();
-            builder.Services.AddSingleton<FaltaService>();
-
+            // As linhas que registavam MateriaService e FaltaService foram removidas.
             return builder.Build();
         }
     }
