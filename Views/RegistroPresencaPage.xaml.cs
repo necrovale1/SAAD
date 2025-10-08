@@ -5,6 +5,7 @@ using SAAD2.Helpers;
 using SAAD2.Models;
 using SAAD2.Services; // Importa o nosso novo serviço de deteção facial
 using System.Linq;
+using System.Text;
 using UserModel = SAAD2.Models.User;
 
 namespace SAAD2.Views
@@ -27,49 +28,58 @@ namespace SAAD2.Views
             UpdateThemeIcon();
         }
 
-        // --- LÓGICA DO RECONHECIMENTO FACIAL ---
         private async void OnFacialRecognitionClicked(object sender, EventArgs e)
         {
             try
             {
-                if (!MediaPicker.Default.IsCaptureSupported)
+                LoadingIndicator.IsVisible = true;
+                LoadingIndicator.IsRunning = true;
+
+                var photo = await MediaPicker.CapturePhotoAsync();
+                if (photo == null) return;
+
+                using var stream = await photo.OpenReadAsync();
+                var base64Atual = ConvertImageToBase64(stream);
+
+                PhotoImage.Source = ImageSource.FromStream(() => stream);
+                PhotoImage.IsVisible = true;
+
+                var aluno = await FindStudentByRA(RaEntry.Text);
+                if (aluno == null || string.IsNullOrEmpty(aluno.FaceImageBase64))
                 {
-                    await DisplayAlert("Erro", "Nenhuma câmara disponível neste dispositivo.", "OK");
+                    await DisplayAlert("Erro", "Aluno não encontrado ou sem imagem facial cadastrada.", "OK");
                     return;
                 }
 
-                FileResult photo = await MediaPicker.Default.CapturePhotoAsync();
-                if (photo == null) return; // Utilizador cancelou a captura
+                var resultado = await _faceDetectionService.CompararImagensAsync(aluno.FaceImageBase64, base64Atual);
 
-                // Exibe a foto tirada
-                using var stream = await photo.OpenReadAsync();
-                var photoBytes = ReadStream(stream);
-                PhotoImage.Source = ImageSource.FromStream(() => new MemoryStream(photoBytes));
-                PhotoImage.IsVisible = true;
-
-                SetUIState(true); // Bloqueia a UI enquanto processa
-
-                // Usa o nosso serviço de deteção de rosto
-                using var detectionStream = new MemoryStream(photoBytes);
-                var (hasFace, message) = await _faceDetectionService.DetectFaceAsync(detectionStream);
-
-                await DisplayAlert("Resultado da Deteção", message, "OK");
-
-                if (hasFace)
+                if (resultado)
                 {
-                    // ---- PRÓXIMO PASSO LÓGICO ----
-                    // Se encontrámos um rosto, aqui chamaríamos o serviço de RECONHECIMENTO
-                    // para saber QUEM é a pessoa. Por agora, apenas confirmamos a deteção.
+                    await DisplayAlert("Autenticação Facial", "Rosto reconhecido com sucesso!", "OK");
+                    await HandlePresenceRegistration(isEntrada: true);
+                }
+                else
+                {
+                    await DisplayAlert("Falha na Autenticação", "O rosto não corresponde ao cadastro.", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Erro Inesperado", $"Ocorreu um erro: {ex.Message}", "OK");
+                await DisplayAlert("Erro", ex.Message, "OK");
             }
             finally
             {
-                SetUIState(false); // Desbloqueia a UI
+                LoadingIndicator.IsVisible = false;
+                LoadingIndicator.IsRunning = false;
             }
+        }
+
+        private string ConvertImageToBase64(Stream imageStream)
+        {
+            using var memoryStream = new MemoryStream();
+            imageStream.CopyTo(memoryStream);
+            return Convert.ToBase64String(memoryStream.ToArray());
+
         }
 
         // --- LÓGICA DO REGISTO POR RA ---

@@ -11,6 +11,10 @@ namespace SAAD2.Models
         //Uid do usuario (Firebase Authentication)
         public string Uid { get; set; }
 
+        //registro facial do usuario em base64
+        public string FaceImageBase64 { get; set; } // nova propriedade
+
+
         // cargo do usuario (Aluno, Professor, Administrador)
         public string UserType { get; set; }
 
