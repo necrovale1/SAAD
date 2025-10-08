@@ -9,6 +9,8 @@ namespace SAAD2.Views
     {
         private readonly FaltaService _faltaService;
         public ICommand DeleteCommand { get; }
+
+        public ICommand EditCommand { get; }
         public bool IsProfessorUser { get; private set; }
         public ObservableCollection<Falta> Faltas { get; set; }
 
@@ -19,6 +21,8 @@ namespace SAAD2.Views
             Faltas = new ObservableCollection<Falta>();
 
             DeleteCommand = new Command<Falta>(async (falta) => await ExecuteDeleteCommand(falta));
+            EditCommand = new Command<Falta>(async (falta) => await ExecuteEditCommand(falta));
+
             this.BindingContext = this;
         }
 
@@ -50,7 +54,14 @@ namespace SAAD2.Views
                 await _faltaService.DeleteFaltaAsync(falta);
             }
         }
-
+        private async Task ExecuteEditCommand(Falta falta)
+        {
+            // Navega para a página de registo, enviando o objeto falta
+            await Shell.Current.GoToAsync($"{nameof(RegistroFaltasPage)}", new Dictionary<string, object>
+        {
+            { "SelectedFalta", falta }
+        });
+        }
         private async void OnRegistrarFaltaClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync(nameof(RegistroFaltasPage));

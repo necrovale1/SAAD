@@ -20,6 +20,12 @@
                             <SwipeView.RightItems>
                                 <SwipeItems>
                                     <SwipeItem 
+                                        Text="Editar"
+                                        BackgroundColor="{DynamicResource AccentColor}"
+                                        IsVisible="{Binding BindingContext.IsProfessorUser, Source={x:Reference Name=faltasPage}}"
+                                        Command="{Binding BindingContext.EditCommand, Source={x:Reference Name=faltasPage}}"
+                                        CommandParameter="{Binding .}"/>
+                                    <SwipeItem 
                                         Text="Excluir"
                                         BackgroundColor="{DynamicResource AccentColor}"
                                         IsVisible="{Binding BindingContext.IsProfessorUser, Source={x:Reference Name=faltasPage}}"

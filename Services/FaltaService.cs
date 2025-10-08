@@ -74,5 +74,19 @@ namespace SAAD2.Services
                 Faltas.Remove(faltaParaRemover);
             }
         }
+
+        public async Task UpdateFaltaAsync(Falta falta)
+        {
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid) || string.IsNullOrEmpty(falta.Key)) return;
+
+            await firebaseClient
+                .Child("faltas")
+                .Child(userUid)
+                .Child(falta.Key)
+                .PutAsync(falta);
+
+            await LoadFaltasAsync();
+        }
     }
 }
