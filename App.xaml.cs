@@ -42,7 +42,11 @@ namespace SAAD2
                 // Salva a preferência do usuário
                 Preferences.Set("AppTheme", theme.ToString());
             }
-
+        }
+              public void ToggleTheme()
+        {
+            CurrentTheme = CurrentTheme == Theme.Light ? Theme.Dark : Theme.Light;
+            SetTheme(CurrentTheme);
         }
     }
 }

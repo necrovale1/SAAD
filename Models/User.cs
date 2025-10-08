@@ -8,6 +8,9 @@ namespace SAAD2.Models
 {
     public class User
     {
+        //Uid do usuario (Firebase Authentication)
+        public string Uid { get; set; }
+
         // cargo do usuario (Aluno, Professor, Administrador)
         public string UserType { get; set; }
 

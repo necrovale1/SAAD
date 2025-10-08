@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD2.Views.RegistroPresencaPage"
+             xmlns:helpers="clr-namespace:SAAD2.Helpers"
+             Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="Auto, *">
+
+        <Label x:Name="ThemeIconLabel"
+               Grid.Row="0"
+               Text="{x:Static helpers:FontAwesomeIcons.Sun}"
+               FontFamily="FASolid"
+               FontSize="24"
+               TextColor="White"
+               HorizontalOptions="End"
+               VerticalOptions="Start"
+               Padding="20">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnThemeIconTapped" />
+            </Label.GestureRecognizers>
+        </Label>
+
+        <Grid Grid.Row="0" Grid.RowSpan="2">
+            <BoxView Color="{StaticResource Primary}" />
+            <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center">
+
+                <Label 
+                    Text="Controle de Acesso"
+                    TextColor="White"
+                    FontSize="36"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center"
+                    Margin="0,0,0,30"/>
+
+                <Frame Padding="20" CornerRadius="10">
+                    <VerticalStackLayout Spacing="20">
+                        <Label Text="Digite seu RA (Registro Acadêmico)" FontSize="18" HorizontalOptions="Center"/>
+                        <Entry x:Name="RaEntry" 
+                               Placeholder="Seu RA aqui..." 
+                               Keyboard="Numeric" 
+                               FontSize="22" 
+                               HorizontalTextAlignment="Center"/>
+
+                        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False"/>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,20,0,0">
+                            <Button x:Name="EntradaButton"
+                                    Grid.Column="0"
+                                    Text="Registrar ENTRADA"
+                                    Clicked="OnEntradaClicked"
+                                    BackgroundColor="Green"
+                                    TextColor="White"
+                                    HeightRequest="60"
+                                    FontSize="18"
+                                    CornerRadius="30"/>
+
+                            <Button x:Name="SaidaButton"
+                                    Grid.Column="1"
+                                    Text="Registrar SAÍDA"
+                                    Clicked="OnSaidaClicked"
+                                    BackgroundColor="Red"
+                                    TextColor="White"
+                                    HeightRequest="60"
+                                    FontSize="18"
+                                    CornerRadius="30"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>
