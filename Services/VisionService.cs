@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace SAAD2.Services
 {
+    using SAAD2.Helpers;
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Text.Json;
 
     public class VisionService
     {
-        private const string ApiKey = "f6d25f449e735497ce73c8f018924f7da34c3350";
-        private const string Endpoint = $"https://vision.googleapis.com/v1/images:annotate?key={ApiKey}";
+        private readonly string Endpoint = $"https://vision.googleapis.com/v1/images:annotate?key={SecretsManager.VisionApiKey}";
+        private readonly HttpClient _httpClient;
 
         public async Task<List<EntityAnnotation>> AnalyzeImageAsync(string base64Image)
         {

@@ -2,6 +2,7 @@ using Firebase.Database;
 using Firebase.Database.Query;
 using SAAD2.Models;
 using System.Text;
+using SAAD2.Helpers;
 
 namespace SAAD2.Views
 {
@@ -13,7 +14,12 @@ namespace SAAD2.Views
         public CadastroFacialPage()
         {
             InitializeComponent();
-            firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
+            var firebaseClient = new FirebaseClient(
+            SecretsManager.FirebaseUrl,
+            new FirebaseOptions
+            {
+                AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
+            });
         }
 
         private async void OnCapturePhotoClicked(object sender, EventArgs e)

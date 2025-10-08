@@ -3,6 +3,7 @@ using Firebase.Database.Query;
 using SAAD2.Models;
 using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
+using SAAD2.Helpers;
 
 namespace SAAD2.Views
 {
@@ -14,7 +15,13 @@ namespace SAAD2.Views
         public ListagemFacialPage()
         {
             InitializeComponent();
-            firebaseClient = new FirebaseClient("https://saad-1fd38-default-rtdb.firebaseio.com/");
+            var firebaseClient = new FirebaseClient(
+            SecretsManager.FirebaseUrl,
+            new FirebaseOptions
+            {
+                AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
+            });
+
             Alunos = new ObservableCollection<AlunoFacialStatus>();
             AlunosCollection.ItemsSource = Alunos;
         }
