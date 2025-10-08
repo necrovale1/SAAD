@@ -9,6 +9,7 @@ namespace SAAD2.Views
     {
         private readonly MateriaService _materiaService;
         public ICommand DeleteCommand { get; }
+        public ICommand EditCommand { get; }
         public bool IsSchoolUser { get; private set; }
 
         public MateriasPage()
@@ -17,6 +18,7 @@ namespace SAAD2.Views
             _materiaService = MateriaService.Instance;
 
             DeleteCommand = new Command<Materia>(async (materia) => await ExecuteDeleteCommand(materia));
+            EditCommand = new Command<Materia>(async (materia) => await ExecuteEditCommand(materia));
             this.BindingContext = this;
         }
 
@@ -31,7 +33,6 @@ namespace SAAD2.Views
             IsSchoolUser = (userType == "Escola");
             OnPropertyChanged(nameof(IsSchoolUser));
 
-            // Agora o nome BtnRegistrarMateria vai ser encontrado corretamente
             BtnRegistrarMateria.IsVisible = IsSchoolUser;
 
             await _materiaService.LoadMateriasAsync();
@@ -49,6 +50,15 @@ namespace SAAD2.Views
                 await _materiaService.DeleteMateriaAsync(materia);
             }
         }
+
+        private async Task ExecuteEditCommand(Materia materia)
+        {
+            await Shell.Current.GoToAsync($"{nameof(RegistroMateriasPage)}", new Dictionary<string, object>
+        {
+            { "SelectedMateria", materia }
+        });
+        }
+
 
         private async void OnRegistrarClicked(object sender, EventArgs e)
         {

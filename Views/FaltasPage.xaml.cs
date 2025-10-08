@@ -1,24 +1,56 @@
+using SAAD2.Models;
 using SAAD2.Services;
+using System.Collections.ObjectModel;
+using System.Windows.Input; 
 
 namespace SAAD2.Views
 {
     public partial class FaltasPage : ContentPage
     {
+        private readonly FaltaService _faltaService;
+        public ICommand DeleteCommand { get; }
+        public bool IsProfessorUser { get; private set; }
+        public ObservableCollection<Falta> Faltas { get; set; }
+
         public FaltasPage()
         {
             InitializeComponent();
-            // Define o contexto de dados para a instância do serviço de faltas
-            BindingContext = FaltaService.Instance;
+            _faltaService = FaltaService.Instance;
+            Faltas = new ObservableCollection<Falta>();
+
+            DeleteCommand = new Command<Falta>(async (falta) => await ExecuteDeleteCommand(falta));
+            this.BindingContext = this;
         }
 
-        // Garante que a lista seja atualizada sempre que a página aparecer
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await FaltaService.Instance.LoadFaltasAsync(); // Carrega os dados de forma assíncrona
-                                                           // A linha abaixo não é mais necessária, pois o BindingContext já cuida disso
-                                                           // (BindingContext as FaltaService).Faltas.CollectionChanged += (s, e) => { };
+
+            LoadingIndicator.IsVisible = true;
+            FaltasListView.IsVisible = false;
+
+            var userType = Preferences.Get("UserType", string.Empty);
+            IsProfessorUser = (userType == "Professor");
+            OnPropertyChanged(nameof(IsProfessorUser));
+
+            BtnRegistrarFalta.IsVisible = IsProfessorUser;
+
+            await _faltaService.LoadFaltasAsync();
+            FaltasListView.ItemsSource = _faltaService.Faltas;
+
+            LoadingIndicator.IsVisible = false;
+            FaltasListView.IsVisible = true;
         }
+
+        private async Task ExecuteDeleteCommand(Falta falta)
+        {
+            bool confirm = await DisplayAlert("Confirmar Exclusão", $"Tem certeza de que deseja excluir o registro de faltas da matéria '{falta.Materia}'?", "Sim", "Não");
+            if (confirm)
+            {
+                await _faltaService.DeleteFaltaAsync(falta);
+            }
+        }
+
         private async void OnRegistrarFaltaClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync(nameof(RegistroFaltasPage));

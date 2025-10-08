@@ -2,6 +2,7 @@
 using Firebase.Database.Query;
 using SAAD2.Models;
 using System.Collections.ObjectModel;
+using System.Linq; // Adicione este using
 
 namespace SAAD2.Services
 {
@@ -12,7 +13,6 @@ namespace SAAD2.Services
 
         private readonly FirebaseClient firebaseClient;
         public ObservableCollection<Falta> Faltas { get; private set; }
-        private bool isLoaded = false;
 
         private FaltaService()
         {
@@ -22,39 +22,57 @@ namespace SAAD2.Services
 
         public async Task LoadFaltasAsync()
         {
-            // Pega o ID do usuário salvo
             var userUid = Preferences.Get("UserUid", string.Empty);
             if (string.IsNullOrWhiteSpace(userUid))
             {
-                Faltas.Clear(); // Limpa a lista se não houver usuário logado
+                Faltas.Clear();
                 return;
             }
 
-            if (isLoaded) return;
-
-            // --- MODIFIQUE A CONSULTA AQUI ---
-            var faltas = await firebaseClient
-                .Child("faltas")
-                .Child(userUid) // Adiciona o ID do usuário ao caminho
+            // A consulta foi modificada para capturar a chave
+            var faltasFirebase = await firebaseClient
+                .Child("faltas") // Assumindo que os dados de faltas estão em "faltas"
+                .Child(userUid)
                 .OnceAsync<Falta>();
-            // ---------------------------------
 
             Faltas.Clear();
-            foreach (var falta in faltas)
+            foreach (var item in faltasFirebase)
             {
-                Faltas.Add(falta.Object);
+                var falta = item.Object;
+                falta.Key = item.Key; // Guarda a chave única do Firebase
+                Faltas.Add(falta);
             }
-            isLoaded = true;
         }
 
         public async Task AddFaltaAsync(Falta falta)
         {
             var userUid = Preferences.Get("UserUid", string.Empty);
-            if (string.IsNullOrWhiteSpace(userUid)) return; // Não salva se não estiver logado
+            if (string.IsNullOrWhiteSpace(userUid)) return;
 
-            // Adiciona a falta sob o ID do usuário
             await firebaseClient.Child("faltas").Child(userUid).PostAsync(falta);
-            Faltas.Add(falta);
+            // Recarrega a lista para obter a nova falta com a sua chave
+            await LoadFaltasAsync();
+        }
+
+        // --- NOVO MÉTODO PARA EXCLUIR ---
+        public async Task DeleteFaltaAsync(Falta falta)
+        {
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid) || string.IsNullOrEmpty(falta.Key)) return;
+
+            // Usa a chave da falta para excluí-la
+            await firebaseClient
+                .Child("faltas")
+                .Child(userUid)
+                .Child(falta.Key)
+                .DeleteAsync();
+
+            // Remove da lista local
+            var faltaParaRemover = Faltas.FirstOrDefault(f => f.Key == falta.Key);
+            if (faltaParaRemover != null)
+            {
+                Faltas.Remove(faltaParaRemover);
+            }
         }
     }
 }

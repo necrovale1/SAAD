@@ -51,7 +51,7 @@ namespace SAAD2.Services
 
             await firebaseClient.Child("materias").Child(userUid).PostAsync(materia);
             // Recarrega a lista para obter a nova matéria com a sua chave
-            await LoadMateriasAsync();
+            await LoadMateriasAsync(); 
         }
 
         // --- NOVO MÉTODO PARA EXCLUIR ---
@@ -73,6 +73,19 @@ namespace SAAD2.Services
             {
                 Materias.Remove(materiaParaRemover);
             }
+        }
+        public async Task UpdateMateriaAsync(Materia materia)
+        {
+            var userUid = Preferences.Get("UserUid", string.Empty);
+            if (string.IsNullOrWhiteSpace(userUid) || string.IsNullOrEmpty(materia.Key)) return;
+
+            await firebaseClient
+                .Child("materias")
+                .Child(userUid)
+                .Child(materia.Key)
+                .PutAsync(materia);
+
+            await LoadMateriasAsync();
         }
     }
 }

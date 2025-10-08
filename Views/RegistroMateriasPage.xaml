@@ -5,30 +5,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Registrar Matéria"
     BackgroundColor="{DynamicResource PageBackgroundColor}">
-    <VerticalStackLayout Padding="20" Spacing="15">
-        <Label Text="Nome da Matéria" TextColor="{DynamicResource PrimaryTextColor}" />
-        <Entry
-            x:Name="NomeEntry"
-            Placeholder="Ex: Engenharia de Software"
-            TextColor="{DynamicResource PrimaryTextColor}" />
+    <ScrollView>
+        <VerticalStackLayout Spacing="15" Padding="30">
 
-        <Label Text="Descrição" TextColor="{DynamicResource PrimaryTextColor}" />
-        <Entry
-            x:Name="DescricaoEntry"
-            Placeholder="Uma breve descrição da matéria"
-            TextColor="{DynamicResource PrimaryTextColor}" />
+            <Label Text="Detalhes da Matéria" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20"/>
 
-        <Label Text="Categoria" TextColor="{DynamicResource PrimaryTextColor}" />
-        <Entry
-            x:Name="CategoriaEntry"
-            Placeholder="Ex: Obrigatória"
-            TextColor="{DynamicResource PrimaryTextColor}" />
+            <Entry x:Name="NomeMateriaEntry" Placeholder="Nome da Matéria"/>
+            <Entry x:Name="ProfessorEntry" Placeholder="Nome do Professor (Opcional)"/>
+            <Entry x:Name="CategoriaEntry" Placeholder="Categoria (Ex: Exatas, Humanas)"/>
 
-        <Button
-            Margin="0,20,0,0"
-            BackgroundColor="{DynamicResource AccentColor}"
-            Clicked="OnSalvarClicked"
-            Text="Salvar Matéria"
-            TextColor="{DynamicResource PrimaryTextColor}" />
-    </VerticalStackLayout>
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="{DynamicResource AccentColor}"/>
+
+            <Button x:Name="SaveButton"
+                    Text="Salvar Matéria"
+                    Clicked="OnSaveMateriaClicked"
+                    HorizontalOptions="Fill"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
