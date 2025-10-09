@@ -1,15 +1,14 @@
 using Firebase.Database;
 using Firebase.Database.Query;
-using SAAD.Models;
-using System.Text;
 using SAAD.Helpers;
+using SAAD.Models;
 
 namespace SAAD.Views
 {
     public partial class CadastroFacialPage : ContentPage
     {
-        private readonly FirebaseClient firebaseClient;
         private string base64Image;
+        private FirebaseClient firebaseClient = new FirebaseClient(SecretsManager.FirebaseUrl);
 
         public CadastroFacialPage()
         {
@@ -75,7 +74,7 @@ namespace SAAD.Views
                 await DisplayAlert("Sucesso", "Imagem facial salva com sucesso!", "OK");
                 RaEntry.Text = string.Empty;
                 PhotoImage.IsVisible = false;
-                SaveFaceButton.IsVisible = true; 
+                SaveFaceButton.IsVisible = true;
 
             }
             catch (Exception ex)
@@ -101,7 +100,8 @@ namespace SAAD.Views
             var users = await firebaseClient.Child("users").OnceAsync<User>();
             return users
                 .Where(u => u.Object.RegistroAcademico == ra && u.Object.UserType == "Aluno")
-                .Select(u => {
+                .Select(u =>
+                {
                     u.Object.Uid = u.Key;
                     return u.Object;
                 })

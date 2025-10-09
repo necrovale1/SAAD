@@ -1,5 +1,4 @@
-﻿using Microsoft.Maui.Graphics;
-using SAAD.Helpers;
+﻿using SAAD.Helpers;
 
 namespace SAAD.Models
 {

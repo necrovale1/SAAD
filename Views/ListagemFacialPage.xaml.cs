@@ -1,9 +1,7 @@
 using Firebase.Database;
-using Firebase.Database.Query;
-using SAAD.Models;
-using Microsoft.Maui.Controls;
-using System.Collections.ObjectModel;
 using SAAD.Helpers;
+using SAAD.Models;
+using System.Collections.ObjectModel;
 
 namespace SAAD.Views
 {
@@ -50,7 +48,7 @@ namespace SAAD.Views
                 Alunos.Add(aluno);
         }
 
-      
+
     }
 }
 

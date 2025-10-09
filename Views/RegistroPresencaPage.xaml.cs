@@ -4,8 +4,6 @@ using SAAD.Enums;
 using SAAD.Helpers;
 using SAAD.Models;
 using SAAD.Services; // Importa o nosso novo serviço de deteção facial
-using System.Linq;
-using System.Text;
 using UserModel = SAAD.Models.User;
 
 namespace SAAD.Views
@@ -150,7 +148,8 @@ namespace SAAD.Views
             var users = await firebaseClient.Child("users").OnceAsync<UserModel>();
             return users
                 .Where(u => u.Object.RegistroAcademico == ra && u.Object.UserType == "Aluno")
-                .Select(u => {
+                .Select(u =>
+                {
                     u.Object.Uid = u.Key;
                     return u.Object;
                 })

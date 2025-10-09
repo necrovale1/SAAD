@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using SAAD.Views;
-
-namespace SAAD
+﻿namespace SAAD
 {
     public static class MauiProgram
     {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SAAD.Services
+﻿namespace SAAD.Services
 {
     using SAAD.Helpers;
     using System.Net.Http;
@@ -14,7 +8,6 @@ namespace SAAD.Services
     public class VisionService
     {
         private readonly string Endpoint = $"https://vision.googleapis.com/v1/images:annotate?key={SecretsManager.VisionApiKey}";
-        private readonly HttpClient _httpClient;
 
         public async Task<List<EntityAnnotation>> AnalyzeImageAsync(string base64Image)
         {
