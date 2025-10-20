@@ -1,12 +1,15 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using SAAD.Helpers; // ADICIONE ESTE USING
 
 namespace SAAD.Services
 {
     public class FaceService
     {
         private const string Endpoint = "https://saad-cmd.cognitiveservices.azure.com/";
-        private const string SubscriptionKey = "6HnSsXb56V8VpqxYoptwBIpjsbuVbon2nAkytyM7rbXrjYFVmePXJQQJ99BJACZoyfiXJ3w3AAAKACOGDTn2";
+
+        // SUBSTITUA A CHAVE ANTIGA POR ISSO:
+        private static string SubscriptionKey => SecretsManager.FaceServiceKey;
 
         private readonly HttpClient _httpClient;
 
