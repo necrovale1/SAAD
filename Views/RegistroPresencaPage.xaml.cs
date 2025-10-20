@@ -16,7 +16,7 @@ namespace SAAD.Views
         public RegistroPresencaPage()
         {
             InitializeComponent();
-            var firebaseClient = new FirebaseClient(
+            firebaseClient = new FirebaseClient(
             SecretsManager.FirebaseUrl,
             new FirebaseOptions
             {

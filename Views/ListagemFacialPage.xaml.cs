@@ -13,7 +13,7 @@ namespace SAAD.Views
         public ListagemFacialPage()
         {
             InitializeComponent();
-            var firebaseClient = new FirebaseClient(
+            firebaseClient = new FirebaseClient(
             SecretsManager.FirebaseUrl,
             new FirebaseOptions
             {
