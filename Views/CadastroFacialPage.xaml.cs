@@ -1,111 +1,74 @@
-using Firebase.Database;
-using Firebase.Database.Query;
-using SAAD.Helpers;
-using SAAD.Models;
+using Microsoft.Maui.Controls;
+using Microsoft.Extensions.Configuration;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
-namespace SAAD.Views
+namespace SAAD.Views;
+
+public partial class CadastroFacialPage : ContentPage
 {
-    public partial class CadastroFacialPage : ContentPage
+    FileResult imagemSelecionada;
+    readonly string apiKey;
+    readonly string endpoint;
+
+    public CadastroFacialPage()
     {
-        private string base64Image;
-        private FirebaseClient firebaseClient = new FirebaseClient(SecretsManager.FirebaseUrl);
+        InitializeComponent();
 
-        public CadastroFacialPage()
+        var config = App.Current.Handler.MauiContext.Services.GetService<IConfiguration>();
+        apiKey = config["AzureFaceApi:Key"];
+        endpoint = config["AzureFaceApi:Endpoint"];
+    }
+
+    async void OnSelecionarImagemClicked(object sender, EventArgs e)
+    {
+        try
         {
-            InitializeComponent();
-            var firebaseClient = new FirebaseClient(
-            SecretsManager.FirebaseUrl,
-            new FirebaseOptions
+            imagemSelecionada = await MediaPicker.PickPhotoAsync();
+
+            if (imagemSelecionada != null)
             {
-                AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
-            });
-        }
-
-        private async void OnCapturePhotoClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                LoadingIndicator.IsVisible = true;
-                LoadingIndicator.IsRunning = true;
-
-                var photo = await MediaPicker.CapturePhotoAsync();
-                if (photo == null) return;
-
-                using var stream = await photo.OpenReadAsync();
-                base64Image = ConvertImageToBase64(stream);
-
-                PhotoImage.Source = ImageSource.FromStream(() => stream);
-                PhotoImage.IsVisible = true;
-                LoadingIndicator.IsVisible = false;
-                LoadingIndicator.IsRunning = false;
-                await DisplayAlert("Foto Capturada", "A imagem foi capturada com sucesso!", "OK");
-                SaveFaceButton.IsVisible = true;
-
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", ex.Message, "OK");
+                ImagemSelecionada.Source = ImageSource.FromFile(imagemSelecionada.FullPath);
+                ResultadoLabel.Text = "";
             }
         }
-
-        private async void OnSaveFaceClicked(object sender, EventArgs e)
+        catch (Exception ex)
         {
-            if (string.IsNullOrWhiteSpace(RaEntry.Text))
-            {
-                await DisplayAlert("Erro", "Digite o RA antes de salvar.", "OK");
-                return;
-            }
+            await DisplayAlert("Erro", $"Falha ao selecionar imagem: {ex.Message}", "OK");
+        }
+    }
 
-            try
-            {
-                LoadingIndicator.IsVisible = true;
-                LoadingIndicator.IsRunning = true;
-
-                var aluno = await FindStudentByRA(RaEntry.Text);
-                if (aluno == null)
-                {
-                    await DisplayAlert("Erro", "RA não encontrado.", "OK");
-                    return;
-                }
-
-                aluno.FaceImageBase64 = base64Image;
-                await firebaseClient.Child("users").Child(aluno.Uid).PutAsync(aluno);
-
-                await DisplayAlert("Sucesso", "Imagem facial salva com sucesso!", "OK");
-                RaEntry.Text = string.Empty;
-                PhotoImage.IsVisible = false;
-                SaveFaceButton.IsVisible = true;
-
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", ex.Message, "OK");
-            }
-            finally
-            {
-                LoadingIndicator.IsVisible = false;
-                LoadingIndicator.IsRunning = false;
-            }
+    async void OnDetectarFacesClicked(object sender, EventArgs e)
+    {
+        if (imagemSelecionada == null)
+        {
+            await DisplayAlert("Erro", "Selecione uma imagem primeiro.", "OK");
+            return;
         }
 
-        private string ConvertImageToBase64(Stream imageStream)
+        try
         {
-            using var memoryStream = new MemoryStream();
-            imageStream.CopyTo(memoryStream);
-            return Convert.ToBase64String(memoryStream.ToArray());
-        }
+            using var stream = await imagemSelecionada.OpenReadAsync();
+            using var client = new HttpClient();
 
-        private async Task<User> FindStudentByRA(string ra)
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", apiKey);
+
+            var url = $"{endpoint}/face/v1.0/detect?returnFaceLandmarks=true&returnFaceAttributes=age,gender,smile";
+
+            using var content = new StreamContent(stream);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+            var response = await client.PostAsync(url, content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            var resultado = JsonSerializer.Deserialize<JsonElement>(json);
+            var totalFaces = resultado.GetArrayLength();
+
+            ResultadoLabel.Text = $"{totalFaces} face(s) detectada(s).";
+        }
+        catch (Exception ex)
         {
-            var users = await firebaseClient.Child("users").OnceAsync<User>();
-            return users
-                .Where(u => u.Object.RegistroAcademico == ra && u.Object.UserType == "Aluno")
-                .Select(u =>
-                {
-                    u.Object.Uid = u.Key;
-                    return u.Object;
-                })
-                .FirstOrDefault();
+            await DisplayAlert("Erro", $"Falha na detecção facial: {ex.Message}", "OK");
         }
     }
 }

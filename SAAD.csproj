@@ -37,10 +37,6 @@
 		<PackageReference Include="System.Net.Http.Json" Version="9.0.9" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0-android'">
-		<PackageReference Include="Xamarin.Google.MLKit.FaceDetection" Version="116.1.7.5" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.9.3" />
 		<PackageReference Include="Xamarin.AndroidX.Lifecycle.ViewModel" Version="2.9.3" />

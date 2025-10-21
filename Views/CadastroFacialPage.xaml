@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SAAD.Views.CadastroFacialPage"
              Title="Cadastro Facial">
-    <VerticalStackLayout Padding="30" Spacing="20">
-        <Label Text="Cadastro Facial do Aluno" FontSize="28" HorizontalOptions="Center" />
-        <Entry x:Name="RaEntry" Placeholder="Digite o RA" FontSize="20" />
-        <Button Text="Capturar Foto" Clicked="OnCapturePhotoClicked" />
-        <Image x:Name="PhotoImage" HeightRequest="200" IsVisible="False" Aspect="AspectFit" />
-        <Button x:Name="SaveFaceButton" Text="Salvar Imagem Facial" Clicked="OnSaveFaceClicked" IsVisible="False" />
-        <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <Label Text="Detecção Facial" FontSize="24" HorizontalOptions="Center" />
+        <Button Text="Selecionar Imagem" Clicked="OnSelecionarImagemClicked" />
+        <Image x:Name="ImagemSelecionada" HeightRequest="300" Aspect="AspectFit" />
+        <Button Text="Detectar Faces" Clicked="OnDetectarFacesClicked" />
+        <Label x:Name="ResultadoLabel" FontSize="18" HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

@@ -13,7 +13,9 @@ namespace SAAD.Helpers
         public static string FirebaseUrl => Configuration["FirebaseUrl"];
         public static string FirebaseSecret => Configuration["FirebaseSecret"];
         public static string FaceServiceKey => Configuration["FaceServiceKey"];
+        public static string FaceServiceEndpoint => Configuration["FaceServiceEndpoint"];
     }
+}
 
     public class SecretsMarker { }
-}
+
