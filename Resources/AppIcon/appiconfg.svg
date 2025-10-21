@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 454 454" style="enable-background:new 0 0 454 454;" xml:space="preserve">
-	<style type="text/css">
-		.st0{fill:#FC0349;}
-		.st1{font-family:'OpenSans-Semibold';}
-		.st2{font-size:80px;}
-	</style>
-	<text transform="matrix(1 0 0 1 70 280)" class="st0 st1 st2">SAAD</text>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 454 454" style="enable-background:new 0 0 454 454;" xml:space="preserve">
+  <style type="text/css">
+    .st0{fill:#FC0349;}
+    .st1{font-family:'OpenSans-Semibold';}
+    .st2{font-size:100px;}
+  </style>
+ <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+		 textLength="300" lengthAdjust="spacingAndGlyphs"
+		 class="st0 st1 st2">SAAD</text>
+	<rect x="0" y="0" width="454" height="454" fill="#eee"/>
+
 </svg>

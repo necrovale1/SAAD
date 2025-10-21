@@ -1,1 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 454 454" fill="#2B2B2B" xml:space="preserve"><path d="M0 0h454v454H0z"/></svg>
+<?xml version="1.0" encoding="utf-8" ?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 454 454" xml:space="preserve">
+  <style type="text/css">
+    .st0 { fill: #FC0349; }
+    .st1 { font-family: 'OpenSans-Semibold'; }
+    .st2 { font-size: 100px; }
+  </style>
+
+  <!-- Fundo escuro -->
+  <rect x="0" y="0" width="454" height="454" fill="#2B2B2B"/>
+
+  <!-- Texto centralizado -->
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="st0 st1 st2">SAAD</text>
+</svg>
