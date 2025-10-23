@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD.Views.CameraCapturePage"
+             BackgroundColor="{StaticResource PageBackgroundColor}">
+
+    <Grid>
+
+        <!-- Preview da câmera (imagem simulada ou real) -->
+        <Image x:Name="CameraPreview"
+               Aspect="AspectFill"
+               BackgroundColor="Black" />
+
+        <!-- Moldura de rosto com Border (substitui Frame) -->
+        <Border WidthRequest="250"
+                HeightRequest="300"
+                Stroke="{StaticResource AccentColor}"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                StrokeThickness="3">
+        </Border>
+
+        <!-- Instruções visuais -->
+        <Label x:Name="InstructionLabel"
+               Text="Aproxime o rosto"
+               FontSize="18"
+               FontAttributes="Bold"
+               TextColor="{StaticResource PrimaryTextColor}"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,40" />
+
+        <!-- Indicador de carregamento -->
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           IsVisible="False"
+                           IsRunning="False"
+                           Color="{StaticResource AccentColor}"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+
+    </Grid>
+</ContentPage>

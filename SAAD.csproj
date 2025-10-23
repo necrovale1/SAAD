@@ -54,8 +54,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="FaceRecognition-.Net\FaceRecognition-.Net\FaceRecognition-.Net.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<MauiXaml Update="Views\CadastroFacialPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Views\CameraCapturePage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Views\ListagemFacialPage.xaml">
 			<Generator>MSBuild:Compile</Generator>

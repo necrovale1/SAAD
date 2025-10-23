@@ -1,69 +1,83 @@
 using Firebase.Database;
 using Firebase.Database.Query;
-using SAAD.Enums;
 using SAAD.Helpers;
 using SAAD.Models;
-using SAAD.Services; // Importa o nosso novo serviço de deteção facial
+using SAAD.Services;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 using UserModel = SAAD.Models.User;
 
 namespace SAAD.Views
 {
     public partial class RegistroPresencaPage : ContentPage
     {
-        private readonly FirebaseClient firebaseClient;
+        private FirebaseClient firebaseClient;
         private readonly FaceDetectionService _faceDetectionService;
 
         public RegistroPresencaPage()
         {
             InitializeComponent();
-            firebaseClient = new FirebaseClient(
-            SecretsManager.FirebaseUrl,
-            new FirebaseOptions
+
+            var url = SecretsManager.FirebaseUrl;
+            var secret = SecretsManager.FirebaseSecret;
+
+            if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(secret))
             {
-                AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
+                DisplayAlert("Erro", "Credenciais do Firebase não foram carregadas corretamente.", "OK");
+                return;
+            }
+
+            firebaseClient = new FirebaseClient(url, new FirebaseOptions
+            {
+                AuthTokenAsyncFactory = () => Task.FromResult(secret)
             });
+
             _faceDetectionService = new FaceDetectionService();
         }
 
-        protected override void OnAppearing()
+        private async void OnRegistrarPresencaClicked(object sender, EventArgs e)
         {
-            base.OnAppearing();
-            UpdateThemeIcon();
-        }
+            SetUIState(true);
 
-        private async void OnFacialRecognitionClicked(object sender, EventArgs e)
-        {
             try
             {
-                LoadingIndicator.IsVisible = true;
-                LoadingIndicator.IsRunning = true;
-
                 var photo = await MediaPicker.CapturePhotoAsync();
-                if (photo == null) return;
-
-                using var stream = await photo.OpenReadAsync();
-                var base64Atual = ConvertImageToBase64(stream);
-
-                PhotoImage.Source = ImageSource.FromStream(() => stream);
-                PhotoImage.IsVisible = true;
-
-                var aluno = await FindStudentByRA(RaEntry.Text);
-                if (aluno == null || string.IsNullOrEmpty(aluno.FaceImageBase64))
+                if (photo == null)
                 {
-                    await DisplayAlert("Erro", "Aluno não encontrado ou sem imagem facial cadastrada.", "OK");
+                    await DisplayAlert("Erro", "Não foi possível acessar a câmera.", "OK");
                     return;
                 }
 
-                var resultado = await _faceDetectionService.CompararImagensAsync(aluno.FaceImageBase64, base64Atual);
+                using var stream = await photo.OpenReadAsync();
+                var base64Atual = ConvertImageToBase64(stream);
+                PhotoImage.Source = ImageSource.FromStream(() => stream);
+                PhotoImage.IsVisible = true;
 
-                if (resultado)
+                var alunos = await firebaseClient.Child("users").OnceAsync<UserModel>();
+                var alunoReconhecido = alunos
+                    .Where(u => u.Object.UserType == "Aluno" && !string.IsNullOrEmpty(u.Object.FaceImageBase64))
+                    .Select(u =>
+                    {
+                        u.Object.Uid = u.Key;
+                        return u.Object;
+                    })
+                    .FirstOrDefault(u => _faceDetectionService.CompararImagensAsync(u.FaceImageBase64, base64Atual).Result);
+
+                if (alunoReconhecido != null)
                 {
-                    await DisplayAlert("Autenticação Facial", "Rosto reconhecido com sucesso!", "OK");
-                    await HandlePresenceRegistration(isEntrada: true);
+                    await DisplayAlert("Autenticação Facial", $"Rosto reconhecido: {alunoReconhecido.Nome}", "OK");
+                    await HandlePresenceRegistration(alunoReconhecido, isEntrada: true);
                 }
                 else
                 {
-                    await DisplayAlert("Falha na Autenticação", "O rosto não corresponde ao cadastro.", "OK");
+                    await DisplayAlert("Rosto não reconhecido",
+                        "Tente novamente sem óculos, boné ou em ambiente iluminado.",
+                        "OK");
+
+                    TryAgainButton.IsVisible = true;
                 }
             }
             catch (Exception ex)
@@ -72,88 +86,34 @@ namespace SAAD.Views
             }
             finally
             {
-                LoadingIndicator.IsVisible = false;
-                LoadingIndicator.IsRunning = false;
+                SetUIState(false);
             }
         }
 
-        private string ConvertImageToBase64(Stream imageStream)
+        private void OnTryAgainClicked(object sender, EventArgs e)
         {
-            using var memoryStream = new MemoryStream();
-            imageStream.CopyTo(memoryStream);
-            return Convert.ToBase64String(memoryStream.ToArray());
-
+            TryAgainButton.IsVisible = false;
+            PhotoImage.IsVisible = false;
+            OnRegistrarPresencaClicked(sender, e);
         }
 
-        // --- LÓGICA DO REGISTO POR RA ---
-        private async void OnEntradaClicked(object sender, EventArgs e)
+        private async Task HandlePresenceRegistration(UserModel aluno, bool isEntrada)
         {
-            await HandlePresenceRegistration(isEntrada: true);
-        }
-
-        private async void OnSaidaClicked(object sender, EventArgs e)
-        {
-            await HandlePresenceRegistration(isEntrada: false);
-        }
-
-        private async Task HandlePresenceRegistration(bool isEntrada)
-        {
-            if (string.IsNullOrWhiteSpace(RaEntry.Text))
+            var aulaAtual = await GetCurrentClass();
+            if (aulaAtual == null)
             {
-                await DisplayAlert("Erro", "Por favor, digite o seu RA.", "OK");
+                await DisplayAlert("Aviso", "Não há nenhuma aula programada para o horário atual.", "OK");
                 return;
             }
 
-            SetUIState(isLoading: true);
-
-            try
+            if (isEntrada)
             {
-                var aluno = await FindStudentByRA(RaEntry.Text);
-                if (aluno == null)
-                {
-                    await DisplayAlert("Erro", "RA não encontrado. Verifique o número digitado.", "OK");
-                    return;
-                }
-
-                var aulaAtual = await GetCurrentClass();
-                if (aulaAtual == null)
-                {
-                    await DisplayAlert("Aviso", "Não há nenhuma aula programada para o horário atual.", "OK");
-                    return;
-                }
-
-                if (isEntrada)
-                {
-                    await RegisterEntrada(aluno, aulaAtual);
-                }
-                else
-                {
-                    await RegisterSaida(aluno);
-                }
+                await RegisterEntrada(aluno, aulaAtual);
             }
-            catch (Exception ex)
+            else
             {
-                await DisplayAlert("Erro Inesperado", $"Ocorreu um erro: {ex.Message}", "OK");
+                await RegisterSaida(aluno);
             }
-            finally
-            {
-                SetUIState(isLoading: false);
-                RaEntry.Text = string.Empty;
-            }
-        }
-
-        // --- MÉTODOS AUXILIARES ---
-        private async Task<UserModel> FindStudentByRA(string ra)
-        {
-            var users = await firebaseClient.Child("users").OnceAsync<UserModel>();
-            return users
-                .Where(u => u.Object.RegistroAcademico == ra && u.Object.UserType == "Aluno")
-                .Select(u =>
-                {
-                    u.Object.Uid = u.Key;
-                    return u.Object;
-                })
-                .FirstOrDefault();
         }
 
         private async Task<Horario> GetCurrentClass()
@@ -175,7 +135,7 @@ namespace SAAD.Views
 
             if (entradaAberta != null)
             {
-                await DisplayAlert("Aviso", $"{aluno.Nome}, a sua entrada já foi registrada às {entradaAberta.Object.HoraEntrada:HH:mm}.", "OK");
+                await DisplayAlert("Aviso", $"{aluno.Nome}, sua entrada já foi registrada às {entradaAberta.Object.HoraEntrada:HH:mm}.", "OK");
                 return;
             }
 
@@ -190,7 +150,7 @@ namespace SAAD.Views
             };
 
             await firebaseClient.Child("presencas").PostAsync(novaPresenca);
-            await DisplayAlert("Sucesso!", $"Entrada de {aluno.Nome} registrada com sucesso às {novaPresenca.HoraEntrada:HH:mm} para a aula de {aula.MateriaName}.", "OK");
+            await DisplayAlert("Sucesso!", $"Entrada de {aluno.Nome} registrada às {novaPresenca.HoraEntrada:HH:mm} para {aula.MateriaName}.", "OK");
         }
 
         private async Task RegisterSaida(UserModel aluno)
@@ -201,46 +161,28 @@ namespace SAAD.Views
 
             if (entradaAberta == null)
             {
-                await DisplayAlert("Erro", "Nenhum registro de entrada aberto foi encontrado para você hoje. Por favor, registre sua entrada primeiro.", "OK");
+                await DisplayAlert("Erro", "Nenhum registro de entrada aberto encontrado para hoje.", "OK");
                 return;
             }
 
             entradaAberta.Object.HoraSaida = DateTime.Now;
             await firebaseClient.Child("presencas").Child(entradaAberta.Key).PutAsync(entradaAberta.Object);
-            await DisplayAlert("Até Logo!", $"Saída de {aluno.Nome} registrada com sucesso às {entradaAberta.Object.HoraSaida:HH:mm}.", "OK");
+            await DisplayAlert("Até logo!", $"Saída registrada às {entradaAberta.Object.HoraSaida:HH:mm}.", "OK");
+        }
+
+        private string ConvertImageToBase64(Stream imageStream)
+        {
+            using var memoryStream = new MemoryStream();
+            imageStream.CopyTo(memoryStream);
+            return Convert.ToBase64String(memoryStream.ToArray());
         }
 
         private void SetUIState(bool isLoading)
         {
             LoadingIndicator.IsVisible = isLoading;
             LoadingIndicator.IsRunning = isLoading;
-            EntradaButton.IsEnabled = !isLoading;
-            SaidaButton.IsEnabled = !isLoading;
-            FacialButton.IsEnabled = !isLoading; // Controla o novo botão também
-        }
-
-        private byte[] ReadStream(Stream stream)
-        {
-            using var memoryStream = new MemoryStream();
-            stream.Position = 0;
-            stream.CopyTo(memoryStream);
-            return memoryStream.ToArray();
-        }
-
-        // --- LÓGICA DO TEMA ---
-        private void OnThemeIconTapped(object sender, TappedEventArgs e)
-        {
-            var app = (App)Application.Current;
-            app.ToggleTheme();
-            UpdateThemeIcon();
-        }
-
-        private void UpdateThemeIcon()
-        {
-            var app = (App)Application.Current;
-            ThemeIconLabel.Text = app.CurrentTheme == Theme.Light
-                ? FontAwesomeIcons.Sun
-                : FontAwesomeIcons.Moon;
+            RegistrarPresencaButton.IsEnabled = !isLoading;
+            TryAgainButton.IsEnabled = !isLoading;
         }
     }
 }
