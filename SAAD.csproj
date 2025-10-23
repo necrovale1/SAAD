@@ -54,7 +54,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="FaceRecognition-.Net\FaceRecognition-.Net\FaceRecognition-.Net.csproj" />
+	  <ProjectReference Include="..\FaceRecognition-.Net\FaceRecognition-.Net\FaceRecognition-.Net.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
