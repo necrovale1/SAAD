@@ -2,7 +2,8 @@ using Microsoft.Maui.Controls;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using FaceRecognition; 
+using SAAD.Services;
+
 
 namespace SAAD.Views
 {
@@ -15,11 +16,16 @@ namespace SAAD.Views
             InitializeComponent();
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            // Aguarda a renderização da interface
+            await Task.Delay(500);
+
             StartCameraDetection();
         }
+
 
         private async void StartCameraDetection()
         {
@@ -39,10 +45,10 @@ namespace SAAD.Views
                     // Exibe imagem capturada no preview
                     CameraPreview.Source = ImageSource.FromStream(() => stream);
 
-                    // Detecção facial real com FaceRecognition
-                    var result = await FaceRecognitionService.DetectAsync(stream);
+                    var imagemCadastrada = await FileSystem.OpenAppPackageFileAsync("imagem_cadastrada.jpg");
+                    var rostoDetectado = await AzureFaceService.CompararAsync(stream, imagemCadastrada);
 
-                    if (result.FaceDetected)
+                    if (rostoDetectado)
                     {
                         InstructionLabel.Text = "Rosto detectado!";
                         LoadingIndicator.IsVisible = true;
@@ -77,10 +83,16 @@ namespace SAAD.Views
             }
         }
 
-        private async Task EnviarParaAzure(Stream imageStream)
+        private async Task EnviarParaAzure(Stream imagemCapturada)
         {
-      
-            var resultado = await AzureFaceService.CompararAsync(imageStream, imagemCadastrada);
+            var imagemCadastrada = await FileSystem.OpenAppPackageFileAsync("imagem_cadastrada.jpg");
+
+            var resultado = await AzureFaceService.CompararAsync(imagemCapturada, imagemCadastrada);
+
+            if (resultado)
+                await DisplayAlert("Verificação", "Rosto compatível com cadastro!", "OK");
+            else
+                await DisplayAlert("Verificação", "Rosto não reconhecido.", "OK");
         }
     }
 }
