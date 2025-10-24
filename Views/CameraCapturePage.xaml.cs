@@ -11,6 +11,11 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+<<<<<<< HEAD
+=======
+using SAAD.Services;
+
+>>>>>>> e7a75db0abf4951fa25ff787f02f74fa389a8764
 
 namespace SAAD.Views
 {
@@ -36,19 +41,67 @@ namespace SAAD.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+<<<<<<< HEAD
             await CapturarEReconhecer();
         }
 
         private async Task CapturarEReconhecer()
+=======
+
+            // Aguarda a renderização da interface
+            await Task.Delay(500);
+
+            StartCameraDetection();
+        }
+
+
+        private async void StartCameraDetection()
+>>>>>>> e7a75db0abf4951fa25ff787f02f74fa389a8764
         {
             try
             {
                 var photo = await MediaPicker.CapturePhotoAsync();
                 if (photo == null)
                 {
+<<<<<<< HEAD
                     await DisplayAlert("Erro", "Nenhuma foto foi capturada.", "OK");
                     await Navigation.PopAsync();
                     return;
+=======
+                    var photo = await MediaPicker.CapturePhotoAsync();
+                    if (photo == null) continue;
+
+                    using var stream = await photo.OpenReadAsync();
+
+                    // Exibe imagem capturada no preview
+                    CameraPreview.Source = ImageSource.FromStream(() => stream);
+
+                    var imagemCadastrada = await FileSystem.OpenAppPackageFileAsync("imagem_cadastrada.jpg");
+                    var rostoDetectado = await AzureFaceService.CompararAsync(stream, imagemCadastrada);
+
+                    if (rostoDetectado)
+                    {
+                        InstructionLabel.Text = "Rosto detectado!";
+                        LoadingIndicator.IsVisible = true;
+                        LoadingIndicator.IsRunning = true;
+
+                        await Task.Delay(1000); // Simula tempo de captura
+
+                        await DisplayAlert("Sucesso", "Imagem capturada com sucesso!", "OK");
+
+                        // Enviar para Azure Face API
+                        await EnviarParaAzure(stream);
+
+                        LoadingIndicator.IsVisible = false;
+                        LoadingIndicator.IsRunning = false;
+                        break;
+                    }
+                    else
+                    {
+                        InstructionLabel.Text = "Rosto não detectado. Tente novamente sem óculos ou boné.";
+                        await Task.Delay(1500);
+                    }
+>>>>>>> e7a75db0abf4951fa25ff787f02f74fa389a8764
                 }
 
                 using var streamFoto = await photo.OpenReadAsync();
@@ -79,5 +132,20 @@ namespace SAAD.Views
                 await Navigation.PopAsync();
             }
         }
+<<<<<<< HEAD
+=======
+
+        private async Task EnviarParaAzure(Stream imagemCapturada)
+        {
+            var imagemCadastrada = await FileSystem.OpenAppPackageFileAsync("imagem_cadastrada.jpg");
+
+            var resultado = await AzureFaceService.CompararAsync(imagemCapturada, imagemCadastrada);
+
+            if (resultado)
+                await DisplayAlert("Verificação", "Rosto compatível com cadastro!", "OK");
+            else
+                await DisplayAlert("Verificação", "Rosto não reconhecido.", "OK");
+        }
+>>>>>>> e7a75db0abf4951fa25ff787f02f74fa389a8764
     }
 }
