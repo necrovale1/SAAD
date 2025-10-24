@@ -1,11 +1,13 @@
-﻿namespace SAAD.Models
+﻿using System;
+
+namespace SAAD.Models
 {
     public class Materia
     {
-        public string Key { get; set; }
-        public string Nome { get; set; }
-        public string Professor { get; set; }
-        public string Categoria { get; set; }
-        public string Descricao { get; set; }
+        public string MateriaKey { get; set; }     // Chave única da matéria
+        public string MateriaName { get; set; }    // Nome da matéria
+        public string ProfessorUid { get; set; }   // UID do professor responsável
+        public string ProfessorName { get; set; }  // Nome do professor
+        public string Curso { get; set; }          // Nome do curso ou turma
     }
 }

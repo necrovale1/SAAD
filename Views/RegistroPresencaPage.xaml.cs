@@ -4,10 +4,11 @@ using SAAD.Helpers;
 using SAAD.Models;
 using SAAD.Services;
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Messaging;
+using SAAD.Messages;
 using UserModel = SAAD.Models.User;
 
 namespace SAAD.Views
@@ -15,86 +16,27 @@ namespace SAAD.Views
     public partial class RegistroPresencaPage : ContentPage
     {
         private FirebaseClient firebaseClient;
-        private readonly FaceDetectionService _faceDetectionService;
 
         public RegistroPresencaPage()
         {
             InitializeComponent();
 
-            var url = SecretsManager.FirebaseUrl;
-            var secret = SecretsManager.FirebaseSecret;
+            firebaseClient = new FirebaseClient(
+                SecretsManager.FirebaseUrl,
+                new FirebaseOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
+                });
 
-            if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(secret))
+            WeakReferenceMessenger.Default.Register<AlunoReconhecidoMessage>(this, async (r, msg) =>
             {
-                DisplayAlert("Erro", "Credenciais do Firebase não foram carregadas corretamente.", "OK");
-                return;
-            }
-
-            firebaseClient = new FirebaseClient(url, new FirebaseOptions
-            {
-                AuthTokenAsyncFactory = () => Task.FromResult(secret)
+                await HandlePresenceRegistration(msg.Value, isEntrada: true);
             });
-
-            _faceDetectionService = new FaceDetectionService();
         }
 
         private async void OnRegistrarPresencaClicked(object sender, EventArgs e)
         {
-            SetUIState(true);
-
-            try
-            {
-                var photo = await MediaPicker.CapturePhotoAsync();
-                if (photo == null)
-                {
-                    await DisplayAlert("Erro", "Não foi possível acessar a câmera.", "OK");
-                    return;
-                }
-
-                using var stream = await photo.OpenReadAsync();
-                var base64Atual = ConvertImageToBase64(stream);
-                PhotoImage.Source = ImageSource.FromStream(() => stream);
-                PhotoImage.IsVisible = true;
-
-                var alunos = await firebaseClient.Child("users").OnceAsync<UserModel>();
-                var alunoReconhecido = alunos
-                    .Where(u => u.Object.UserType == "Aluno" && !string.IsNullOrEmpty(u.Object.FaceImageBase64))
-                    .Select(u =>
-                    {
-                        u.Object.Uid = u.Key;
-                        return u.Object;
-                    })
-                    .FirstOrDefault(u => _faceDetectionService.CompararImagensAsync(u.FaceImageBase64, base64Atual).Result);
-
-                if (alunoReconhecido != null)
-                {
-                    await DisplayAlert("Autenticação Facial", $"Rosto reconhecido: {alunoReconhecido.Nome}", "OK");
-                    await HandlePresenceRegistration(alunoReconhecido, isEntrada: true);
-                }
-                else
-                {
-                    await DisplayAlert("Rosto não reconhecido",
-                        "Tente novamente sem óculos, boné ou em ambiente iluminado.",
-                        "OK");
-
-                    TryAgainButton.IsVisible = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Erro", ex.Message, "OK");
-            }
-            finally
-            {
-                SetUIState(false);
-            }
-        }
-
-        private void OnTryAgainClicked(object sender, EventArgs e)
-        {
-            TryAgainButton.IsVisible = false;
-            PhotoImage.IsVisible = false;
-            OnRegistrarPresencaClicked(sender, e);
+            await Navigation.PushAsync(new CameraCapturePage());
         }
 
         private async Task HandlePresenceRegistration(UserModel aluno, bool isEntrada)
@@ -107,13 +49,9 @@ namespace SAAD.Views
             }
 
             if (isEntrada)
-            {
                 await RegisterEntrada(aluno, aulaAtual);
-            }
             else
-            {
                 await RegisterSaida(aluno);
-            }
         }
 
         private async Task<Horario> GetCurrentClass()
@@ -157,7 +95,9 @@ namespace SAAD.Views
         {
             var presencas = await firebaseClient.Child("presencas").OnceAsync<Presenca>();
             var entradaAberta = presencas
-                .FirstOrDefault(p => p.Object.StudentUid == aluno.Uid && p.Object.Data.Date == DateTime.Today && p.Object.HoraSaida == null);
+                .FirstOrDefault(p => p.Object.StudentUid == aluno.Uid &&
+                                     p.Object.Data.Date == DateTime.Today &&
+                                     p.Object.HoraSaida == null);
 
             if (entradaAberta == null)
             {
@@ -170,19 +110,16 @@ namespace SAAD.Views
             await DisplayAlert("Até logo!", $"Saída registrada às {entradaAberta.Object.HoraSaida:HH:mm}.", "OK");
         }
 
-        private string ConvertImageToBase64(Stream imageStream)
+        private async void OnRegistrarSaidaClicked(object sender, EventArgs e)
         {
-            using var memoryStream = new MemoryStream();
-            imageStream.CopyTo(memoryStream);
-            return Convert.ToBase64String(memoryStream.ToArray());
-        }
+            // Envia para CameraCapturePage com isEntrada: false
+            WeakReferenceMessenger.Default.Register<AlunoReconhecidoMessage>(this, async (r, msg) =>
+            {
+                if (!msg.IsEntrada)
+                    await HandlePresenceRegistration(msg.Value, isEntrada: false);
+            });
 
-        private void SetUIState(bool isLoading)
-        {
-            LoadingIndicator.IsVisible = isLoading;
-            LoadingIndicator.IsRunning = isLoading;
-            RegistrarPresencaButton.IsEnabled = !isLoading;
-            TryAgainButton.IsEnabled = !isLoading;
+            await Navigation.PushAsync(new CameraCapturePage());
         }
     }
 }

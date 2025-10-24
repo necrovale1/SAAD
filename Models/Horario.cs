@@ -1,11 +1,13 @@
-﻿namespace SAAD.Models
+﻿using System;
+
+namespace SAAD.Models
 {
     public class Horario
     {
-        public string MateriaKey { get; set; }
+        public string MateriaKey { get; set; } // chave única da matéria
         public string MateriaName { get; set; }
-        public DayOfWeek DiaDaSemana { get; set; } // Usaremos o tipo DayOfWeek (Sunday = 0, Monday = 1, etc.)
-        public TimeSpan HoraInicio { get; set; } // Ex: 19:00
-        public TimeSpan HoraFim { get; set; }    // Ex: 22:25
+        public DayOfWeek DiaDaSemana { get; set; }
+        public TimeSpan HoraInicio { get; set; }
+        public TimeSpan HoraFim { get; set; }
     }
 }

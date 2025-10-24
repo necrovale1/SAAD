@@ -1,14 +1,15 @@
-﻿namespace SAAD.Models
+﻿using System;
+
+namespace SAAD.Models
 {
     public class Presenca
     {
-        public string Key { get; set; } // Chave do registo de presença
         public string StudentUid { get; set; }
         public string StudentName { get; set; }
-        public string HorarioKey { get; set; } // Chave do horário para saber a aula
+        public string HorarioKey { get; set; }
         public string MateriaName { get; set; }
-        public DateTime Data { get; set; } // A data do registo
-        public DateTime? HoraEntrada { get; set; } // Hora de entrada
-        public DateTime? HoraSaida { get; set; }   // Hora de saída (pode ser nula)
+        public DateTime Data { get; set; }
+        public DateTime HoraEntrada { get; set; }
+        public DateTime? HoraSaida { get; set; } // pode ser nulo até o aluno sair
     }
 }

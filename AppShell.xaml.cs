@@ -5,7 +5,6 @@
         public AppShell()
         {
             InitializeComponent();
-            // Todas as rotas antigas foram removidas.
         }
     }
 }

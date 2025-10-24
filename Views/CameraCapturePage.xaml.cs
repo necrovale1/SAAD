@@ -1,86 +1,83 @@
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Media;
+using SAAD.Models;
+using SAAD.Services;
+using SAAD.Helpers;
+using SAAD.Messages;
+using Firebase.Database;
+using Firebase.Database.Query;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using FaceRecognition; 
 
 namespace SAAD.Views
 {
     public partial class CameraCapturePage : ContentPage
     {
-        private int tentativas = 0;
+        private FirebaseClient firebaseClient;
+        private FaceRecognitionService faceService;
 
         public CameraCapturePage()
         {
             InitializeComponent();
+
+            firebaseClient = new FirebaseClient(
+                SecretsManager.FirebaseUrl,
+                new FirebaseOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
+                });
+
+            faceService = new FaceRecognitionService(SecretsManager.AzureEndpoint, SecretsManager.AzureKey);
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
-            StartCameraDetection();
+            await CapturarEReconhecer();
         }
 
-        private async void StartCameraDetection()
+        private async Task CapturarEReconhecer()
         {
-            InstructionLabel.Text = "Aproxime o rosto";
-
-            while (tentativas < 10)
+            try
             {
-                tentativas++;
-
-                try
+                var photo = await MediaPicker.CapturePhotoAsync();
+                if (photo == null)
                 {
-                    var photo = await MediaPicker.CapturePhotoAsync();
-                    if (photo == null) continue;
-
-                    using var stream = await photo.OpenReadAsync();
-
-                    // Exibe imagem capturada no preview
-                    CameraPreview.Source = ImageSource.FromStream(() => stream);
-
-                    // Detecção facial real com FaceRecognition
-                    var result = await FaceRecognitionService.DetectAsync(stream);
-
-                    if (result.FaceDetected)
-                    {
-                        InstructionLabel.Text = "Rosto detectado!";
-                        LoadingIndicator.IsVisible = true;
-                        LoadingIndicator.IsRunning = true;
-
-                        await Task.Delay(1000); // Simula tempo de captura
-
-                        await DisplayAlert("Sucesso", "Imagem capturada com sucesso!", "OK");
-
-                        // Enviar para Azure Face API
-                        await EnviarParaAzure(stream);
-
-                        LoadingIndicator.IsVisible = false;
-                        LoadingIndicator.IsRunning = false;
-                        break;
-                    }
-                    else
-                    {
-                        InstructionLabel.Text = "Rosto não detectado. Tente novamente sem óculos ou boné.";
-                        await Task.Delay(1500);
-                    }
+                    await DisplayAlert("Erro", "Nenhuma foto foi capturada.", "OK");
+                    await Navigation.PopAsync();
+                    return;
                 }
-                catch (Exception ex)
+
+                using var streamFoto = await photo.OpenReadAsync();
+
+                var alunos = await firebaseClient.Child("users").OnceAsync<User>();
+                var listaDeAlunos = alunos
+                    .Where(u => u.Object.UserType == "Aluno")
+                    .Select(u => u.Object)
+                    .ToList();
+
+                var alunoReconhecido = await faceService.ReconhecerAluno(streamFoto, listaDeAlunos);
+
+                if (alunoReconhecido != null)
                 {
-                    await DisplayAlert("Erro", ex.Message, "OK");
+                    // Por padrão, assume entrada. Você pode alterar isso conforme o botão que chamou a página.
+                    WeakReferenceMessenger.Default.Send(new AlunoReconhecidoMessage(alunoReconhecido, isEntrada: true));
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+                    await DisplayAlert("Não reconhecido", "Nenhum aluno foi identificado.", "OK");
+                    await Navigation.PopAsync();
                 }
             }
-
-            if (tentativas >= 10)
+            catch (Exception ex)
             {
-                await DisplayAlert("Falha", "Não foi possível detectar o rosto após várias tentativas.", "OK");
+                await DisplayAlert("Erro", $"Falha na captura ou reconhecimento: {ex.Message}", "OK");
+                await Navigation.PopAsync();
             }
-        }
-
-        private async Task EnviarParaAzure(Stream imageStream)
-        {
-      
-            var resultado = await AzureFaceService.CompararAsync(imageStream, imagemCadastrada);
         }
     }
 }

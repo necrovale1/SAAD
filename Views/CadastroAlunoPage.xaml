@@ -1,0 +1,37 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAAD.Views.CadastroAlunoPage"
+             Title="Cadastro de Aluno">
+
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <Label Text="Cadastro de Aluno"
+                   FontSize="24"
+                   HorizontalOptions="Center" />
+
+            <Entry x:Name="NomeEntry"
+                   Placeholder="Nome completo" />
+
+            <Entry x:Name="EmailEntry"
+                   Placeholder="Email" />
+
+            <Image x:Name="FotoPreview"
+                   HeightRequest="200"
+                   Aspect="AspectFill"
+                   IsVisible="False"
+                   BackgroundColor="#E0E0E0" />
+
+            <Button Text="Capturar Foto"
+                    Clicked="OnCapturarFotoClicked"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    CornerRadius="10" />
+
+            <Button Text="Salvar Aluno"
+                    Clicked="OnSalvarAlunoClicked"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    CornerRadius="10" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
