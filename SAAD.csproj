@@ -41,7 +41,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+<<<<<<< HEAD
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+=======
+		<PackageReference Include="FaceRecognitionDotNet" Version="1.3.0.7" />
+>>>>>>> e7a75db0abf4951fa25ff787f02f74fa389a8764
 		<PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
 		<PackageReference Include="FirebaseDatabase.net" Version="5.0.0" />
 		<PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
