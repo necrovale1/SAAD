@@ -48,7 +48,7 @@ namespace SAAD.Views
         private async Task CapturarEReconhecer()
 =======
 
-            // Aguarda a renderizaÁ„o da interface
+            // Aguarda a renderiza√ß√£o da interface
             await Task.Delay(500);
 
             StartCameraDetection();
@@ -68,8 +68,10 @@ namespace SAAD.Views
                     await Navigation.PopAsync();
                     return;
 =======
-                    var photo = await MediaPicker.CapturePhotoAsync();
-                    if (photo == null) continue;
+                    }
+                    else {
+                   // var photo = await MediaPicker.CapturePhotoAsync();
+                  //  if (photo == null) continue;
 
                     using var stream = await photo.OpenReadAsync();
 
@@ -98,7 +100,7 @@ namespace SAAD.Views
                     }
                     else
                     {
-                        InstructionLabel.Text = "Rosto n„o detectado. Tente novamente sem Ûculos ou bonÈ.";
+                        InstructionLabel.Text = "Rosto n√£o detectado. Tente novamente sem √≥culos ou bon√©.";
                         await Task.Delay(1500);
                     }
 >>>>>>> e7a75db0abf4951fa25ff787f02f74fa389a8764
@@ -116,13 +118,13 @@ namespace SAAD.Views
 
                 if (alunoReconhecido != null)
                 {
-                    // Por padr„o, assume entrada. VocÍ pode alterar isso conforme o bot„o que chamou a p·gina.
+                    // Por padr√£o, assume entrada. Voc√™ pode alterar isso conforme o bot√£o que chamou a p√°gina.
                     WeakReferenceMessenger.Default.Send(new AlunoReconhecidoMessage(alunoReconhecido, isEntrada: true));
                     await Navigation.PopAsync();
                 }
                 else
                 {
-                    await DisplayAlert("N„o reconhecido", "Nenhum aluno foi identificado.", "OK");
+                    await DisplayAlert("N√£o reconhecido", "Nenhum aluno foi identificado.", "OK");
                     await Navigation.PopAsync();
                 }
             }
@@ -132,6 +134,7 @@ namespace SAAD.Views
                 await Navigation.PopAsync();
             }
         }
+    }
 <<<<<<< HEAD
 =======
 
@@ -142,9 +145,9 @@ namespace SAAD.Views
             var resultado = await AzureFaceService.CompararAsync(imagemCapturada, imagemCadastrada);
 
             if (resultado)
-                await DisplayAlert("VerificaÁ„o", "Rosto compatÌvel com cadastro!", "OK");
+                await DisplayAlert("Verifica√ß√£o", "Rosto compat√≠vel com cadastro!", "OK");
             else
-                await DisplayAlert("VerificaÁ„o", "Rosto n„o reconhecido.", "OK");
+                await DisplayAlert("Verifica√ß√£o", "Rosto n√£o reconhecido.", "OK");
         }
 >>>>>>> e7a75db0abf4951fa25ff787f02f74fa389a8764
     }
