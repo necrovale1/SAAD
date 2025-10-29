@@ -67,9 +67,10 @@ namespace SAAD.Views
                     await DisplayAlert("Erro", "Nenhuma foto foi capturada.", "OK");
                     await Navigation.PopAsync();
                     return;
-=======
-                    var photo = await MediaPicker.CapturePhotoAsync();
-                    if (photo == null) continue;
+                }
+                else {
+                    // var photo = await MediaPicker.CapturePhotoAsync();
+                    // if (photo == null) continue;
 
                     using var stream = await photo.OpenReadAsync();
 
@@ -78,7 +79,7 @@ namespace SAAD.Views
 
                     var imagemCadastrada = await FileSystem.OpenAppPackageFileAsync("imagem_cadastrada.jpg");
                     var rostoDetectado = await AzureFaceService.CompararAsync(stream, imagemCadastrada);
-
+                }
                     if (rostoDetectado)
                     {
                         InstructionLabel.Text = "Rosto detectado!";
