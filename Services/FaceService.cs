@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using SAAD.Helpers; // ADICIONE ESTE USING
+using SAAD.Helpers; 
 
 namespace SAAD.Services
 {
@@ -17,6 +17,23 @@ namespace SAAD.Services
         {
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SubscriptionKey);
+        }
+
+        public async Task<string> AnalyzeImageAsync(Stream imageStream)
+        {
+            // O endpoint para "Análise de Imagem" é diferente do endpoint de "Face"
+            // Pedimos por "tags" (rótulos) e "objects" (objetos) em português
+            var url = $"{Endpoint}/vision/v4.0/analyze?features=tags,objects&language=pt";
+
+            using var content = new StreamContent(imageStream);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+            var response = await _httpClient.PostAsync(url, content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            // O formato do JSON será diferente do Google, 
+            // você precisará extrair os rótulos (tags) dele
+            return json;
         }
 
         public async Task<string> DetectFaceAsync(Stream imageStream)
