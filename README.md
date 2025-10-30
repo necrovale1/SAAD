@@ -10,8 +10,8 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 ### ✅ Funcionalidades
 
 - Cadastro de aluno
-- Registro de presença
-- Consulta de frequência e disciplinas via site
+- Registro de presença por verificação facial
+- Consulta de frequência e disciplinas via site SAAD web
 
 ---
 
@@ -35,7 +35,7 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 
 # 🎨 Paleta de Cores - SAAD
 
-## 🌙 Tema Escuro
+### 🌙 Tema Escuro
 
 | Componente | Código HEX | Resource Key |
 |------------|-------------|--------------|
@@ -48,7 +48,7 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 | **Borda do Input** | `#606060` | `InputBorderColor` |
 | **Fundo do Input** | `#2c2c2c` | `InputBackgroundColor` |
 
-## ☀️ Tema Claro
+### ☀️ Tema Claro
 
 | Componente | Código HEX | Resource Key |
 |------------|-------------|--------------|
@@ -78,7 +78,7 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 
 ---
 
-- ## 🗂️ Gerenciamento do Projeto e Fluxo de Trabalho
+- # 🗂️ Gerenciamento do Projeto e Fluxo de Trabalho
 
 Para manter a organização e garantir que todos contribuam de forma eficaz, adotamos o uso de **Issues do GitHub** para gerenciar todas as tarefas.
 
@@ -115,7 +115,7 @@ Uma Issue é um cartão de tarefa digital. Ela descreve o que precisa ser feito,
 4.  **Assignees (Responsáveis):** **SEMPER** atribua a Issue a uma pessoa. É obrigatório.
 5.  **Labels (Etiquetas):** Adicione etiquetas como `bug`, `documentation` ou `enhancement` para classificar a tarefa.
 
-### 🚨 Regra de Ouro
+## 🚨 Regra de Ouro
 
 > **"Se não está no GitHub, não existe."**
 > Antes de perguntar "o que fazer?" ou "quais as pendências?", verifique a aba de Issues. A proatividade de todos em consultar e atualizar as Issues é fundamental para o sucesso do projeto, ajude colegas a melhorar as descrições e seja ativo! juntos venceremos!
