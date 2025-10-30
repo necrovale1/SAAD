@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SAAD</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="saad-body">
+    <!-- Header -->
+    <nav class="navbar saad-header navbar-expand-lg shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand saad-navbar-brand mb-0">
+                <i class="fas fa-fingerprint me-2"></i>SAAD
+            </span>
+            
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3 d-none d-md-block">
+                    <i class="fas fa-user-graduate me-1"></i>
+                    <span id="studentName">Carregando...</span>
+                </span>
+                <a href="perfil.html" class="btn saad-header-btn me-2">
+                    <i class="fas fa-user me-1"></i>Meu Perfil
+                </a>
+                <button class="btn saad-header-btn me-2" onclick="alternarTema()">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="btn saad-header-btn btn-logout" onclick="sair()">
+                    <i class="fas fa-sign-out-alt me-1"></i>Sair
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Sidebar Stats -->
+            <div class="col-lg-3 mb-4">
+                <div class="saad-stats-card p-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="saad-stats-icon me-3">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0" id="totalAulas">0</h4>
+                            <small class="text-muted">Total de Aulas</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="saad-stats-card p-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0" id="totalPresencas">0</h4>
+                            <small class="text-muted">Presenças</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="saad-stats-card p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0" id="totalFaltas">0</h4>
+                            <small class="text-muted">Faltas</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Header Dashboard -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="mb-1">Dashboard de Presenças</h2>
+                        <p class="text-muted mb-0">Acompanhe sua frequência acadêmica</p>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted" id="dataAtual"></small>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="saad-card p-4 mb-4">
+                    <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filtrar Presenças</h5>
+                    <form id="filtroForm" class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label saad-label">Data Início</label>
+                            <input type="date" class="form-control saad-input" id="dataInicio">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label saad-label">Data Fim</label>
+                            <input type="date" class="form-control saad-input" id="dataFim">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label saad-label">Matéria</label>
+                            <select class="form-select saad-input" id="materia">
+                                <option value="">Todas as Matérias</option>
+                                <option value="Matemática">Matemática</option>
+                                <option value="Português">Português</option>
+                                <option value="História">História</option>
+                                <option value="Geografia">Geografia</option>
+                                <option value="Física">Física</option>
+                                <option value="Química">Química</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn saad-btn-primary w-100" onclick="filtrarPresencas()">
+                                <i class="fas fa-search me-1"></i>Filtrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Tabela de Presenças -->
+                <div class="saad-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Registro de Presenças</h5>
+                        <span class="badge saad-badge-presente" id="totalRegistros">0 registros</span>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table saad-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Matéria</th>
+                                    <th>Horário Entrada</th>
+                                    <th>Horário Saída</th>
+                                    <th>Status</th>
+                                    <th>Professor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaPresencas">
+                                <tr>
+                                    <td colspan="6" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-search fa-2x mb-2"></i>
+                                            <p>Use os filtros para buscar suas presenças</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let currentUser = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            verificarAuth();
+            atualizarData();
+            carregarDadosUsuario();
+        });
+
+        function verificarAuth() {
+            auth.onAuthStateChanged(user => {
+                if (!user) {
+                    window.location.href = 'index.html';
+                } else {
+                    currentUser = user;
+                    carregarPresencas();
+                }
+            });
+        }
+
+        function carregarDadosUsuario() {
+            if (currentUser) {
+                db.collection("usuarios").where("email", "==", currentUser.email).get()
+                    .then(snapshot => {
+                        if (!snapshot.empty) {
+                            const userData = snapshot.docs[0].data();
+                            document.getElementById('studentName').textContent = userData.nome || 'Aluno';
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro ao carregar dados:", error);
+                    });
+            }
+        }
+
+        function atualizarData() {
+            const now = new Date();
+            document.getElementById('dataAtual').textContent = 
+                now.toLocaleDateString('pt-BR', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+        }
+
+        function carregarPresencas() {
+            if (!currentUser) return;
+
+            // Buscar RA do usuário primeiro
+            db.collection("usuarios").where("email", "==", currentUser.email).get()
+                .then(snapshot => {
+                    if (!snapshot.empty) {
+                        const userData = snapshot.docs[0].data();
+                        const userRA = userData.ra;
+                        
+                        // Agora buscar presenças pelo RA
+                        return db.collection("presencas")
+                            .where("ra", "==", userRA)
+                            .orderBy("data", "desc")
+                            .limit(50)
+                            .get();
+                    }
+                })
+                .then(snapshot => {
+                    if (snapshot && !snapshot.empty) {
+                        atualizarTabela(snapshot);
+                        atualizarEstatisticas(snapshot);
+                    } else {
+                        document.getElementById('tabelaPresencas').innerHTML = `
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                                        <p>Nenhum registro de presença encontrado</p>
+                                        <small>Seus registros aparecerão aqui após as aulas</small>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao carregar presenças:", error);
+                    showAlert('Erro ao carregar presenças: ' + error.message, 'danger');
+                });
+        }
+
+        function filtrarPresencas() {
+            const dataInicio = document.getElementById("dataInicio").value;
+            const dataFim = document.getElementById("dataFim").value;
+            const materia = document.getElementById("materia").value;
+
+            let query = db.collection("presencas");
+
+            // Buscar RA do usuário primeiro
+            db.collection("usuarios").where("email", "==", currentUser.email).get()
+                .then(snapshot => {
+                    if (!snapshot.empty) {
+                        const userData = snapshot.docs[0].data();
+                        const userRA = userData.ra;
+                        
+                        query = query.where("ra", "==", userRA);
+
+                        // Aplicar filtros
+                        if (dataInicio) {
+                            query = query.where("data", ">=", new Date(dataInicio));
+                        }
+                        if (dataFim) {
+                            const dataFimObj = new Date(dataFim);
+                            dataFimObj.setHours(23, 59, 59);
+                            query = query.where("data", "<=", dataFimObj);
+                        }
+                        if (materia) {
+                            query = query.where("materia", "==", materia);
+                        }
+
+                        return query.orderBy("data", "desc").get();
+                    }
+                })
+                .then(snapshot => {
+                    if (snapshot && !snapshot.empty) {
+                        atualizarTabela(snapshot);
+                        atualizarEstatisticas(snapshot);
+                    } else {
+                        document.getElementById('tabelaPresencas').innerHTML = `
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-search fa-2x mb-2"></i>
+                                        <p>Nenhum registro encontrado com os filtros aplicados</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        document.getElementById('totalRegistros').textContent = '0 registros';
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao filtrar:", error);
+                    showAlert('Erro ao filtrar presenças: ' + error.message, 'danger');
+                });
+        }
+
+        function atualizarTabela(snapshot) {
+            const tabela = document.getElementById("tabelaPresencas");
+            tabela.innerHTML = "";
+
+            snapshot.forEach(doc => {
+                const dados = doc.data();
+                const data = dados.data.toDate();
+                const statusBadge = getStatusBadge(dados.status);
+                
+                const linha = `
+                    <tr>
+                        <td>${data.toLocaleDateString('pt-BR')}</td>
+                        <td>
+                            <strong>${dados.materia}</strong>
+                            ${dados.turma ? `<br><small class="text-muted">Turma: ${dados.turma}</small>` : ''}
+                        </td>
+                        <td>${dados.horaEntrada || '--:--'}</td>
+                        <td>${dados.horaSaida || '--:--'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${dados.professor || 'Não informado'}</td>
+                    </tr>
+                `;
+                tabela.innerHTML += linha;
+            });
+
+            document.getElementById('totalRegistros').textContent = `${snapshot.size} registros`;
+        }
+
+        function atualizarEstatisticas(snapshot) {
+            let total = snapshot.size;
+            let presencas = 0;
+            let faltas = 0;
+
+            snapshot.forEach(doc => {
+                const dados = doc.data();
+                if (dados.status === 'Presente') presencas++;
+                if (dados.status === 'Falta') faltas++;
+            });
+
+            document.getElementById('totalAulas').textContent = total;
+            document.getElementById('totalPresencas').textContent = presencas;
+            document.getElementById('totalFaltas').textContent = faltas;
+        }
+
+        function getStatusBadge(status) {
+            const statusMap = {
+                'Presente': 'saad-badge-presente',
+                'Falta': 'saad-badge-falta',
+                'Atraso': 'saad-badge-atraso'
+            };
+            
+            const badgeClass = statusMap[status] || 'saad-badge-falta';
+            return `<span class="badge ${badgeClass}">${status}</span>`;
+        }
+
+        function alternarTema() {
+            const html = document.documentElement;
+            const temaAtual = html.getAttribute("data-theme");
+            const novoTema = temaAtual === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", novoTema);
+            localStorage.setItem("tema", novoTema);
+        }
+
+        function sair() {
+            auth.signOut().then(() => {
+                window.location.href = 'index.html';
+            });
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+            alertDiv.style.zIndex = '1050';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Aplicar tema salvo
+        const temaSalvo = localStorage.getItem("tema") || "light";
+        document.documentElement.setAttribute("data-theme", temaSalvo);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

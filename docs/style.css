@@ -1,0 +1,260 @@
+/* ===== VARIÁVEIS DE CORES SAAD ===== */
+:root {
+  /* Tema Claro */
+  --saad-primary: #fc0349;
+  --saad-primary-dark: #d0023b;
+  --saad-bg-light: #F5F5F5;
+  --saad-card-light: #FFFFFF;
+  --saad-text-light: #202020;
+  --saad-text-secondary-light: #606060;
+  --saad-border-light: #E0E0E0;
+  
+  /* Tema Escuro */
+  --saad-bg-dark: #202020;
+  --saad-card-dark: #2c2c2c;
+  --saad-text-dark: #E0E0E0;
+  --saad-text-secondary-dark: #A0A0A0;
+  --saad-border-dark: #404040;
+}
+
+[data-theme="dark"] {
+  --saad-bg: var(--saad-bg-dark);
+  --saad-card: var(--saad-card-dark);
+  --saad-text: var(--saad-text-dark);
+  --saad-text-secondary: var(--saad-text-secondary-dark);
+  --saad-border: var(--saad-border-dark);
+}
+
+[data-theme="light"] {
+  --saad-bg: var(--saad-bg-light);
+  --saad-card: var(--saad-card-light);
+  --saad-text: var(--saad-text-light);
+  --saad-text-secondary: var(--saad-text-secondary-light);
+  --saad-border: var(--saad-border-light);
+}
+
+/* ===== ESTILOS GERAIS ===== */
+.saad-body {
+  background: linear-gradient(135deg, var(--saad-bg) 0%, var(--saad-card) 100%);
+  color: var(--saad-text);
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* ===== LOGIN PAGE ===== */
+.login-body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.saad-card {
+  background: var(--saad-card);
+  border: 1px solid var(--saad-border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.saad-logo {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: white;
+  font-size: 2rem;
+}
+
+.saad-brand {
+  font-weight: 700;
+  color: var(--saad-primary);
+  margin-bottom: 0.5rem;
+}
+
+.saad-subtitle {
+  color: var(--saad-text-secondary);
+  font-size: 0.9rem;
+}
+
+.saad-label {
+  color: var(--saad-text);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.saad-input-group {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.saad-input-icon {
+  background: var(--saad-bg);
+  border: 1px solid var(--saad-border);
+  border-right: none;
+  color: var(--saad-text-secondary);
+}
+
+.saad-input {
+  background: var(--saad-card);
+  border: 1px solid var(--saad-border);
+  border-left: none;
+  color: var(--saad-text);
+  padding: 12px;
+}
+
+.saad-input:focus {
+  background: var(--saad-card);
+  border-color: var(--saad-primary);
+  color: var(--saad-text);
+  box-shadow: 0 0 0 0.2rem rgba(252, 3, 73, 0.25);
+}
+
+.saad-btn-primary {
+  background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark));
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.saad-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(252, 3, 73, 0.4);
+}
+
+.saad-footer-text {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===== HEADER ===== */
+.saad-header {
+  background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark));
+  border-bottom: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.saad-navbar-brand {
+  color: white !important;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.saad-header-btn {
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.saad-header-btn:hover {
+  background: rgba(255,255,255,0.1);
+  transform: translateY(-1px);
+}
+
+/* ===== CARDS ===== */
+.saad-stats-card {
+  background: var(--saad-card);
+  border: 1px solid var(--saad-border);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.saad-stats-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.saad-stats-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark));
+  color: white;
+}
+
+/* ===== TABELAS ===== */
+.saad-table {
+  background: var(--saad-card);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--saad-border);
+}
+
+.saad-table thead th {
+  background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark));
+  color: white;
+  border: none;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.saad-table tbody td {
+  padding: 12px 15px;
+  border-color: var(--saad-border);
+  vertical-align: middle;
+}
+
+/* ===== BADGES ===== */
+.saad-badge-presente {
+  background: linear-gradient(135deg, #00b09b, #96c93d);
+  color: white;
+}
+
+.saad-badge-falta {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+  color: white;
+}
+
+.saad-badge-atraso {
+  background: linear-gradient(135deg, #ffb347, #ffcc33);
+  color: white;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+  .saad-card {
+    margin: 10px;
+    border-radius: 12px;
+  }
+  
+  .saad-logo {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.saad-card {
+  animation: fadeIn 0.6s ease;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--saad-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--saad-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--saad-primary-dark);
+}
