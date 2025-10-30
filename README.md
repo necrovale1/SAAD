@@ -37,8 +37,8 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 
 ## 🌙 Tema Escuro
 
-| Componente | Cor | Código HEX | Resource Key |
-|------------|-----|-------------|--------------|
+| Componente | Código HEX | Resource Key |
+|------------|-------------|--------------|
 | **Fundo da Página** | `#202020` | `PageBackgroundColor` |
 | **Texto Primário**  | `#E0E0E0` | `PrimaryTextColor` |
 | **Texto Secundário**  | `#A0A0A0` | `SecondaryTextColor` |
@@ -50,8 +50,8 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 
 ## ☀️ Tema Claro
 
-| Componente | Cor | Código HEX | Resource Key |
-|------------|-----|-------------|--------------|
+| Componente | Código HEX | Resource Key |
+|------------|-------------|--------------|
 | **Fundo da Página** | `#F5F5F5` | `PageBackgroundColor` |
 | **Texto Primário** | `#202020` | `PrimaryTextColor` |
 | **Texto Secundário**| `#606060` | `SecondaryTextColor` |
