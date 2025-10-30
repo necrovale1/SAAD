@@ -80,14 +80,32 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        function login() {
-            const ra = document.getElementById("ra").value;
-            const senha = document.getElementById("senha").value;
+       function login() {
+    const ra = document.getElementById("ra").value;
+    const senha = document.getElementById("senha").value;
 
-            if (!ra || !senha) {
-                showAlert('Preencha todos os campos!', 'warning');
-                return;
+    // ✅ AGORA busca na coleção CORRETA "users"
+    db.collection("users").where("RegistroAcademico", "==", ra).get()
+        .then(snapshot => {
+            if (!snapshot.empty) {
+                const userData = snapshot.docs[0].data();
+                const email = userData.Email;  // ✅ "Email" com E maiúsculo
+                
+                return auth.signInWithEmailAndPassword(email, senha);
+            } else {
+                throw new Error("RA não encontrado");
             }
+        })
+        .then(() => {
+            showAlert('Login realizado com sucesso!', 'success');
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 1000);
+        })
+        .catch(error => {
+            showAlert('Erro: ' + error.message, 'danger');
+        });
+}
 
             // Loading state
             const btn = document.querySelector('.saad-btn-primary');
