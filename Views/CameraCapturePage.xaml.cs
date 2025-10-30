@@ -1,13 +1,11 @@
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Media;
-using SAAD.Models;
-using SAAD.Services; // Removido using duplicado
-using SAAD.Helpers;
-using SAAD.Messages;
+using Camera.MAUI; // Adicione este
+using CommunityToolkit.Mvvm.Messaging;
 using Firebase.Database;
 using Firebase.Database.Query;
-using CommunityToolkit.Mvvm.Messaging;
-using System;
+using SAAD.Helpers;
+using SAAD.Messages;
+using SAAD.Models;
+using SAAD.Services;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,94 +34,93 @@ namespace SAAD.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await CapturarEReconhecer();
-        }
 
-        // --- CORREÇÃO: Método 'CapturarEReconhecer' não tinha corpo {} ---
-        private async Task CapturarEReconhecer()
-        {
-            // Aguarda a renderização da interface
-            await Task.Delay(500);
-
-            // Inicia a detecção (método foi renomeado e corrigido)
-            await StartRecognitionProcess();
-        }
-
-        // --- CORREÇÃO: Lógica unificada e estruturada corretamente ---
-        private async Task StartRecognitionProcess()
-        {
-            try
+            // Verifica a permissão da câmera
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
             {
-                var photo = await MediaPicker.CapturePhotoAsync();
-                if (photo == null)
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
                 {
-                    await DisplayAlert("Erro", "Nenhuma foto foi capturada.", "OK");
+                    await DisplayAlert("Erro", "A permissão da câmera é necessária.", "OK");
                     await Navigation.PopAsync();
                     return;
                 }
+            }
 
-                // Lê a foto para um array de bytes. Isso permite usar o stream
-                // para a API e para o preview sem erros de "stream consumido".
-                byte[] photoBytes;
-                using (var stream = await photo.OpenReadAsync())
+            // Inicia a câmera
+            cameraView.Camera = cameraView.Cameras.FirstOrDefault(c => c.Position == CameraPosition.Front);
+        }
+
+        private async void CaptureButton_Clicked(object sender, EventArgs e)
+        {
+            SetLoading(true);
+
+            // Tira a foto usando o Camera.MAUI
+            var photoStream = await cameraView.TakePhotoAsync();
+
+            if (photoStream == null)
+            {
+                await DisplayAlert("Erro", "Não foi possível capturar a foto.", "OK");
+                SetLoading(false);
+                return;
+            }
+
+            // Agora, usamos a MESMA lógica que você já tinha
+            await StartRecognitionProcess(photoStream);
+        }
+
+        private async Task StartRecognitionProcess(Stream photoStream)
+        {
+            try
+            {
+                // Pega a lista de alunos do Firebase
+                var alunos = await firebaseClient.Child("users").OnceAsync<User>();
+                var listaDeAlunos = alunos
+                    .Where(u => u.Object.UserType == "Aluno")
+                    .Select(u => u.Object)
+                    .ToList();
+
+                // Reconhece o aluno usando seu serviço
+                // O 'FaceRecognitionService' já está pronto para isso (da nossa última conversa)
+                var alunoReconhecido = await faceService.ReconhecerAluno(photoStream, listaDeAlunos);
+
+                SetLoading(false);
+
+                if (alunoReconhecido != null)
                 {
-                    using (var ms = new MemoryStream())
-                    {
-                        await stream.CopyToAsync(ms);
-                        photoBytes = ms.ToArray();
-                    }
+                    // Envia a mensagem para a página anterior
+                    WeakReferenceMessenger.Default.Send(new AlunoReconhecidoMessage(alunoReconhecido, isEntrada: true));
+                    await DisplayAlert("Sucesso", $"Aluno '{alunoReconhecido.Nome}' reconhecido!", "OK");
+                    await Navigation.PopAsync();
                 }
-
-                // Exibe imagem capturada no preview
-                CameraPreview.Source = ImageSource.FromStream(() => new MemoryStream(photoBytes));
-
-                // Mostra o indicador de carregamento
-                InstructionLabel.Text = "Analisando...";
-                LoadingIndicator.IsVisible = true;
-                LoadingIndicator.IsRunning = true;
-
-                // Cria um novo stream para a API de reconhecimento
-                using (var apiStream = new MemoryStream(photoBytes))
+                else
                 {
-                    // Pega a lista de alunos do Firebase
-                    var alunos = await firebaseClient.Child("users").OnceAsync<User>();
-                    var listaDeAlunos = alunos
-                        .Where(u => u.Object.UserType == "Aluno")
-                        .Select(u => u.Object)
-                        .ToList();
-
-                    // Reconhece o aluno
-                    var alunoReconhecido = await faceService.ReconhecerAluno(apiStream, listaDeAlunos);
-
-                    // Esconde o indicador de carregamento
-                    LoadingIndicator.IsVisible = false;
-                    LoadingIndicator.IsRunning = false;
-
-                    if (alunoReconhecido != null)
-                    {
-                        // Envia a mensagem para a página anterior
-                        WeakReferenceMessenger.Default.Send(new AlunoReconhecidoMessage(alunoReconhecido, isEntrada: true));
-                        await DisplayAlert("Sucesso", $"Aluno '{alunoReconhecido.Nome}' reconhecido!", "OK");
-                        await Navigation.PopAsync();
-                    }
-                    else
-                    {
-                        await DisplayAlert("Não reconhecido", "Nenhum aluno foi identificado.", "OK");
-                        await Navigation.PopAsync();
-                    }
+                    await DisplayAlert("Não reconhecido", "Nenhum aluno foi identificado.", "OK");
+                    // Fica na página para tentar de novo
                 }
             }
             catch (Exception ex)
             {
-                // --- CORREÇÃO: O bloco 'catch' estava fora do 'try' ---
-                LoadingIndicator.IsVisible = false;
-                LoadingIndicator.IsRunning = false;
-                await DisplayAlert("Erro", $"Falha na captura ou reconhecimento: {ex.Message}", "OK");
-                await Navigation.PopAsync();
+                SetLoading(false);
+                await DisplayAlert("Erro", $"Falha no reconhecimento: {ex.Message}", "OK");
+            }
+            finally
+            {
+                // Limpa o stream da foto
+                if (photoStream != null)
+                {
+                    await photoStream.DisposeAsync();
+                }
             }
         }
 
-        // --- REMOVIDO: O método 'EnviarParaAzure' era parte da lógica
-        // conflitante e não estava sendo usado pelo fluxo principal.
+        private void SetLoading(bool isLoading)
+        {
+            LoadingIndicator.IsVisible = isLoading;
+            LoadingIndicator.IsRunning = isLoading;
+            CaptureButton.IsVisible = !isLoading;
+            InstructionLabel.Text = isLoading ? "Analisando..." : "Posicione seu rosto dentro da elipse";
+        }
     }
 }

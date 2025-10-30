@@ -1,4 +1,7 @@
-﻿namespace SAAD
+﻿using Camera.MAUI;
+using Microsoft.Extensions.Logging;
+
+namespace SAAD
 {
     public static class MauiProgram
     {
@@ -7,6 +10,7 @@
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCameraView()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
