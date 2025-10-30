@@ -1,35 +1,66 @@
 # 🎓 SAAD - Sistema de Autenticação Acadêmica Digital
 
+![SAAD Logo](https://img.shields.io/badge/SAAD-Sistema%20de%20Autenticação%20Acadêmica%20Digital-blue)
+![Platform](https://img.shields.io/badge/Platform-Web%20%26%20Mobile-green)
+![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-orange)
 
-### 📘 Sobre o App
+## 🌐 Sobre o Projeto
 
-SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência dos alunos. O aluno se cadastra pelo app e registra sua presença. Depois, pode acessar o site do SAAD para consultar suas faltas e matérias.
-
----
-
-### ✅ Funcionalidades
-
-- Cadastro de aluno
-- Registro de presença por verificação facial
-- Consulta de frequência e disciplinas via site SAAD web
+O **SAAD** é um sistema inovador de controle de frequência acadêmica que utiliza reconhecimento facial para autenticação de alunos. Desenvolvido com **.NET MAUI** para o aplicativo mobile e **tecnologias web modernas** para o dashboard online.
 
 ---
 
-### 🔧 Melhorias Sugeridas
+## 🚀 Site Oficial
 
-- Validação de dados no cadastro
-- Integração com banco de dados
-- Interface mais intuitiva
-- Testes automatizados
-- Documentação técnica
+### 🌐 **Acesse o Sistema Web:**
+🔗 **[https://sistema-saad.netlify.app](https://sistema-saad.netlify.app)**
+
+### 📁 **Código do Site:**
+Todo o código do site web está localizado na pasta **[`/docs/`](/docs)** deste repositório.
 
 ---
 
-### 🔄 Ajustes Necessários
+## 📱 Sobre o App
 
-- Refatorar código para melhor organização
-- Padronizar nomes e estilos
-- Atualizar dependências
+O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presença através de verificação facial. Posteriormente, podem acessar o site para consultar frequência e disciplinas.
+
+---
+
+## ✅ Funcionalidades
+
+### 📱 App Mobile
+- ✅ Cadastro de aluno com dados acadêmicos
+- ✅ Registro de presença por verificação facial
+- ✅ Reconhecimento biométrico em tempo real
+- ✅ Sincronização com banco de dados em nuvem
+
+### 🌐 Site Web
+- ✅ Login seguro com RA e senha
+- ✅ Dashboard interativo de presenças
+- ✅ Perfil completo do aluno
+- ✅ Filtros avançados por data e matéria
+- ✅ Tema claro/escuro
+- ✅ Design totalmente responsivo
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+### Frontend Web
+- **HTML5** + **CSS3** + **JavaScript**
+- **Bootstrap 5** - Interface responsiva
+- **Firebase SDK** - Integração com backend
+- **Font Awesome** - Ícones
+
+### Backend & Infraestrutura
+- **Firebase Authentication** - Autenticação de usuários
+- **Firebase Firestore** - Banco de dados em tempo real
+- **Netlify** - Hospedagem e CDN
+
+### Mobile
+- **.NET MAUI** - Desenvolvimento multiplataforma
+- **Visio** - Reconhecimento facial
+- **Firebase SDK** - Sincronização com backend
 
 ---
 
@@ -70,37 +101,55 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 - Mantém consistência entre temas claro e escuro
 
 ---
+## 🔧 Melhorias e Ajustes Planejados
 
-### 🎓 Colaboradores 
-- Carolina Rodrigues de Mattos
-- Claudio Baptista
-- Matheus Ramos
+### 🚀 Melhorias Sugeridas
+- [ ] Validação de dados no cadastro
+- [ ] Integração com banco de dados relacional
+- [ ] Interface mais intuitiva
+- [ ] Testes automatizados
+- [ ] Documentação técnica expandida
+
+### 🔄 Ajustes Necessários
+- [ ] Refatorar código para melhor organização
+- [ ] Padronizar nomes e estilos
+- [ ] Atualizar dependências
+- [ ] Otimização de performance
 
 ---
 
-- # 🗂️ Gerenciamento do Projeto e Fluxo de Trabalho
+## 👥 Equipe de Desenvolvimento
 
-Para manter a organização e garantir que todos contribuam de forma eficaz, adotamos o uso de **Issues do GitHub** para gerenciar todas as tarefas.
+### 🎓 Colaboradores
+- **Carolina Rodrigues de Mattos**
+- **Claudio Baptista** 
+- **Matheus Ramos**
 
-### ❓ O que é uma Issue?
-Uma Issue é um cartão de tarefa digital. Ela descreve o que precisa ser feito, por que é importante e quem é o responsável. É a nossa fonte única da verdade para o que está em andamento.
+---
 
-### ✅ Como Proceder daqui para Frente?
+# 🗂️ Gerenciamento do Projeto e Fluxo de Trabalho
+
+Para manter a organização e garantir contribuições eficazes, adotamos o uso de **Issues do GitHub** para gerenciar todas as tarefas.
+
+## ❓ O que é uma Issue?
+Uma Issue é um cartão de tarefa digital que descreve o que precisa ser feito, por que é importante e quem é o responsável. É nossa fonte única da verdade para o que está em andamento.
+
+## ✅ Como Proceder daqui para Frente?
 
 1.  **NÃO** crie novas funcionalidades ou faça mudanças significativas sem uma Issue aberta e atribuída a você.
 2.  **TODA** dúvida sobre o que fazer deve ser sanada consultando a lista de Issues.
-3.  **TODA** comunicação sobre tarefas e prazos deve ser feita nos comentários da Issue correspondente, e não em mensagens privadas.
+3.  **TODA** comunicação sobre tarefas e prazos deve ser feita nos comentários da Issue correspondente.
 
-### 📋 Como Usar as Issues (Passo a Passo)
+## 📋 Como Usar as Issues (Passo a Passo)
 
-#### Para Todos os Membros:
-- **Verificar as Issues Atribuídas a Você:** Vá na aba [**"Issues"**](link-para-as-issues-do-seu-repositorio) no topo do repositório e clique em **"Assigned to you"**. Essa é a sua lista de tarefas pessoal.
-- **Se uma Issue não existir, crie uma!** Se você identificou um bug ou tem uma ideia de melhoria, crie uma Issue detalhada antes de começar a trabalhar.
+### Para Todos os Membros:
+- **Verificar as Issues Atribuídas a Você:** Vá na aba [**"Issues"**](https://github.com/necrovale1/SAAD/issues) no topo do repositório e clique em **"Assigned to you"**. Essa é sua lista de tarefas pessoal.
+- **Se uma Issue não existir, crie uma!** Se identificou um bug ou tem uma ideia de melhoria, crie uma Issue detalhada antes de começar a trabalhar.
 
-#### Para Criar uma Boa Issue (Guia Rápido):
+### Para Criar uma Boa Issue:
 1.  Vá em **"New issue"**.
 2.  **Título:** Seja claro. Ex: "Corrigir erro de cálculo no relatório financeiro".
-3.  **Descrição:** Use o modelo abaixo para garantir clareza:
+3.  **Descrição:** Use este modelo para garantir clareza:
 
     **Descrição da Tarefa:**
     [Explique O QUE precisa ser feito]
@@ -112,10 +161,21 @@ Uma Issue é um cartão de tarefa digital. Ela descreve o que precisa ser feito,
     **Informações Adicionais (opcional):**
     [Links, prints, observações técnicas]
 
-4.  **Assignees (Responsáveis):** **SEMPER** atribua a Issue a uma pessoa. É obrigatório.
+4.  **Assignees (Responsáveis):** **SEMPRE** atribua a Issue a uma pessoa. É obrigatório.
 5.  **Labels (Etiquetas):** Adicione etiquetas como `bug`, `documentation` ou `enhancement` para classificar a tarefa.
 
 ## 🚨 Regra de Ouro
 
 > **"Se não está no GitHub, não existe."**
-> Antes de perguntar "o que fazer?" ou "quais as pendências?", verifique a aba de Issues. A proatividade de todos em consultar e atualizar as Issues é fundamental para o sucesso do projeto, ajude colegas a melhorar as descrições e seja ativo! juntos venceremos!
+> 
+> Antes de perguntar "o que fazer?" ou "quais as pendências?", verifique a aba de Issues. A proatividade de todos em consultar e atualizar as Issues é fundamental para o sucesso do projeto.
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+**🌟 Juntos venceremos! 🌟**
