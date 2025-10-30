@@ -174,7 +174,7 @@ Uma Issue é um cartão de tarefa digital que descreve o que precisa ser feito, 
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Informação ainda a ser INSERIDA
 
 ---
 
