@@ -1,6 +1,5 @@
 ﻿using Azure;
 using Azure.AI.Vision.Face;
-using Microsoft.Azure.CognitiveServices.Vision.Face;
 using SAAD.Helpers;
 using SAAD.Models;
 using System;
