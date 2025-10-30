@@ -36,3 +36,45 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 - Carolina Rodrigues de Mattos
 - Claudio Baptista
 - Matheus Ramos
+
+- ## 🗂️ Gerenciamento do Projeto e Fluxo de Trabalho
+
+Para manter a organização e garantir que todos contribuam de forma eficaz, adotamos o uso de **Issues do GitHub** para gerenciar todas as tarefas.
+
+### ❓ O que é uma Issue?
+Uma Issue é um cartão de tarefa digital. Ela descreve o que precisa ser feito, por que é importante e quem é o responsável. É a nossa fonte única da verdade para o que está em andamento.
+
+### ✅ Como Proceder daqui para Frente?
+
+1.  **NÃO** crie novas funcionalidades ou faça mudanças significativas sem uma Issue aberta e atribuída a você.
+2.  **TODA** dúvida sobre o que fazer deve ser sanada consultando a lista de Issues.
+3.  **TODA** comunicação sobre tarefas e prazos deve ser feita nos comentários da Issue correspondente, e não em mensagens privadas.
+
+### 📋 Como Usar as Issues (Passo a Passo)
+
+#### Para Todos os Membros:
+- **Verificar as Issues Atribuídas a Você:** Vá na aba [**"Issues"**](link-para-as-issues-do-seu-repositorio) no topo do repositório e clique em **"Assigned to you"**. Essa é a sua lista de tarefas pessoal.
+- **Se uma Issue não existir, crie uma!** Se você identificou um bug ou tem uma ideia de melhoria, crie uma Issue detalhada antes de começar a trabalhar.
+
+#### Para Criar uma Boa Issue (Guia Rápido):
+1.  Vá em **"New issue"**.
+2.  **Título:** Seja claro. Ex: "Corrigir erro de cálculo no relatório financeiro".
+3.  **Descrição:** Use o modelo abaixo para garantir clareza:
+
+    **Descrição da Tarefa:**
+    [Explique O QUE precisa ser feito]
+
+    **Critérios de Aceite (Como testar se está pronto):**
+    - [ ] [Condição 1: Ex: O cálculo do relatório gera o valor correto para entradas de exemplo.]
+    - [ ] [Condição 2: Ex: A interface não quebra com valores negativos.]
+
+    **Informações Adicionais (opcional):**
+    [Links, prints, observações técnicas]
+
+4.  **Assignees (Responsáveis):** **SEMPER** atribua a Issue a uma pessoa. É obrigatório.
+5.  **Labels (Etiquetas):** Adicione etiquetas como `bug`, `documentation` ou `enhancement` para classificar a tarefa.
+
+### 🚨 Regra de Ouro
+
+> **"Se não está no GitHub, não existe."**
+> Antes de perguntar "o que fazer?" ou "quais as pendências?", verifique a aba de Issues. A proatividade de todos em consultar e atualizar as Issues é fundamental para o sucesso do projeto, ajude colegas a melhorar as descrições e seja ativo! juntos venceremos!
