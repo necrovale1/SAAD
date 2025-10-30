@@ -13,7 +13,7 @@ O **SAAD** é um sistema inovador de controle de frequência acadêmica que util
 ## 🚀 Site Oficial
 
 ### 🌐 **Acesse o Sistema Web:**
-🔗 **[https://sitedosaad.netlify.app/](sitedosaad.netlify.app)**
+🔗 **[https://sitedosaad.netlify.app](https://sitedosaad.netlify.app)**
 
 ### 📁 **Código do Site:**
 Todo o código do site web está localizado na pasta **[`/docs/`](/docs)** deste repositório.
