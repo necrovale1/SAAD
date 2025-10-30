@@ -39,27 +39,27 @@ SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência do
 
 | Componente | Cor | Código HEX | Resource Key |
 |------------|-----|-------------|--------------|
-| **Fundo da Página** | █████ | `#202020` | `PageBackgroundColor` |
-| **Texto Primário** | █████ | `#E0E0E0` | `PrimaryTextColor` |
-| **Texto Secundário** | █████ | `#A0A0A0` | `SecondaryTextColor` |
-| **Fundo do Card** | █████ | `#2c2c2c` | `CardBackgroundColor` |
-| **Cor de Destaque** | █████ | `#fc0349` | `AccentColor` |
-| **Texto do Botão** | █████ | `#FFFFFF` | `ButtonTextColor` |
-| **Borda do Input** | █████ | `#606060` | `InputBorderColor` |
-| **Fundo do Input** | █████ | `#2c2c2c` | `InputBackgroundColor` |
+| **Fundo da Página** | `#202020` | `PageBackgroundColor` |
+| **Texto Primário**  | `#E0E0E0` | `PrimaryTextColor` |
+| **Texto Secundário**  | `#A0A0A0` | `SecondaryTextColor` |
+| **Fundo do Card** | `#2c2c2c` | `CardBackgroundColor` |
+| **Cor de Destaque** | `#fc0349` | `AccentColor` |
+| **Texto do Botão** | `#FFFFFF` | `ButtonTextColor` |
+| **Borda do Input** | `#606060` | `InputBorderColor` |
+| **Fundo do Input** | `#2c2c2c` | `InputBackgroundColor` |
 
 ## ☀️ Tema Claro
 
 | Componente | Cor | Código HEX | Resource Key |
 |------------|-----|-------------|--------------|
-| **Fundo da Página** | █████ | `#F5F5F5` | `PageBackgroundColor` |
-| **Texto Primário** | █████ | `#202020` | `PrimaryTextColor` |
-| **Texto Secundário** | █████ | `#606060` | `SecondaryTextColor` |
-| **Fundo do Card** | █████ | `#FFFFFF` | `CardBackgroundColor` |
-| **Cor de Destaque** | █████ | `#fc0349` | `AccentColor` |
-| **Texto do Botão** | █████ | `#FFFFFF` | `ButtonTextColor` |
-| **Borda do Input** | █████ | `#C0C0C0` | `InputBorderColor` |
-| **Fundo do Input** | █████ | `#FFFFFF` | `InputBackgroundColor` |
+| **Fundo da Página** | `#F5F5F5` | `PageBackgroundColor` |
+| **Texto Primário** | `#202020` | `PrimaryTextColor` |
+| **Texto Secundário**| `#606060` | `SecondaryTextColor` |
+| **Fundo do Card** | `#FFFFFF` | `CardBackgroundColor` |
+| **Cor de Destaque** | `#fc0349` | `AccentColor` |
+| **Texto do Botão** | `#FFFFFF` | `ButtonTextColor` |
+| **Borda do Input** | `#C0C0C0` | `InputBorderColor` |
+| **Fundo do Input** | `#FFFFFF` | `InputBackgroundColor` |
 
 ## 🎯 Cores de Branding
 <img width="1600" height="1200" alt="colors" src="https://github.com/user-attachments/assets/d85bf327-058b-4b53-8a87-cb9d583d6e8d" />
