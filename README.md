@@ -1,4 +1,4 @@
-#### 🎓 SAAD - Sistema de Autenticação Acadêmica Digital
+# 🎓 SAAD - Sistema de Autenticação Acadêmica Digital
 
 
 ### 📘 Sobre o App
