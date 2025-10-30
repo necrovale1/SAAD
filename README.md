@@ -1,5 +1,4 @@
-## 🎓 SAAD - Sistema de Apoio à Assiduidade Discente
-
+## 🎓 SAAD - Sistema de Autenticação Acadêmica Digital
 ### 📘 Sobre o App
 
 SAAD é um aplicativo desenvolvido com .NET MAUI para registrar a frequência dos alunos. O aluno se cadastra pelo app e registra sua presença. Depois, pode acessar o site do SAAD para consultar suas faltas e matérias.
