@@ -116,6 +116,17 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 - [ ] Atualizar dependências
 - [ ] Otimização de performance
 
+## Telas Atuais
+
+<img width="388" height="815" alt="image" src="https://github.com/user-attachments/assets/5662fa8e-40e9-4512-8018-8e24f56d7445" />
+<img width="387" height="883" alt="image" src="https://github.com/user-attachments/assets/829b8dcb-290c-45c5-b75e-c3eab7a8b5c6" />
+<img width="390" height="877" alt="image" src="https://github.com/user-attachments/assets/64dbb153-41a5-4afb-8379-86520a5db852" />
+<img width="383" height="836" alt="image" src="https://github.com/user-attachments/assets/1d570766-60e4-496d-9be0-38ab3ba56d5f" />
+<img width="382" height="835" alt="image" src="https://github.com/user-attachments/assets/d44d9a75-af03-4f45-8daa-c97422457bd9" />
+
+
+
+
 ---
 
 ## 👥 Equipe de Desenvolvimento
