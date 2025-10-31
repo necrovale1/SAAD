@@ -120,15 +120,15 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen√
 # Telas Atuais - 31/10 18:30 hrs - Carolina
 
 ### Tela Inicial
-<img width="380" height="838" alt="image" src="https://github.com/user-attachments/assets/89b2ec2c-a1c9-45f2-a66c-c4157b8a73c2" />
+- <img width="380" height="838" alt="image" src="https://github.com/user-attachments/assets/89b2ec2c-a1c9-45f2-a66c-c4157b8a73c2" />
 ### Camera Aberta
-<img width="387" height="883" alt="image" src="https://github.com/user-attachments/assets/829b8dcb-290c-45c5-b75e-c3eab7a8b5c6" />
+- <img width="387" height="883" alt="image" src="https://github.com/user-attachments/assets/829b8dcb-290c-45c5-b75e-c3eab7a8b5c6" />
 ### Foto Capturada
-<img width="390" height="877" alt="image" src="https://github.com/user-attachments/assets/64dbb153-41a5-4afb-8379-86520a5db852" />
+- <img width="390" height="877" alt="image" src="https://github.com/user-attachments/assets/64dbb153-41a5-4afb-8379-86520a5db852" />
 ### Erro ao Detectar Rosto Apos Captura
-<img width="383" height="836" alt="image" src="https://github.com/user-attachments/assets/1d570766-60e4-496d-9be0-38ab3ba56d5f" />
+- <img width="383" height="836" alt="image" src="https://github.com/user-attachments/assets/1d570766-60e4-496d-9be0-38ab3ba56d5f" />
 ### Erro ao Acessar a Camera
-<img width="382" height="835" alt="image" src="https://github.com/user-attachments/assets/d44d9a75-af03-4f45-8daa-c97422457bd9" />
+- <img width="382" height="835" alt="image" src="https://github.com/user-attachments/assets/d44d9a75-af03-4f45-8daa-c97422457bd9" />
 
 
 
