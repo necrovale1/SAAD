@@ -31,7 +31,6 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 ### 📱 App Mobile
 - ✅ Cadastro de aluno com dados acadêmicos
 - ✅ Registro de presença por verificação facial
-- ✅ Reconhecimento biométrico em tempo real
 - ✅ Sincronização com banco de dados em nuvem
 
 ### 🌐 Site Web
