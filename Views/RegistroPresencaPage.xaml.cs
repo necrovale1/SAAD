@@ -16,6 +16,7 @@ namespace SAAD.Views
     public partial class RegistroPresencaPage : ContentPage
     {
         private FirebaseClient firebaseClient;
+        private bool _proximaCapturaEEntrada = true; // Variável para controlar se é entrada ou saída
 
         public RegistroPresencaPage()
         {
@@ -25,17 +26,38 @@ namespace SAAD.Views
                 SecretsManager.FirebaseUrl,
                 new FirebaseOptions
                 {
+                    // CORREÇÃO: Certifique-se que SecretsManager.FirebaseSecret existe
                     AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
                 });
+        }
 
+        // Inscreva-se no OnAppearing para evitar duplicações
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
             WeakReferenceMessenger.Default.Register<AlunoReconhecidoMessage>(this, async (r, msg) =>
             {
-                await HandlePresenceRegistration(msg.Value, isEntrada: true);
+                // Usa a variável de controle para saber se é entrada ou saída
+                await HandlePresenceRegistration(msg.Value, isEntrada: _proximaCapturaEEntrada);
             });
+        }
+
+        // Cancele a inscrição no OnDisappearing
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            WeakReferenceMessenger.Default.Unregister<AlunoReconhecidoMessage>(this);
         }
 
         private async void OnRegistrarPresencaClicked(object sender, EventArgs e)
         {
+            _proximaCapturaEEntrada = true; // Define que a próxima leitura é ENTRADA
+            await Navigation.PushAsync(new CameraCapturePage());
+        }
+
+        private async void OnRegistrarSaidaClicked(object sender, EventArgs e)
+        {
+            _proximaCapturaEEntrada = false; // Define que a próxima leitura é SAÍDA
             await Navigation.PushAsync(new CameraCapturePage());
         }
 
@@ -56,6 +78,7 @@ namespace SAAD.Views
 
         private async Task<Horario> GetCurrentClass()
         {
+            // Nota: Verifique se a estrutura do seu Firebase para "horarios" está correta para esta consulta
             var horarios = await firebaseClient.Child("horarios").OnceAsync<Horario>();
             var today = DateTime.Now.DayOfWeek;
             var now = DateTime.Now.TimeOfDay;
@@ -68,8 +91,10 @@ namespace SAAD.Views
         private async Task RegisterEntrada(UserModel aluno, Horario aula)
         {
             var presencasHoje = await firebaseClient.Child("presencas").OnceAsync<Presenca>();
+
+            // CORREÇÃO: aluno.Uid -> aluno.Id
             var entradaAberta = presencasHoje
-                .FirstOrDefault(p => p.Object.StudentUid == aluno.Uid && p.Object.Data.Date == DateTime.Today && p.Object.HoraSaida == null);
+                .FirstOrDefault(p => p.Object.StudentUid == aluno.Id && p.Object.Data.Date == DateTime.Today && p.Object.HoraSaida == null);
 
             if (entradaAberta != null)
             {
@@ -79,7 +104,8 @@ namespace SAAD.Views
 
             var novaPresenca = new Presenca
             {
-                StudentUid = aluno.Uid,
+                // CORREÇÃO: aluno.Uid -> aluno.Id
+                StudentUid = aluno.Id,
                 StudentName = aluno.Nome,
                 HorarioKey = aula.MateriaKey,
                 MateriaName = aula.MateriaName,
@@ -94,8 +120,10 @@ namespace SAAD.Views
         private async Task RegisterSaida(UserModel aluno)
         {
             var presencas = await firebaseClient.Child("presencas").OnceAsync<Presenca>();
+
+            // CORREÇÃO: aluno.Uid -> aluno.Id
             var entradaAberta = presencas
-                .FirstOrDefault(p => p.Object.StudentUid == aluno.Uid &&
+                .FirstOrDefault(p => p.Object.StudentUid == aluno.Id &&
                                      p.Object.Data.Date == DateTime.Today &&
                                      p.Object.HoraSaida == null);
 
@@ -108,18 +136,6 @@ namespace SAAD.Views
             entradaAberta.Object.HoraSaida = DateTime.Now;
             await firebaseClient.Child("presencas").Child(entradaAberta.Key).PutAsync(entradaAberta.Object);
             await DisplayAlert("Até logo!", $"Saída registrada às {entradaAberta.Object.HoraSaida:HH:mm}.", "OK");
-        }
-
-        private async void OnRegistrarSaidaClicked(object sender, EventArgs e)
-        {
-            // Envia para CameraCapturePage com isEntrada: false
-            WeakReferenceMessenger.Default.Register<AlunoReconhecidoMessage>(this, async (r, msg) =>
-            {
-                if (!msg.IsEntrada)
-                    await HandlePresenceRegistration(msg.Value, isEntrada: false);
-            });
-
-            await Navigation.PushAsync(new CameraCapturePage());
         }
     }
 }

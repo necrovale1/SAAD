@@ -45,9 +45,9 @@
                    FontAttributes="Bold"
                    HorizontalTextAlignment="Center" />
 
-            <Label Text="• Fique em um lugar bem iluminado
-• Evite usar óculos ou boné
-• Mantenha um fundo neutro"
+            <Label Text="ï¿½ Fique em um lugar bem iluminado
+ï¿½ Evite usar ï¿½culos ou bonï¿½
+ï¿½ Mantenha um fundo neutro"
                    TextColor="White"
                    FontSize="14"
                    HorizontalTextAlignment="Center" />
