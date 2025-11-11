@@ -9,8 +9,7 @@
         public string UserType { get; set; }
         public string FotoUrl { get; set; }
         public string AzurePersonId { get; set; }
-
-        // Propriedade que estava faltando e causando erro no CadastroAlunoPage
+        public string RegistroAcademico { get; set; }
         public string FaceImageBase64 { get; set; }
     }
 }
