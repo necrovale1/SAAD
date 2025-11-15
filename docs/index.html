@@ -7,6 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Garante transição suave nos ícones de input */
+        .input-group-text i { transition: all 0.3s ease; }
+    </style>
+    
     <script>
         (function() {
             const temaSalvo = localStorage.getItem("tema") || "light";
@@ -41,7 +46,7 @@
                             <div class="mb-3">
                                 <label for="loginInput" class="form-label saad-label" id="labelLogin">Registro Acadêmico (RA)</label>
                                 <div class="input-group saad-input-group">
-                                    <span class="input-group-text saad-input-icon clickable-icon" onclick="alternarPerfil()" title="Alternar Acesso">
+                                    <span class="input-group-text saad-input-icon clickable-icon" onclick="alternarPerfil()" title="Clique para alternar tipo de acesso">
                                         <i class="fas fa-id-card" id="iconeLogin"></i>
                                         <i class="fas fa-exchange-alt ms-2 small text-muted" style="font-size: 0.7em;"></i>
                                     </span>
@@ -106,12 +111,15 @@
         function alternarPerfil() {
             perfilAtual = (perfilAtual + 1) % perfis.length;
             const p = perfis[perfilAtual];
+            
             document.getElementById('badgePerfil').innerHTML = `<i class="fas ${p.icon} me-2"></i>${p.nome}`;
             document.getElementById('labelLogin').textContent = p.label;
             document.getElementById('loginInput').placeholder = p.place;
             document.getElementById('iconeLogin').className = `fas ${p.icon}`;
-            document.getElementById('loginInput').value = '';
-            document.getElementById('loginInput').focus();
+            
+            const input = document.getElementById('loginInput');
+            input.value = '';
+            input.focus();
         }
 
         function login() {
@@ -124,18 +132,20 @@
                 return;
             }
 
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Autenticando...';
             btn.disabled = true;
 
             if (perfilAtual === 0) {
+                // ALUNO: Busca RA no banco
                 db.collection("users").where("RegistroAcademico", "==", loginValue).get()
                 .then(snap => {
                     if (!snap.empty) return auth.signInWithEmailAndPassword(snap.docs[0].data().Email, senha);
-                    throw new Error("RA não encontrado.");
+                    throw new Error("RA não encontrado na base de dados.");
                 })
                 .then(() => sucessoLogin())
                 .catch(err => erroLogin(err, btn));
             } else {
+                // PROFESSOR/GESTOR: Login direto
                 auth.signInWithEmailAndPassword(loginValue, senha)
                 .then(() => sucessoLogin())
                 .catch(err => erroLogin(err, btn));
@@ -143,11 +153,12 @@
         }
 
         function sucessoLogin() {
-            showAlert('Login realizado!', 'success');
+            showAlert('Login realizado com sucesso!', 'success');
             setTimeout(() => window.location.href = "dashboard.html", 1000);
         }
 
         function erroLogin(error, btn) {
+            console.error(error);
             let msg = error.message;
             if (error.code === 'auth/wrong-password') msg = 'Senha incorreta.';
             if (error.code === 'auth/user-not-found') msg = 'Usuário não encontrado.';
@@ -165,10 +176,7 @@
 
         function atualizarIconeTema(tema) {
             const icon = document.querySelector('.theme-toggle-login i');
-            if(icon) {
-                // Se for Dark, mostra o SOL (para mudar pro claro). Se for Light, mostra a LUA.
-                icon.className = tema === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            }
+            if(icon) icon.className = tema === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
 
         function showAlert(message, type) {
@@ -178,7 +186,7 @@
             div.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
             document.querySelector('form').prepend(div);
         }
-        
+
         document.addEventListener('keypress', function(e) { if (e.key === 'Enter') login(); });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
