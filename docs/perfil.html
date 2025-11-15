@@ -7,129 +7,101 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script>
-        (function() {
-            const temaSalvo = localStorage.getItem("tema") || "light";
-            document.documentElement.setAttribute("data-theme", temaSalvo);
-        })();
-    </script>
+    <script> (function() { const temaSalvo = localStorage.getItem("tema") || "light"; document.documentElement.setAttribute("data-theme", temaSalvo); })(); </script>
+    <style> #relogioTopo { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); } </style>
 </head>
 <body class="saad-body">
     <nav class="navbar saad-header navbar-expand-lg shadow-sm">
         <div class="container-fluid">
             <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
+                <div class="d-none d-md-flex align-items-center text-white me-4"><i class="fas fa-clock me-2 opacity-75"></i><span id="relogioTopo">--:--:--</span></div>
                 <a href="dashboard.html" class="btn saad-header-btn me-2"><i class="fas fa-home me-1"></i>Dashboard</a>
                 <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
             </div>
         </div>
     </nav>
-
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <div class="text-center mb-5">
-                    <div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-circle"></i></div>
-                    <h2>Dados do Usuário</h2>
-                </div>
-
+                <div class="text-center mb-5"><div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-circle"></i></div><h2>Dados do Usuário</h2></div>
                 <div class="saad-card p-4 mb-4">
                     <h4 class="mb-4">Informações</h4>
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label saad-label">Nome</label><div class="saad-input" id="infoNome">Carregando...</div></div>
+                        <div class="col-md-6"><label class="form-label saad-label">Nome</label><div class="saad-input" id="infoNome">...</div></div>
                         <div class="col-md-6"><label class="form-label saad-label">Email</label><div class="saad-input" id="infoEmail">...</div></div>
                         <div class="col-md-6" id="divRA"><label class="form-label saad-label">RA</label><div class="saad-input" id="infoRA">...</div></div>
                         <div class="col-md-6"><label class="form-label saad-label" id="labelCurso">Curso</label><div class="saad-input" id="infoCurso">...</div></div>
                     </div>
                 </div>
-
                 <div class="saad-card p-4" id="cardStats" style="display:none;">
                     <h4 class="mb-4">Desempenho</h4>
                     <div class="row text-center">
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statPresencas">0</h4><small>Presenças</small></div></div>
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statJustificadas">0</h4><small>Justificadas</small></div></div>
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statFaltas">0</h4><small class="text-muted">Faltas</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card p-3"><h4 id="statPresencas">0</h4><small>Presenças</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card p-3"><h4 id="statJustificadas">0</h4><small>Justificadas</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card p-3"><h4 id="statFaltas">0</h4><small>Faltas</small></div></div>
                     </div>
                     <div id="graficoFrequencia" class="mt-4"></div>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase.js"></script>
-
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
         let currentUser = null;
-
         document.addEventListener('DOMContentLoaded', () => {
+            setInterval(() => document.getElementById('relogioTopo').textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
             auth.onAuthStateChanged(user => { if(!user) window.location.href='index.html'; else { currentUser=user; carregarDados(); }});
         });
-
         function carregarDados() {
-            // Tenta buscar por UID primeiro, depois fallback por email
             db.collection("users").doc(currentUser.uid).get().then(doc => {
-                if (!doc.exists) return db.collection("users").where("Email", "==", currentUser.email).get().then(s => s.empty?null:s.docs[0].data());
+                if(!doc.exists) return db.collection("users").where("Email", "==", currentUser.email).get().then(s=>s.empty?null:s.docs[0].data());
                 return doc.data();
             }).then(data => {
                 if(!data) return;
                 document.getElementById('infoNome').textContent = data.Nome;
                 document.getElementById('infoEmail').textContent = currentUser.email;
-
                 if(data.UserType === 'Professor' || data.UserType === 'Gestor') {
                     document.getElementById('divRA').style.display = 'none';
-                    document.getElementById('labelCurso').textContent = 'Cargo / Depto';
-                    document.getElementById('infoCurso').textContent = data.Cargo || data.Departamento || 'Staff';
-                    // Garante que stats continuam ocultos
+                    document.getElementById('labelCurso').textContent = 'Cargo';
+                    document.getElementById('infoCurso').textContent = data.Cargo || 'Staff';
                     document.getElementById('cardStats').style.display = 'none';
                 } else {
                     document.getElementById('infoRA').textContent = data.RegistroAcademico;
                     document.getElementById('infoCurso').textContent = data.Curso;
-                    // Mostra stats e carrega
                     document.getElementById('cardStats').style.display = 'block';
                     carregarStats(data.RegistroAcademico);
                 }
             });
         }
-
         function carregarStats(ra) {
             db.collection("presencas").where("RegistroAcademico", "==", ra).orderBy('Data', 'desc').limit(100).get().then(snap => {
-                let p=0, f=0, j=0, materias={};
+                let p=0,f=0,j=0,m={};
                 snap.forEach(doc => {
-                    const d = doc.data();
-                    const st = (d.Status||"").toLowerCase();
-                    if(st.includes('presente')) p++; else if(st.includes('falta')) f++; else j++;
-                    
-                    const mat = d.Materia || "Geral";
-                    if(!materias[mat]) materias[mat] = {t:0, p:0};
-                    materias[mat].t++;
-                    if(st.includes('presente')) materias[mat].p++;
+                    const d=doc.data();
+                    if((d.Status||"").includes('Presente')) p++; else f++;
+                    if(!m[d.Materia]) m[d.Materia]={t:0,p:0};
+                    m[d.Materia].t++;
+                    if((d.Status||"").includes('Presente')) m[d.Materia].p++;
                 });
-                
                 document.getElementById('statPresencas').textContent = p;
                 document.getElementById('statFaltas').textContent = f;
-                document.getElementById('statJustificadas').textContent = j;
-                
                 const container = document.getElementById('graficoFrequencia');
                 container.innerHTML = '';
-                Object.entries(materias).forEach(([nome, d]) => {
+                Object.entries(m).forEach(([n, d]) => {
                     const pct = Math.round((d.p/d.t)*100);
-                    const cor = pct<75 ? (pct<50?'#ff416c':'#f7971e') : '#00b09b';
-                    container.innerHTML += `<div class="mb-3"><div class="d-flex justify-content-between"><small>${nome}</small><small>${pct}%</small></div><div class="progress" style="height:8px; background:var(--saad-border);"><div class="progress-bar" style="width:${pct}%; background:${cor};"></div></div></div>`;
+                    const cor = pct<75 ? '#ff416c' : '#00b09b';
+                    container.innerHTML += `<div class="mb-2"><div class="d-flex justify-content-between"><small>${n}</small><small>${pct}%</small></div><div class="progress" style="height:6px; background:var(--saad-border)"><div class="progress-bar" style="width:${pct}%; background:${cor}"></div></div></div>`;
                 });
             });
         }
-
-        function alternarTema() {
-            const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-            document.documentElement.setAttribute("data-theme", novo);
-            localStorage.setItem("tema", novo);
-        }
+        function alternarTema() { const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"; document.documentElement.setAttribute("data-theme", novo); localStorage.setItem("tema", novo); }
         function sair() { auth.signOut().then(() => window.location.href='index.html'); }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
