@@ -138,7 +138,11 @@ html, body {
     color: var(--saad-text) !important; 
     padding: 10px 12px; 
 }
-
+/* CORREÇÃO: Placeholder (texto "Digite seu RA") responsivo */
+.saad-input::placeholder {
+    color: var(--saad-text-secondary) !important;
+    opacity: 0.7;
+} 
 .saad-input:focus { box-shadow: none; }
 
 .saad-input-group:focus-within {
@@ -201,3 +205,4 @@ html, body {
 ::-webkit-scrollbar-track { background: var(--saad-bg); }
 ::-webkit-scrollbar-thumb { background: var(--saad-border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--saad-primary); }
+
