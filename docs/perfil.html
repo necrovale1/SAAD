@@ -20,7 +20,6 @@
             <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
                 <span class="text-white me-3 d-none d-md-block small" id="relogioTopo">--:--:--</span>
-                
                 <a href="dashboard.html" class="btn saad-header-btn me-2"><i class="fas fa-home me-1"></i>Dashboard</a>
                 <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
@@ -50,7 +49,6 @@
                 <div class="saad-card p-4">
                     <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Desempenho</h4>
                     <p class="text-muted small mb-4">Clique nos cards para ver detalhes.</p>
-                    
                     <div class="row text-center">
                         <div class="col-md-4 mb-3">
                             <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Presente')">
@@ -121,9 +119,7 @@
 
         function iniciarRelogio() {
             const el = document.getElementById('relogioTopo');
-            setInterval(() => {
-                el.textContent = new Date().toLocaleTimeString('pt-BR');
-            }, 1000);
+            setInterval(() => el.textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
         }
 
         function carregarDados() {
@@ -153,13 +149,14 @@
             const materias = {};
             
             dadosCache.forEach(d => {
-                if (d.Status === 'Presente') p++; 
-                else if (d.Status === 'Falta' || d.Status === 'Ausente') f++; 
+                const status = (d.Status || "").toLowerCase();
+                if (status.includes('presente')) p++; 
+                else if (status.includes('falta') || status.includes('ausente')) f++; 
                 else j++;
 
                 if (!materias[d.Materia]) materias[d.Materia] = { total: 0, p: 0 };
                 materias[d.Materia].total++;
-                if (d.Status === 'Presente') materias[d.Materia].p++;
+                if (status.includes('presente')) materias[d.Materia].p++;
             });
 
             document.getElementById('statPresencas').textContent = p;
@@ -171,14 +168,14 @@
         function abrirModalEstatistica(tipo) {
             const tituloMap = { 'Presente': 'Últimas Presenças', 'Falta': 'Últimas Faltas', 'Justificado': 'Justificativas/Atrasos' };
             document.getElementById('modalStatsTitle').textContent = tituloMap[tipo] || 'Detalhes';
-            
             const listaEl = document.getElementById('modalStatsList');
             listaEl.innerHTML = '';
 
             const filtrados = dadosCache.filter(d => {
-                if (tipo === 'Presente') return d.Status === 'Presente';
-                if (tipo === 'Falta') return d.Status === 'Falta' || d.Status === 'Ausente';
-                return d.Status === 'Justificado' || d.Status === 'Atraso';
+                const st = (d.Status || "").toLowerCase();
+                if (tipo === 'Presente') return st.includes('presente');
+                if (tipo === 'Falta') return st.includes('falta') || st.includes('ausente');
+                return st.includes('justificado') || st.includes('atraso');
             }).slice(0, 10);
 
             if (filtrados.length === 0) {
@@ -200,14 +197,19 @@
         function renderizarGraficos(materias) {
             const container = document.getElementById('graficoFrequencia');
             container.innerHTML = '';
+            
+            const nomesMaterias = Object.keys(materias);
+            if (nomesMaterias.length === 0) {
+                 container.innerHTML = '<div class="text-muted text-center small">Sem dados para gráficos.</div>';
+                 return;
+            }
+
             for (const [nome, dados] of Object.entries(materias)) {
-                const pct = Math.round((dados.p / dados.total) * 100);
-                
-                // Lógica da Barrinha Vermelha se 0%
+                const pct = dados.total > 0 ? Math.round((dados.p / dados.total) * 100) : 0;
                 let displayWidth = pct === 0 ? 2 : pct;
-                let corBarra = 'linear-gradient(135deg, #00b09b, #96c93d)'; // Verde
-                if (pct < 75) corBarra = 'linear-gradient(135deg, #f7971e, #ffd200)'; // Amarelo
-                if (pct < 50 || pct === 0) corBarra = 'linear-gradient(135deg, #ff416c, #ff4b2b)'; // Vermelho
+                let corBarra = 'linear-gradient(135deg, #00b09b, #96c93d)';
+                if (pct < 75) corBarra = 'linear-gradient(135deg, #f7971e, #ffd200)';
+                if (pct < 50 || pct === 0) corBarra = 'linear-gradient(135deg, #ff416c, #ff4b2b)';
 
                 const html = `
                     <div class="mb-3">
