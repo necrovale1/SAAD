@@ -37,7 +37,7 @@
 
 /* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg); /* Essencial para evitar flash branco */
+  background: var(--saad-bg); /* Evita fundo branco ao carregar */
 }
 
 .saad-body {
@@ -69,7 +69,7 @@ html, body {
     border-radius: 6px;
 }
 
-/* ===== BOTÃO FLUTUANTE LOGIN (CORRIGIDO) ===== */
+/* ===== BOTÃO FLUTUANTE LOGIN (CORREÇÃO FINAL) ===== */
 .theme-toggle-login {
     position: absolute;
     top: 20px;
