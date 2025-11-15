@@ -26,6 +26,12 @@
             background-color: rgba(0,0,0,0.05);
         }
     </style>
+    <script>
+        (function() {
+            const temaSalvo = localStorage.getItem("tema") || "light";
+            document.documentElement.setAttribute("data-theme", temaSalvo);
+        })();
+    </script>
 </head>
 <body class="saad-body">
     
@@ -45,7 +51,7 @@
                             <h2 class="saad-brand">SAAD</h2>
                             <p class="saad-subtitle">Sistema de Autenticação Acadêmica Digital</p>
                             
-                            <span class="badge bg-light text-dark border mt-2" id="badgePerfil">
+                            <span class="saad-profile-badge mt-2" id="badgePerfil">
                                 <i class="fas fa-user-graduate me-1"></i>Acesso Aluno
                             </span>
                         </div>
@@ -130,7 +136,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const temaSalvo = localStorage.getItem("tema") || "light";
-            document.documentElement.setAttribute("data-theme", temaSalvo);
             atualizarIconeTema(temaSalvo);
         });
 
@@ -181,7 +186,6 @@
 
             } else {
                 // === PROFESSOR / GESTOR: Login direto com E-mail ===
-                // (Aqui você poderia adicionar validação extra se o email é de prof/gestor)
                 auth.signInWithEmailAndPassword(loginValue, senha)
                 .then(() => sucessoLogin())
                 .catch(err => erroLogin(err, btn));
@@ -211,7 +215,8 @@
 
         function alternarTema() {
             const html = document.documentElement;
-            const novo = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+            const temaAtual = html.getAttribute("data-theme");
+            const novo = temaAtual === "dark" ? "light" : "dark";
             html.setAttribute("data-theme", novo);
             localStorage.setItem("tema", novo);
             atualizarIconeTema(novo);
