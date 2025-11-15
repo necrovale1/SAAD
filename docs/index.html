@@ -7,15 +7,27 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilo extra para o botão de tema flutuante na tela de login */
+        .theme-toggle-login {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body class="saad-body">
+    
+    <button class="btn saad-header-btn theme-toggle-login" onclick="alternarTema()" title="Alternar Tema">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div class="container">
         <div class="row justify-content-center min-vh-100 align-items-center">
             <div class="col-md-5">
-                <!-- Card de Login -->
                 <div class="card saad-card shadow-lg border-0">
                     <div class="card-body p-4">
-                        <!-- Header -->
                         <div class="text-center mb-4">
                             <div class="saad-logo mb-3">
                                 <i class="fas fa-fingerprint"></i>
@@ -24,7 +36,6 @@
                             <p class="saad-subtitle">Sistema de Autenticação Acadêmica Digital</p>
                         </div>
 
-                        <!-- Formulário -->
                         <form id="loginForm">
                             <div class="mb-3">
                                 <label for="ra" class="form-label saad-label">Registro Acadêmico</label>
@@ -46,7 +57,7 @@
                                 </div>
                             </div>
 
-                            <button type="button" onclick="login()" class="btn saad-btn-primary w-100 py-2 mb-3">
+                            <button type="button" onclick="login()" class="btn saad-btn-primary w-100 py-2 mb-3" id="btnLogin">
                                 <i class="fas fa-sign-in-alt me-2"></i>Entrar no Sistema
                             </button>
 
@@ -60,7 +71,6 @@
                     </div>
                 </div>
 
-                <!-- Footer -->
                 <div class="text-center mt-4">
                     <small class="saad-footer-text">
                         SAAD © 2025 - Sistema de Autenticação Acadêmica Digital
@@ -70,7 +80,6 @@
         </div>
     </div>
 
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -80,46 +89,34 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-       function login() {
-    const ra = document.getElementById("ra").value;
-    const senha = document.getElementById("senha").value;
-
-    // ✅ AGORA busca na coleção CORRETA "users"
-    db.collection("users").where("RegistroAcademico", "==", ra).get()
-        .then(snapshot => {
-            if (!snapshot.empty) {
-                const userData = snapshot.docs[0].data();
-                const email = userData.Email;  // ✅ "Email" com E maiúsculo
-                
-                return auth.signInWithEmailAndPassword(email, senha);
-            } else {
-                throw new Error("RA não encontrado");
-            }
-        })
-        .then(() => {
-            showAlert('Login realizado com sucesso!', 'success');
-            setTimeout(() => {
-                window.location.href = "dashboard.html";
-            }, 1000);
-        })
-        .catch(error => {
-            showAlert('Erro: ' + error.message, 'danger');
+        // Inicializa o tema ao carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            const temaSalvo = localStorage.getItem("tema") || "light";
+            document.documentElement.setAttribute("data-theme", temaSalvo);
+            atualizarIconeTema(temaSalvo);
         });
-}
+
+        function login() {
+            const ra = document.getElementById("ra").value;
+            const senha = document.getElementById("senha").value;
+            const btn = document.getElementById('btnLogin');
 
             // Loading state
-            const btn = document.querySelector('.saad-btn-primary');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Autenticando...';
             btn.disabled = true;
 
-            db.collection("usuarios").where("ra", "==", ra).get()
+            // 1. Busca o usuário pelo RA na coleção 'users'
+            db.collection("users").where("RegistroAcademico", "==", ra).get()
                 .then(snapshot => {
                     if (!snapshot.empty) {
                         const userData = snapshot.docs[0].data();
-                        const email = userData.email;
+                        // Pega o email vinculado a esse RA (atenção à maiúscula no campo 'Email')
+                        const email = userData.Email;  
+                        
+                        // 2. Faz o login no Authentication usando o email encontrado
                         return auth.signInWithEmailAndPassword(email, senha);
                     } else {
-                        throw new Error("RA não encontrado");
+                        throw new Error("RA não encontrado na base de dados.");
                     }
                 })
                 .then(() => {
@@ -129,14 +126,43 @@
                     }, 1000);
                 })
                 .catch(error => {
-                    showAlert('Erro: ' + error.message, 'danger');
-                    // Reset button
+                    let mensagemErro = error.message;
+                    
+                    // Traduzindo erros comuns do Firebase
+                    if (error.code === 'auth/wrong-password') mensagemErro = 'Senha incorreta.';
+                    if (error.code === 'auth/user-not-found') mensagemErro = 'Usuário não possui credenciais de acesso.';
+                    if (error.code === 'auth/too-many-requests') mensagemErro = 'Muitas tentativas. Tente novamente mais tarde.';
+
+                    showAlert('Erro: ' + mensagemErro, 'danger');
+                    
+                    // Reset do botão
                     btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Entrar no Sistema';
                     btn.disabled = false;
                 });
         }
 
+        function alternarTema() {
+            const html = document.documentElement;
+            const temaAtual = html.getAttribute("data-theme");
+            const novoTema = temaAtual === "dark" ? "light" : "dark";
+            
+            html.setAttribute("data-theme", novoTema);
+            localStorage.setItem("tema", novoTema);
+            atualizarIconeTema(novoTema);
+        }
+
+        function atualizarIconeTema(tema) {
+            const btnIcon = document.querySelector('.theme-toggle-login i');
+            if (btnIcon) {
+                btnIcon.className = tema === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+        }
+
         function showAlert(message, type) {
+            // Remove alertas anteriores
+            const alertasAntigos = document.querySelectorAll('.alert');
+            alertasAntigos.forEach(alert => alert.remove());
+
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type} alert-dismissible fade show mt-3`;
             alertDiv.innerHTML = `
@@ -146,7 +172,7 @@
             document.querySelector('form').prepend(alertDiv);
         }
 
-        // Enter key login
+        // Login com tecla Enter
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 login();
