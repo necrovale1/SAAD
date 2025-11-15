@@ -19,8 +19,8 @@
         <div class="container-fluid">
             <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
-                <span class="text-white me-3 d-none d-md-block"><i class="fas fa-user-graduate me-1"></i><span id="studentName">Carregando...</span></span>
-                <a href="perfil.html" class="btn saad-header-btn me-2"><i class="fas fa-user me-1"></i>Meu Perfil</a>
+                <span class="text-white me-3 d-none d-md-block"><i class="fas fa-user me-1"></i><span id="studentName">Carregando...</span></span>
+                <a href="perfil.html" class="btn saad-header-btn me-2"><i class="fas fa-id-card me-1"></i>Perfil</a>
                 <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
             </div>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="saad-stats-card p-4 mb-3">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-clock"></i></div>
+                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-clock text-white"></i></div>
                         <div><h4 class="mb-0" id="totalJustificadas">0</h4><small class="text-muted">Justificados</small></div>
                     </div>
                 </div>
@@ -51,14 +51,17 @@
                 <div class="saad-stats-card p-4">
                     <div class="d-flex align-items-center">
                         <div class="saad-stats-icon me-3"><i class="fas fa-calendar-check"></i></div>
-                        <div><h4 class="mb-0" id="totalAulas">0</h4><small class="text-muted">Total Registrado</small></div>
+                        <div><h4 class="mb-0" id="totalAulas">0</h4><small class="text-muted">Total Registros</small></div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-9">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div><h2 class="mb-1">Dashboard</h2><p class="text-muted mb-0">Acompanhe sua frequência.</p></div>
+                    <div>
+                        <h2 class="mb-1" id="dashTitle">Dashboard</h2>
+                        <p class="text-muted mb-0" id="dashSubtitle">Acompanhamento em tempo real.</p>
+                    </div>
                     <div class="text-end">
                         <small class="text-muted d-block" id="dataAtual">--/--/----</small>
                         <small class="fw-bold" id="relogio" style="font-size: 1.1em;">--:--:--</small>
@@ -85,12 +88,20 @@
 
                 <div class="saad-card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Histórico</h5>
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Registros Recentes</h5>
                         <span class="badge bg-secondary" id="totalRegistros">0 registros</span>
                     </div>
                     <div class="table-responsive">
                         <table class="table saad-table table-hover align-middle">
-                            <thead><tr><th>Data</th><th>Matéria</th><th>Horário</th><th>Status</th><th class="text-end">Detalhes</th></tr></thead>
+                            <thead>
+                                <tr id="tableHeaders">
+                                    <th>Data</th>
+                                    <th>Matéria</th>
+                                    <th>Horário</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Detalhes</th>
+                                </tr>
+                            </thead>
                             <tbody id="tabelaPresencas"><tr><td colspan="5" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando...</td></tr></tbody>
                         </table>
                     </div>
@@ -110,6 +121,9 @@
                     <div class="saad-logo mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.5rem;"><i class="fas fa-book"></i></div>
                     <h4 id="modalMateria" class="mb-2">Matéria</h4>
                     <div id="modalStatusBadge" class="mb-4"></div>
+                    
+                    <div id="modalAlunoInfo" class="mb-3 text-warning fw-bold d-none"></div>
+
                     <div class="row justify-content-center mb-4">
                         <div class="col-5 border-end border-secondary">
                             <small class="text-muted d-block mb-1 text-uppercase fw-bold" style="font-size: 0.7rem;">( entrada )</small>
@@ -123,10 +137,6 @@
                     <div class="bg-opacity-10 bg-secondary p-2 rounded d-inline-block px-4">
                         <small class="text-muted me-2"><i class="fas fa-calendar-alt"></i> Data:</small>
                         <strong id="modalData" class="text-primary">--/--/----</strong>
-                    </div>
-                    <div class="mt-4 pt-3 border-top border-secondary">
-                        <small class="text-muted">Professor Responsável</small>
-                        <p id="modalProfessor" class="fw-bold mb-0">--</p>
                     </div>
                 </div>
                 <div class="modal-footer border-top border-secondary justify-content-center"><button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">Fechar</button></div>
@@ -142,7 +152,7 @@
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
-        let currentUser = null, listaPresencasCache = [];
+        let currentUser = null, listaPresencasCache = [], userRole = 'Aluno';
 
         document.addEventListener('DOMContentLoaded', function() {
             verificarAuth();
@@ -155,7 +165,6 @@
                 else {
                     currentUser = user;
                     carregarDadosUsuario();
-                    carregarPresencas();
                 }
             });
         }
@@ -174,31 +183,89 @@
 
         function carregarDadosUsuario() {
             if (currentUser) {
-                db.collection("users").where("Email", "==", currentUser.email).get()
-                .then(snapshot => { if (!snapshot.empty) document.getElementById('studentName').textContent = snapshot.docs[0].data().Nome || 'Aluno'; });
+                db.collection("users").doc(currentUser.uid).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        document.getElementById('studentName').textContent = data.Nome || 'Usuário';
+                        userRole = data.UserType || 'Aluno'; // Identifica se é Aluno, Prof ou Gestor
+                        configurarDashboard(userRole);
+                    } else {
+                        // Fallback se não achar pelo UID (tenta por email para compatibilidade)
+                        return db.collection("users").where("Email", "==", currentUser.email).get();
+                    }
+                })
+                .then(snapshot => {
+                    if (snapshot && !snapshot.empty) {
+                        const data = snapshot.docs[0].data();
+                        document.getElementById('studentName').textContent = data.Nome;
+                        userRole = data.UserType || 'Aluno';
+                        configurarDashboard(userRole);
+                    }
+                });
             }
         }
 
-        function carregarPresencas() {
-            if (!currentUser) return;
+        function configurarDashboard(role) {
+            if (role === 'Aluno') {
+                carregarPresencasAluno();
+            } else {
+                // Configuração para STAFF (Professor/Gestor)
+                document.getElementById('dashTitle').textContent = role === 'Gestor' ? 'Painel do Gestor' : 'Painel do Professor';
+                document.getElementById('dashSubtitle').textContent = 'Visão geral das atividades acadêmicas.';
+                
+                // Adiciona coluna de ALUNO na tabela
+                const headerRow = document.getElementById('tableHeaders');
+                headerRow.innerHTML = `<th>Data</th><th>Aluno (RA)</th><th>Matéria</th><th>Status</th><th class="text-end">Detalhes</th>`;
+                
+                carregarVisaoGeral();
+            }
+        }
+
+        // ================= LÓGICA DE ALUNO =================
+        function carregarPresencasAluno() {
             db.collection("users").where("Email", "==", currentUser.email).get()
             .then(snapshot => {
                 if (!snapshot.empty) return db.collection("presencas").where("RegistroAcademico", "==", snapshot.docs[0].data().RegistroAcademico).limit(100).get();
             })
-            .then(snapshot => {
-                listaPresencasCache = [];
-                const materiasSet = new Set();
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    listaPresencasCache.push(data);
-                    if(data.Materia) materiasSet.add(data.Materia);
-                });
-                listaPresencasCache.sort((a, b) => (a.Data < b.Data ? 1 : -1));
-                preencherSelectMaterias(materiasSet);
-                renderizarTabela(listaPresencasCache);
-                atualizarEstatisticas(listaPresencasCache);
-            }).catch(err => console.error(err));
+            .then(processarDados)
+            .catch(err => console.error(err));
+        }
+
+        // ================= LÓGICA DE STAFF (PROF/GESTOR) =================
+        function carregarVisaoGeral() {
+            // Busca as últimas 50 presenças de QUALQUER aluno
+            db.collection("presencas").orderBy("Data", "desc").limit(50).get()
+            .then(processarDados)
+            .catch(err => {
+                console.error("Erro índice:", err);
+                // Fallback se não tiver índice: busca simples (sem order)
+                db.collection("presencas").limit(50).get().then(processarDados);
+            });
+        }
+
+        function processarDados(snapshot) {
+            listaPresencasCache = [];
+            const materiasSet = new Set();
+            
+            if(snapshot.empty) {
+                renderizarTabela([]);
+                return;
+            }
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                data.id = doc.id;
+                listaPresencasCache.push(data);
+                if(data.Materia) materiasSet.add(data.Materia);
+            });
+
+            // Se for Staff, não filtra por RA, apenas mostra os dados
+            listaPresencasCache.sort((a, b) => (a.Data < b.Data ? 1 : -1));
+            
+            preencherSelectMaterias(materiasSet);
+            renderizarTabela(listaPresencasCache);
+            atualizarEstatisticas(listaPresencasCache);
         }
 
         function preencherSelectMaterias(materiasSet) {
@@ -219,6 +286,7 @@
                 document.getElementById('totalRegistros').textContent = "0 registros";
                 return;
             }
+            
             lista.forEach(dados => {
                 let dF = dados.Data;
                 if(dados.Data && dados.Data.includes('-')) { const p = dados.Data.split('-'); dF = `${p[2]}/${p[1]}/${p[0]}`; }
@@ -226,7 +294,21 @@
                 const tr = document.createElement('tr');
                 tr.className = 'clickable-row';
                 tr.onclick = () => abrirModal(dados);
-                tr.innerHTML = `<td>${dF}</td><td><strong>${dados.Materia}</strong></td><td>${dados.HoraEntrada} - ${dados.HoraSaida}</td><td>${getStatusBadge(dados.Status)}</td><td class="text-end"><i class="fas fa-chevron-right text-muted"></i></td>`;
+                
+                let linhaHTML = `<td>${dF}</td>`;
+                
+                // Se for Staff, mostra o RA do aluno
+                if(userRole !== 'Aluno') {
+                    linhaHTML += `<td><span class="badge bg-light text-dark border"><i class="fas fa-user-graduate me-1"></i>${dados.RegistroAcademico}</span></td>`;
+                }
+
+                linhaHTML += `
+                    <td><strong>${dados.Materia}</strong></td>
+                    <td>${getStatusBadge(dados.Status)}</td>
+                    <td class="text-end"><i class="fas fa-chevron-right text-muted"></i></td>
+                `;
+                
+                tr.innerHTML = linhaHTML;
                 tabela.appendChild(tr);
             });
             document.getElementById('totalRegistros').textContent = `${lista.length} registros`;
@@ -237,16 +319,28 @@
             if(dados.Data && dados.Data.includes('-')) { const p = dados.Data.split('-'); dF = `${p[2]}/${p[1]}/${p[0]}`; }
             document.getElementById('modalMateria').textContent = dados.Materia;
             document.getElementById('modalData').textContent = dF;
-            document.getElementById('modalProfessor').textContent = dados.Professor || 'Docente Responsável';
             document.getElementById('modalEntrada').textContent = dados.HoraEntrada || '--:--';
             document.getElementById('modalSaida').textContent = dados.HoraSaida || '--:--';
             document.getElementById('modalStatusBadge').innerHTML = getStatusBadge(dados.Status);
+            
+            // Mostra RA no modal se for Staff
+            const alunoInfo = document.getElementById('modalAlunoInfo');
+            if(userRole !== 'Aluno') {
+                alunoInfo.textContent = `Aluno RA: ${dados.RegistroAcademico}`;
+                alunoInfo.classList.remove('d-none');
+            } else {
+                alunoInfo.classList.add('d-none');
+            }
+
             new bootstrap.Modal(document.getElementById('modalDetalhes')).show();
         }
 
         function atualizarEstatisticas(lista) {
             let p=0, f=0, j=0;
-            lista.forEach(d => { if (d.Status === 'Presente') p++; else if (d.Status === 'Falta' || d.Status === 'Ausente') f++; else j++; });
+            lista.forEach(d => { 
+                const s = (d.Status || "").toLowerCase();
+                if (s.includes('presente')) p++; else if (s.includes('falta') || s.includes('ausente')) f++; else j++; 
+            });
             document.getElementById('totalAulas').textContent = lista.length;
             document.getElementById('totalPresencas').textContent = p;
             document.getElementById('totalFaltas').textContent = f;
@@ -274,9 +368,10 @@
 
         function getStatusBadge(status) {
             let c = 'bg-secondary';
-            if(status === 'Presente') c = 'saad-badge-presente';
-            if(status === 'Falta' || status === 'Ausente') c = 'saad-badge-falta';
-            if(status === 'Justificado' || status === 'Atraso') c = 'saad-badge-atraso';
+            let s = (status || "").toLowerCase();
+            if(s.includes('presente')) c = 'saad-badge-presente';
+            else if(s.includes('falta') || s.includes('ausente')) c = 'saad-badge-falta';
+            else c = 'saad-badge-atraso';
             return `<span class="badge ${c}">${status}</span>`;
         }
 
