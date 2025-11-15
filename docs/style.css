@@ -37,7 +37,7 @@
 
 /* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg);
+  background: var(--saad-bg); /* Evita flash branco */
 }
 
 .saad-body {
@@ -57,16 +57,16 @@ html, body {
 
 .text-muted { color: var(--saad-text-secondary) !important; }
 
-/* ===== LOGIN & BOTÃO FLUTUANTE (CORREÇÃO DA COR) ===== */
+/* ===== BOTÃO FLUTUANTE LOGIN (CORREÇÃO FINAL) ===== */
 .theme-toggle-login {
     position: absolute;
     top: 20px;
     right: 20px;
     z-index: 1000;
-    /* CORREÇÃO: Usa as cores do tema, não branco fixo */
-    background-color: var(--saad-card); 
-    color: var(--saad-text);
-    border: 1px solid var(--saad-border);
+    /* O segredo: !important força a cor do tema sobrepondo o branco do header */
+    background-color: var(--saad-card) !important; 
+    color: var(--saad-text) !important;
+    border: 1px solid var(--saad-border) !important;
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -80,12 +80,18 @@ html, body {
 
 .theme-toggle-login:hover {
     transform: scale(1.1);
-    border-color: var(--saad-primary);
-    color: var(--saad-primary);
+    border-color: var(--saad-primary) !important;
+    color: var(--saad-primary) !important;
 }
 
+/* Garante que o ícone dentro do botão herde a cor correta */
+.theme-toggle-login i {
+    color: inherit !important;
+}
+
+/* ===== LOGIN & INPUTS ===== */
 .clickable-icon { cursor: pointer; transition: color 0.2s; }
-.clickable-icon:hover { color: var(--saad-primary) !important; }
+.clickable-icon:hover { color: var(--saad-primary); }
 
 .saad-profile-badge {
     background-color: var(--saad-card);
@@ -99,18 +105,19 @@ html, body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* ===== INPUTS (Anti-Flash) ===== */
 .saad-input-group { 
     border-radius: 10px; 
     overflow: hidden; 
     border: 1px solid var(--saad-border);
 }
 
+/* Força background para evitar flash branco */
 .input-group-text, .saad-input-icon {
     background-color: var(--saad-card) !important; 
     border: none; 
     border-right: 1px solid var(--saad-border) !important; 
     color: var(--saad-text-secondary) !important;
+    transition: none;
 }
 
 .saad-input { 
@@ -121,6 +128,7 @@ html, body {
 }
 
 .saad-input:focus { box-shadow: none; }
+
 .saad-input-group:focus-within {
     border-color: var(--saad-primary);
     box-shadow: 0 0 0 0.2rem rgba(252, 3, 73, 0.25);
@@ -137,10 +145,9 @@ html, body {
 .saad-header { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); border-bottom: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 .saad-navbar-brand { color: white !important; font-weight: 700; font-size: 1.5rem; }
 
-/* Botões do Header (Sempre brancos pois o header é colorido) */
 .saad-header-btn { 
     border: 2px solid rgba(255,255,255,0.3); 
-    color: white; 
+    color: white; /* Padrão para o header azul */
     border-radius: 8px; padding: 8px 16px; transition: all 0.3s ease; 
 }
 .saad-header-btn:hover { background: rgba(255,255,255,0.1); color: white; transform: translateY(-1px); }
