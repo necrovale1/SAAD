@@ -56,7 +56,6 @@
         const db = firebase.firestore();
         let perfilAtual = 0; 
         const perfis = [{ nome: 'Acesso Aluno', label: 'Registro Acadêmico (RA)', place: 'Digite seu RA', icon: 'fa-id-card' }, { nome: 'Acesso Professor', label: 'E-mail Institucional', place: 'prof@escola.com', icon: 'fa-chalkboard-teacher' }, { nome: 'Acesso Gestor', label: 'E-mail Corporativo', place: 'diretor@escola.com', icon: 'fa-user-tie' }];
-
         document.addEventListener('DOMContentLoaded', () => { atualizarIconeTema(localStorage.getItem("tema") || "light"); });
         function toggleSenha() {
             const input = document.getElementById('senha'); const icon = document.getElementById('iconEye');
@@ -73,8 +72,7 @@
             const val = document.getElementById("loginInput").value.trim(); const pass = document.getElementById("senha").value; const btn = document.getElementById('btnLogin');
             if(!val || !pass) return alert('Preencha os campos');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-            if (perfilAtual === 0) {
+            if(perfilAtual === 0) {
                 db.collection("users").where("RegistroAcademico", "==", val).get().then(snap => {
                     if(snap.empty) throw new Error("RA não encontrado.");
                     return auth.signInWithEmailAndPassword(snap.docs[0].data().Email, pass);
