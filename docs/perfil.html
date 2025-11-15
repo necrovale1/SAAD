@@ -14,12 +14,7 @@
         })();
     </script>
     <style>
-        #relogioTopo {
-            font-size: 1.3rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+        #relogioTopo { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="saad-body">
@@ -27,10 +22,7 @@
         <div class="container-fluid">
             <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
-                <div class="d-none d-md-flex align-items-center text-white me-4">
-                    <i class="fas fa-clock me-2 opacity-75"></i>
-                    <span id="relogioTopo">--:--:--</span>
-                </div>
+                <span class="text-white me-3 d-none d-md-block small" id="relogioTopo">--:--:--</span>
                 <a href="dashboard.html" class="btn saad-header-btn me-2"><i class="fas fa-home me-1"></i>Dashboard</a>
                 <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
@@ -42,25 +34,22 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="text-center mb-5">
-                    <div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-graduate"></i></div>
-                    <h2>Meu Perfil Acadêmico</h2>
-                    <p class="text-muted">Gerencie suas informações pessoais</p>
+                    <div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-circle"></i></div>
+                    <h2>Dados do Usuário</h2>
                 </div>
 
                 <div class="saad-card p-4 mb-4">
-                    <h4 class="mb-4"><i class="fas fa-info-circle me-2"></i>Dados Cadastrais</h4>
+                    <h4 class="mb-4"><i class="fas fa-info-circle me-2"></i>Informações</h4>
                     <div class="row g-3">
-                        <div class="col-md-6"><label class="form-label saad-label">Nome Completo</label><div class="saad-input" id="infoNome">Carregando...</div></div>
-                        
+                        <div class="col-md-6"><label class="form-label saad-label">Nome</label><div class="saad-input" id="infoNome">...</div></div>
                         <div class="col-md-6" id="divRA"><label class="form-label saad-label">RA</label><div class="saad-input" id="infoRA">...</div></div>
                         <div class="col-md-6"><label class="form-label saad-label">Email</label><div class="saad-input" id="infoEmail">...</div></div>
-                        <div class="col-md-6" id="divCurso"><label class="form-label saad-label" id="labelCurso">Curso</label><div class="saad-input" id="infoCurso">...</div></div>
+                        <div class="col-md-6"><label class="form-label saad-label" id="labelCurso">Curso</label><div class="saad-input" id="infoCurso">...</div></div>
                     </div>
                 </div>
 
-                <div class="saad-card p-4" id="cardDesempenho">
-                    <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Desempenho</h4>
-                    <p class="text-muted small mb-4">Clique nos cards para ver detalhes.</p>
+                <div class="saad-card p-4" id="cardStats" style="display:none;">
+                    <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Meu Desempenho</h4>
                     <div class="row text-center">
                         <div class="col-md-4 mb-3">
                             <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Presente')">
@@ -81,12 +70,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <label class="form-label saad-label mb-3">Frequência por Matéria</label>
-                        <div id="graficoFrequencia">
-                            <div class="text-center py-3"><i class="fas fa-spinner fa-spin"></i> Calculando dados...</div>
-                        </div>
-                    </div>
+                    <div class="mt-4" id="graficoFrequencia"></div>
                 </div>
             </div>
         </div>
@@ -121,7 +105,7 @@
         let dadosCache = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            iniciarRelogio();
+            setInterval(() => document.getElementById('relogioTopo').textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
             auth.onAuthStateChanged(user => {
                 if (!user) window.location.href = 'index.html';
                 else {
@@ -131,129 +115,83 @@
             });
         });
 
-        function iniciarRelogio() {
-            const el = document.getElementById('relogioTopo');
-            setInterval(() => el.textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
-        }
-
         function carregarDados() {
             db.collection("users").where("Email", "==", currentUser.email).get()
             .then(snapshot => {
                 if (!snapshot.empty) {
                     const data = snapshot.docs[0].data();
-                    document.getElementById('infoNome').textContent = data.Nome || 'Não informado';
+                    document.getElementById('infoNome').textContent = data.Nome;
                     document.getElementById('infoEmail').textContent = currentUser.email;
                     
-                    // Adaptação para Professor/Gestor
-                    if(data.UserType === 'Professor' || data.UserType === 'Gestor') {
-                        document.getElementById('labelCurso').textContent = 'Departamento/Cargo';
-                        document.getElementById('infoCurso').textContent = data.Departamento || data.Cargo || 'Staff';
-                        document.getElementById('divRA').style.display = 'none'; // Esconde RA
-                        document.getElementById('cardDesempenho').style.display = 'none'; // Esconde gráficos de notas
+                    // Lógica Staff vs Aluno
+                    if (data.UserType === 'Gestor' || data.UserType === 'Professor') {
+                        document.getElementById('divRA').style.display = 'none';
+                        document.getElementById('labelCurso').textContent = 'Cargo/Depto';
+                        document.getElementById('infoCurso').textContent = data.Cargo || data.Departamento || 'Staff';
+                        document.getElementById('cardStats').style.display = 'none';
                     } else {
-                        // É Aluno
-                        document.getElementById('infoRA').textContent = data.RegistroAcademico || '...';
-                        document.getElementById('infoCurso').textContent = data.Curso || '...';
-                        
-                        // Carrega estatísticas apenas se for aluno
-                        return db.collection("presencas").where("RegistroAcademico", "==", data.RegistroAcademico).orderBy('Data', 'desc').limit(100).get();
+                        document.getElementById('infoRA').textContent = data.RegistroAcademico;
+                        document.getElementById('infoCurso').textContent = data.Curso;
+                        document.getElementById('cardStats').style.display = 'block';
+                        carregarStatsAluno(data.RegistroAcademico);
                     }
                 }
-            })
-            .then(snapshot => { 
-                if (snapshot && !snapshot.empty) {
-                    dadosCache = [];
-                    snapshot.forEach(doc => dadosCache.push(doc.data()));
-                    processarEstatisticas(); 
-                } else if (snapshot) {
-                     document.getElementById('graficoFrequencia').innerHTML = '<div class="text-center text-muted">Nenhum registro.</div>';
-                }
-            })
-            .catch(err => {
-                console.error(err);
+            });
+        }
+
+        function carregarStatsAluno(ra) {
+            db.collection("presencas").where("RegistroAcademico", "==", ra).orderBy('Data', 'desc').limit(100).get()
+            .then(snap => {
+                dadosCache = [];
+                snap.forEach(doc => dadosCache.push(doc.data()));
+                processarEstatisticas();
             });
         }
 
         function processarEstatisticas() {
-            let p = 0, f = 0, j = 0;
+            let p=0, f=0, j=0;
             const materias = {};
-            
             dadosCache.forEach(d => {
-                const status = (d.Status || "").toLowerCase().trim();
-                if (status.includes('presente')) p++; 
-                else if (status.includes('falta') || status.includes('ausente')) f++; 
-                else j++; 
-
-                const matNome = d.Materia || "Outros";
-                if (!materias[matNome]) materias[matNome] = { total: 0, p: 0 };
-                materias[matNome].total++;
-                if (status.includes('presente')) materias[matNome].p++;
+                const st = (d.Status||"").toLowerCase();
+                if(st.includes('presente')) p++; else if(st.includes('falta')) f++; else j++;
+                
+                const mat = d.Materia || "Geral";
+                if(!materias[mat]) materias[mat] = {t:0, p:0};
+                materias[mat].t++;
+                if(st.includes('presente')) materias[mat].p++;
             });
-
+            
             document.getElementById('statPresencas').textContent = p;
             document.getElementById('statFaltas').textContent = f;
             document.getElementById('statJustificadas').textContent = j;
-            renderizarGraficos(materias);
-        }
-
-        function renderizarGraficos(materias) {
+            
             const container = document.getElementById('graficoFrequencia');
             container.innerHTML = '';
-
-            for (const [nome, dados] of Object.entries(materias)) {
-                const pct = dados.total > 0 ? Math.round((dados.p / dados.total) * 100) : 0;
-                let displayWidth = pct <= 2 ? 5 : pct;
-                let corBarra = 'linear-gradient(135deg, #00b09b, #96c93d)';
-                if (pct < 75) corBarra = 'linear-gradient(135deg, #f7971e, #ffd200)';
-                if (pct < 50) corBarra = 'linear-gradient(135deg, #ff416c, #ff4b2b)';
-
-                const html = `
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="small fw-bold">${nome}</span>
-                            <span class="small">${pct}%</span>
-                        </div>
-                        <div class="progress" style="height: 8px; background-color: var(--saad-border);">
-                            <div class="progress-bar" style="width: ${displayWidth}%; background: ${corBarra}; transition: width 1s ease;"></div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += html;
+            for (const [nome, d] of Object.entries(materias)) {
+                const pct = Math.round((d.p / d.t) * 100);
+                let dw = pct===0 ? 2 : pct;
+                let cor = pct < 75 ? (pct < 50 ? '#ff416c' : '#f7971e') : '#00b09b';
+                container.innerHTML += `<div class="mb-3"><div class="d-flex justify-content-between mb-1"><span class="small fw-bold">${nome}</span><span class="small">${pct}%</span></div><div class="progress" style="height: 8px; background-color: var(--saad-border);"><div class="progress-bar" style="width: ${dw}%; background: ${cor};"></div></div></div>`;
             }
         }
-
+        
         function abrirModalEstatistica(tipo) {
-            const tituloMap = { 'Presente': 'Histórico de Presenças', 'Falta': 'Histórico de Faltas', 'Justificado': 'Justificativas/Atrasos' };
-            document.getElementById('modalStatsTitle').textContent = tituloMap[tipo] || 'Detalhes';
+            // Lógica simplificada para o modal
             const listaEl = document.getElementById('modalStatsList');
             listaEl.innerHTML = '';
-
             const filtrados = dadosCache.filter(d => {
-                const st = (d.Status || "").toLowerCase();
-                if (tipo === 'Presente') return st.includes('presente');
-                if (tipo === 'Falta') return st.includes('falta') || st.includes('ausente');
-                return !st.includes('presente') && !st.includes('falta') && !st.includes('ausente');
-            }).slice(0, 20);
-
-            if (filtrados.length === 0) {
-                listaEl.innerHTML = '<div class="p-4 text-center text-muted">Nenhum registro deste tipo.</div>';
-            } else {
-                filtrados.forEach(d => {
-                    let dataF = d.Data;
-                    if(d.Data && d.Data.includes('-')) { const p = d.Data.split('-'); dataF = `${p[2]}/${p[1]}`; }
-                    
-                    let badgeClass = 'bg-secondary';
-                    if(tipo === 'Presente') badgeClass = 'bg-success';
-                    if(tipo === 'Falta') badgeClass = 'bg-danger';
-                    if(tipo === 'Justificado') badgeClass = 'bg-warning text-dark';
-
-                    const item = document.createElement('div');
-                    item.className = 'list-group-item bg-transparent border-secondary d-flex justify-content-between align-items-center px-4 py-3';
-                    item.style.color = 'var(--saad-text)';
-                    item.innerHTML = `<div><div class="fw-bold">${d.Materia}</div><small class="text-muted"><i class="fas fa-calendar-alt me-1"></i>${dataF}</small></div><span class="badge ${badgeClass} rounded-pill">${d.HoraEntrada || '--:--'}</span>`;
-                    listaEl.appendChild(item);
-                });
-            }
+                const s = (d.Status||"").toLowerCase();
+                if(tipo === 'Presente') return s.includes('presente');
+                if(tipo === 'Falta') return s.includes('falta');
+                return !s.includes('presente') && !s.includes('falta');
+            }).slice(0, 10);
+            
+            if(filtrados.length === 0) listaEl.innerHTML = '<div class="p-3 text-center">Sem registros.</div>';
+            else filtrados.forEach(d => {
+                let dt = d.Data;
+                if(dt.includes('-')) dt = dt.split('-').reverse().join('/');
+                listaEl.innerHTML += `<div class="list-group-item bg-transparent text-reset border-secondary d-flex justify-content-between"><div><strong>${d.Materia}</strong><br><small>${dt}</small></div><span class="badge bg-secondary">${d.HoraEntrada}</span></div>`;
+            });
             new bootstrap.Modal(document.getElementById('modalStats')).show();
         }
 
