@@ -37,7 +37,7 @@
 
 /* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg); /* Essencial para evitar flash branco */
+  background: var(--saad-bg);
 }
 
 .saad-body {
@@ -58,6 +58,11 @@ html, body {
 
 .text-muted { color: var(--saad-text-secondary) !important; }
 .small-label { color: var(--saad-text-secondary); font-size: 0.85rem; }
+
+/* CORREÇÃO CRÍTICA PARA TEXTO DO BOOTSTRAP */
+.text-body {
+    color: var(--saad-text) !important;
+}
 
 /* ===== RELÓGIO (Topo) ===== */
 .relogio-header {
@@ -183,19 +188,27 @@ html, body {
 .saad-table tbody tr:hover { background-color: rgba(128, 128, 128, 0.05); }
 .clickable-row { cursor: pointer; transition: background-color 0.2s; }
 
-/* ===== MODAL STYLES (Neutro) ===== */
+/* ===== MODAL NEUTRO ===== */
 #modalDetalhes .modal-content { border: none; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); background-color: var(--saad-card); }
 #modalDetalhes .modal-header { border-bottom: 1px solid var(--saad-border); padding: 1.5rem; background-color: var(--saad-bg); }
 #modalDetalhes .modal-title { font-weight: 700; color: var(--saad-text); font-size: 1.25rem; }
 #modalDetalhes .modal-body { padding: 0; background-color: var(--saad-card); max-height: 70vh; overflow-y: auto; }
-#modalDetalhes .table thead th { background: #f1f3f5 !important; color: #495057 !important; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 1px solid #dee2e6; box-shadow: none; }
-[data-theme="dark"] #modalDetalhes .table thead th { background: #252525 !important; color: #adb5bd !important; border-bottom-color: #383838; }
+
+#modalDetalhes .table thead th { 
+    background: #f1f3f5 !important; color: #495057 !important; 
+    font-weight: 700; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; 
+    border-bottom: 1px solid #dee2e6; box-shadow: none; 
+}
+[data-theme="dark"] #modalDetalhes .table thead th { 
+    background: #252525 !important; color: #adb5bd !important; border-bottom-color: #383838; 
+}
+
 #modalDetalhes .table tbody td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--saad-border); color: var(--saad-text); font-size: 0.9rem; }
-#modalDetalhes .table tbody tr:hover { background-color: rgba(0,0,0,0.02); }
-[data-theme="dark"] #modalDetalhes .table tbody tr:hover { background-color: rgba(255,255,255,0.03); }
+#modalDetalhes .table tbody tr:hover { background-color: rgba(128,128,128,0.05); }
 #modalDetalhes .text-primary { color: var(--saad-text) !important; font-weight: 600; }
 #modalDetalhes i.fas { color: var(--saad-text-secondary) !important; }
 #modalDetalhes .modal-footer { border-top: 1px solid var(--saad-border); padding: 1rem 1.5rem; background-color: var(--saad-bg); }
+
 .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
 [data-theme="light"] .btn-close { filter: none; }
 
