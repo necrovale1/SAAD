@@ -17,24 +17,12 @@
 <body class="saad-body">
     <nav class="navbar saad-header navbar-expand-lg shadow-sm">
         <div class="container-fluid">
-            <span class="navbar-brand saad-navbar-brand mb-0">
-                <i class="fas fa-fingerprint me-2"></i>SAAD
-            </span>
-            
+            <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
-                <span class="text-white me-3 d-none d-md-block">
-                    <i class="fas fa-user-graduate me-1"></i>
-                    <span id="studentName">Carregando...</span>
-                </span>
-                <a href="perfil.html" class="btn saad-header-btn me-2">
-                    <i class="fas fa-user me-1"></i>Meu Perfil
-                </a>
-                <button class="btn saad-header-btn me-2" onclick="alternarTema()">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="btn saad-header-btn btn-logout" onclick="sair()">
-                    <i class="fas fa-sign-out-alt me-1"></i>Sair
-                </button>
+                <span class="text-white me-3 d-none d-md-block"><i class="fas fa-user-graduate me-1"></i><span id="studentName">Carregando...</span></span>
+                <a href="perfil.html" class="btn saad-header-btn me-2"><i class="fas fa-user me-1"></i>Meu Perfil</a>
+                <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
+                <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
             </div>
         </div>
     </nav>
@@ -44,58 +32,36 @@
             <div class="col-lg-3 mb-4">
                 <div class="saad-stats-card p-4 mb-3">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div>
-                            <h4 class="mb-0" id="totalPresencas">0</h4>
-                            <small class="text-muted">Presenças</small>
-                        </div>
+                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);"><i class="fas fa-check-circle"></i></div>
+                        <div><h4 class="mb-0" id="totalPresencas">0</h4><small class="text-muted">Presenças</small></div>
                     </div>
                 </div>
                 <div class="saad-stats-card p-4 mb-3">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #f7971e, #ffd200);">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div>
-                            <h4 class="mb-0" id="totalJustificadas">0</h4>
-                            <small class="text-muted">Justificadas/Atraso</small>
-                        </div>
+                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-clock"></i></div>
+                        <div><h4 class="mb-0" id="totalJustificadas">0</h4><small class="text-muted">Justif./Atraso</small></div>
                     </div>
                 </div>
                 <div class="saad-stats-card p-4 mb-3">
                     <div class="d-flex align-items-center mb-3">
-                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">
-                            <i class="fas fa-times-circle"></i>
-                        </div>
-                        <div>
-                            <h4 class="mb-0" id="totalFaltas">0</h4>
-                            <small class="text-muted">Faltas</small>
-                        </div>
+                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);"><i class="fas fa-times-circle"></i></div>
+                        <div><h4 class="mb-0" id="totalFaltas">0</h4><small class="text-muted">Faltas</small></div>
                     </div>
                 </div>
                 <div class="saad-stats-card p-4">
                     <div class="d-flex align-items-center">
-                        <div class="saad-stats-icon me-3">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <div>
-                            <h4 class="mb-0" id="totalAulas">0</h4>
-                            <small class="text-muted">Total Registrado</small>
-                        </div>
+                        <div class="saad-stats-icon me-3"><i class="fas fa-calendar-check"></i></div>
+                        <div><h4 class="mb-0" id="totalAulas">0</h4><small class="text-muted">Total Registrado</small></div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-9">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="mb-1">Dashboard de Presenças</h2>
-                        <p class="text-muted mb-0">Acompanhe sua frequência acadêmica em tempo real.</p>
-                    </div>
+                    <div><h2 class="mb-1">Dashboard</h2><p class="text-muted mb-0">Acompanhe sua frequência.</p></div>
                     <div class="text-end">
-                        <small class="text-muted" id="dataAtual"></small>
+                        <small class="text-muted d-block" id="dataAtual">--/--/----</small>
+                        <small class="fw-bold text-primary" id="relogio" style="font-size: 1.1em;">--:--:--</small>
                     </div>
                 </div>
 
@@ -105,53 +71,27 @@
                         <div class="col-md-4">
                             <label class="form-label saad-label">Período</label>
                             <div class="input-group saad-input-group">
-                                <span class="input-group-text saad-input-icon">De</span>
-                                <input type="date" class="form-control saad-input" id="dataInicio">
-                                <span class="input-group-text saad-input-icon">Até</span>
-                                <input type="date" class="form-control saad-input" id="dataFim">
+                                <span class="input-group-text saad-input-icon">De</span><input type="date" class="form-control saad-input" id="dataInicio">
+                                <span class="input-group-text saad-input-icon">Até</span><input type="date" class="form-control saad-input" id="dataFim">
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label saad-label">Matéria</label>
-                            <select class="form-select saad-input" id="materia">
-                                <option value="">Todas as Matérias</option>
-                            </select>
-                        </div>
+                        <div class="col-md-4"><label class="form-label saad-label">Matéria</label><select class="form-select saad-input" id="materia"><option value="">Todas</option></select></div>
                         <div class="col-md-4 d-flex gap-2">
-                            <button type="button" class="btn saad-btn-primary flex-grow-1" onclick="filtrarPresencas()">
-                                <i class="fas fa-search me-1"></i>Buscar
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="limparFiltros()" title="Limpar Filtros">
-                                <i class="fas fa-eraser"></i>
-                            </button>
+                            <button type="button" class="btn saad-btn-primary flex-grow-1" onclick="filtrarPresencas()"><i class="fas fa-search me-1"></i>Buscar</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="limparFiltros()"><i class="fas fa-eraser"></i></button>
                         </div>
                     </form>
                 </div>
 
                 <div class="saad-card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Histórico de Aulas</h5>
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Histórico</h5>
                         <span class="badge bg-secondary" id="totalRegistros">0 registros</span>
                     </div>
-                    
                     <div class="table-responsive">
                         <table class="table saad-table table-hover align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Matéria</th>
-                                    <th>Horário</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Detalhes</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelaPresencas">
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        <i class="fas fa-spinner fa-spin me-2"></i>Carregando dados...
-                                    </td>
-                                </tr>
-                            </tbody>
+                            <thead><tr><th>Data</th><th>Matéria</th><th>Horário</th><th>Status</th><th class="text-end">Detalhes</th></tr></thead>
+                            <tbody id="tabelaPresencas"><tr><td colspan="5" class="text-center py-4 text-muted"><i class="fas fa-spinner fa-spin me-2"></i>Carregando...</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -164,17 +104,12 @@
             <div class="modal-content saad-card border-0">
                 <div class="modal-header border-bottom border-secondary">
                     <h5 class="modal-title">Detalhes da Aula</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4 text-center">
-                    
-                    <div class="saad-logo mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.5rem;">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    
+                    <div class="saad-logo mb-3 mx-auto" style="width: 60px; height: 60px; font-size: 1.5rem;"><i class="fas fa-book"></i></div>
                     <h4 id="modalMateria" class="mb-2">Matéria</h4>
                     <div id="modalStatusBadge" class="mb-4"></div>
-
                     <div class="row justify-content-center mb-4">
                         <div class="col-5 border-end border-secondary">
                             <small class="text-muted d-block mb-1 text-uppercase fw-bold" style="font-size: 0.7rem;">( entrada )</small>
@@ -185,21 +120,16 @@
                             <h3 id="modalSaida" class="text-danger fw-bold mb-0">--:--</h3>
                         </div>
                     </div>
-
                     <div class="bg-opacity-10 bg-secondary p-2 rounded d-inline-block px-4">
-                        <small class="text-muted me-2"><i class="fas fa-calendar-alt"></i> Data Registrada:</small>
+                        <small class="text-muted me-2"><i class="fas fa-calendar-alt"></i> Data:</small>
                         <strong id="modalData" class="text-primary">--/--/----</strong>
                     </div>
-
                     <div class="mt-4 pt-3 border-top border-secondary">
                         <small class="text-muted">Professor Responsável</small>
                         <p id="modalProfessor" class="fw-bold mb-0">--</p>
                     </div>
-
                 </div>
-                <div class="modal-footer border-top border-secondary justify-content-center">
-                    <button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">Fechar</button>
-                </div>
+                <div class="modal-footer border-top border-secondary justify-content-center"><button type="button" class="btn btn-secondary px-5" data-bs-dismiss="modal">Fechar</button></div>
             </div>
         </div>
     </div>
@@ -212,12 +142,11 @@
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
-        let currentUser = null;
-        let listaPresencasCache = [];
+        let currentUser = null, listaPresencasCache = [];
 
         document.addEventListener('DOMContentLoaded', function() {
             verificarAuth();
-            atualizarData();
+            iniciarRelogio();
         });
 
         function verificarAuth() {
@@ -230,145 +159,109 @@
                 }
             });
         }
+        
+        function iniciarRelogio() {
+            const dataEl = document.getElementById('dataAtual');
+            const horaEl = document.getElementById('relogio');
+            const update = () => {
+                const now = new Date();
+                dataEl.textContent = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+                horaEl.textContent = now.toLocaleTimeString('pt-BR');
+            };
+            update();
+            setInterval(update, 1000);
+        }
 
         function carregarDadosUsuario() {
             if (currentUser) {
                 db.collection("users").where("Email", "==", currentUser.email).get()
-                    .then(snapshot => {
-                        if (!snapshot.empty) {
-                            const userData = snapshot.docs[0].data();
-                            document.getElementById('studentName').textContent = userData.Nome || 'Aluno';
-                        }
-                    });
+                .then(snapshot => { if (!snapshot.empty) document.getElementById('studentName').textContent = snapshot.docs[0].data().Nome || 'Aluno'; });
             }
-        }
-
-        function atualizarData() {
-            const now = new Date();
-            document.getElementById('dataAtual').textContent = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
         }
 
         function carregarPresencas() {
             if (!currentUser) return;
-
             db.collection("users").where("Email", "==", currentUser.email).get()
-                .then(snapshot => {
-                    if (!snapshot.empty) {
-                        // Usa o RegistroAcademico correto do usuário
-                        const userRA = snapshot.docs[0].data().RegistroAcademico;
-                        return db.collection("presencas").where("RegistroAcademico", "==", userRA).limit(100).get();
-                    }
-                })
-                .then(snapshot => {
-                    listaPresencasCache = [];
-                    const materiasSet = new Set();
-
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        data.id = doc.id;
-                        listaPresencasCache.push(data);
-                        if(data.Materia) materiasSet.add(data.Materia);
-                    });
-
-                    // Ordena pela Data (String YYYY-MM-DD funciona na ordenação alfabética)
-                    listaPresencasCache.sort((a, b) => (a.Data < b.Data ? 1 : -1));
-
-                    preencherSelectMaterias(materiasSet);
-                    renderizarTabela(listaPresencasCache);
-                    atualizarEstatisticas(listaPresencasCache);
-                })
-                .catch(error => console.error("Erro:", error));
+            .then(snapshot => {
+                if (!snapshot.empty) return db.collection("presencas").where("RegistroAcademico", "==", snapshot.docs[0].data().RegistroAcademico).limit(100).get();
+            })
+            .then(snapshot => {
+                listaPresencasCache = [];
+                const materiasSet = new Set();
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    data.id = doc.id;
+                    listaPresencasCache.push(data);
+                    if(data.Materia) materiasSet.add(data.Materia);
+                });
+                listaPresencasCache.sort((a, b) => (a.Data < b.Data ? 1 : -1));
+                preencherSelectMaterias(materiasSet);
+                renderizarTabela(listaPresencasCache);
+                atualizarEstatisticas(listaPresencasCache);
+            }).catch(err => console.error(err));
         }
 
         function preencherSelectMaterias(materiasSet) {
             const select = document.getElementById("materia");
             select.innerHTML = '<option value="">Todas as Matérias</option>';
             materiasSet.forEach(mat => {
-                const option = document.createElement("option");
-                option.value = mat;
-                option.textContent = mat;
-                select.appendChild(option);
+                const opt = document.createElement("option");
+                opt.value = mat; opt.textContent = mat;
+                select.appendChild(opt);
             });
         }
 
         function renderizarTabela(lista) {
             const tabela = document.getElementById("tabelaPresencas");
             tabela.innerHTML = "";
-
             if (lista.length === 0) {
                 tabela.innerHTML = `<tr><td colspan="5" class="text-center py-4">Nenhum registro encontrado.</td></tr>`;
                 document.getElementById('totalRegistros').textContent = "0 registros";
                 return;
             }
-
             lista.forEach(dados => {
-                // Formatação de Data (String YYYY-MM-DD -> DD/MM/YYYY)
-                let dataFormatada = dados.Data;
-                if(dados.Data && dados.Data.includes('-')) {
-                    const partes = dados.Data.split('-');
-                    dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
-                }
-
-                const statusBadge = getStatusBadge(dados.Status);
+                let dF = dados.Data;
+                if(dados.Data && dados.Data.includes('-')) { const p = dados.Data.split('-'); dF = `${p[2]}/${p[1]}/${p[0]}`; }
                 
                 const tr = document.createElement('tr');
                 tr.className = 'clickable-row';
                 tr.onclick = () => abrirModal(dados);
-                tr.innerHTML = `
-                    <td>${dataFormatada}</td>
-                    <td><strong>${dados.Materia}</strong></td>
-                    <td>${dados.HoraEntrada} - ${dados.HoraSaida}</td>
-                    <td>${statusBadge}</td>
-                    <td class="text-end"><i class="fas fa-chevron-right text-muted"></i></td>
-                `;
+                tr.innerHTML = `<td>${dF}</td><td><strong>${dados.Materia}</strong></td><td>${dados.HoraEntrada} - ${dados.HoraSaida}</td><td>${getStatusBadge(dados.Status)}</td><td class="text-end"><i class="fas fa-chevron-right text-muted"></i></td>`;
                 tabela.appendChild(tr);
             });
-
             document.getElementById('totalRegistros').textContent = `${lista.length} registros`;
         }
 
         function abrirModal(dados) {
-            let dataFormatada = dados.Data;
-            if(dados.Data && dados.Data.includes('-')) {
-                const p = dados.Data.split('-');
-                dataFormatada = `${p[2]}/${p[1]}/${p[0]}`;
-            }
-
+            let dF = dados.Data;
+            if(dados.Data && dados.Data.includes('-')) { const p = dados.Data.split('-'); dF = `${p[2]}/${p[1]}/${p[0]}`; }
             document.getElementById('modalMateria').textContent = dados.Materia;
-            document.getElementById('modalData').textContent = dataFormatada;
+            document.getElementById('modalData').textContent = dF;
             document.getElementById('modalProfessor').textContent = dados.Professor || 'Docente Responsável';
             document.getElementById('modalEntrada').textContent = dados.HoraEntrada || '--:--';
             document.getElementById('modalSaida').textContent = dados.HoraSaida || '--:--';
             document.getElementById('modalStatusBadge').innerHTML = getStatusBadge(dados.Status);
-
-            const modal = new bootstrap.Modal(document.getElementById('modalDetalhes'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('modalDetalhes')).show();
         }
 
         function atualizarEstatisticas(lista) {
-            let presencas = 0, faltas = 0, justificados = 0;
-            lista.forEach(d => {
-                const s = d.Status;
-                if (s === 'Presente') presencas++;
-                else if (s === 'Falta' || s === 'Ausente') faltas++;
-                else justificados++;
-            });
+            let p=0, f=0, j=0;
+            lista.forEach(d => { if (d.Status === 'Presente') p++; else if (d.Status === 'Falta' || d.Status === 'Ausente') f++; else j++; });
             document.getElementById('totalAulas').textContent = lista.length;
-            document.getElementById('totalPresencas').textContent = presencas;
-            document.getElementById('totalFaltas').textContent = faltas;
-            document.getElementById('totalJustificadas').textContent = justificados;
+            document.getElementById('totalPresencas').textContent = p;
+            document.getElementById('totalFaltas').textContent = f;
+            document.getElementById('totalJustificadas').textContent = j;
         }
 
         function filtrarPresencas() {
-            const inicio = document.getElementById("dataInicio").value;
+            const ini = document.getElementById("dataInicio").value;
             const fim = document.getElementById("dataFim").value;
-            const materia = document.getElementById("materia").value;
-            
-            const filtrados = listaPresencasCache.filter(item => {
+            const mat = document.getElementById("materia").value;
+            const filtrados = listaPresencasCache.filter(i => {
                 let ok = true;
-                if (materia && item.Materia !== materia) ok = false;
-                if (inicio && item.Data < inicio) ok = false;
-                if (fim && item.Data > fim) ok = false;
+                if (mat && i.Materia !== mat) ok = false;
+                if (ini && i.Data < ini) ok = false;
+                if (fim && i.Data > fim) ok = false;
                 return ok;
             });
             renderizarTabela(filtrados);
@@ -380,24 +273,19 @@
         }
 
         function getStatusBadge(status) {
-            let classe = 'bg-secondary';
-            if(status === 'Presente') classe = 'saad-badge-presente';
-            if(status === 'Falta' || status === 'Ausente') classe = 'saad-badge-falta';
-            if(status === 'Justificado' || status === 'Atraso') classe = 'saad-badge-atraso';
-            
-            return `<span class="badge ${classe}">${status}</span>`;
+            let c = 'bg-secondary';
+            if(status === 'Presente') c = 'saad-badge-presente';
+            if(status === 'Falta' || status === 'Ausente') c = 'saad-badge-falta';
+            if(status === 'Justificado' || status === 'Atraso') c = 'saad-badge-atraso';
+            return `<span class="badge ${c}">${status}</span>`;
         }
 
         function alternarTema() {
-            const html = document.documentElement;
-            const novo = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", novo);
+            const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", novo);
             localStorage.setItem("tema", novo);
         }
-
-        function sair() {
-            auth.signOut().then(() => window.location.href = 'index.html');
-        }
+        function sair() { auth.signOut().then(() => window.location.href = 'index.html'); }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
