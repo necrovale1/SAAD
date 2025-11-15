@@ -19,6 +19,8 @@
         <div class="container-fluid">
             <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
+                <span class="text-white me-3 d-none d-md-block small" id="relogioTopo">--:--:--</span>
+                
                 <a href="dashboard.html" class="btn saad-header-btn me-2"><i class="fas fa-home me-1"></i>Dashboard</a>
                 <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
@@ -47,21 +49,23 @@
 
                 <div class="saad-card p-4">
                     <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Desempenho</h4>
+                    <p class="text-muted small mb-4">Clique nos cards para ver detalhes.</p>
+                    
                     <div class="row text-center">
                         <div class="col-md-4 mb-3">
-                            <div class="saad-stats-card p-3">
+                            <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Presente')">
                                 <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #00b09b, #96c93d);"><i class="fas fa-check"></i></div>
                                 <h4 class="mb-1" id="statPresencas">0</h4><small class="text-muted">Presenças</small>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="saad-stats-card p-3">
-                                <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-exclamation text-dark"></i></div>
+                            <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Justificado')">
+                                <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-clock"></i></div>
                                 <h4 class="mb-1" id="statJustificadas">0</h4><small class="text-muted">Justificadas</small>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <div class="saad-stats-card p-3">
+                            <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Falta')">
                                 <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);"><i class="fas fa-times"></i></div>
                                 <h4 class="mb-1" id="statFaltas">0</h4><small class="text-muted">Faltas</small>
                             </div>
@@ -76,6 +80,23 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalStats" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content saad-card border-0">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="modalStatsTitle">Detalhes</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="list-group list-group-flush" id="modalStatsList"></div>
+                </div>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -85,9 +106,10 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         let currentUser = null;
+        let dadosCache = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Tema já carregado no head
+            iniciarRelogio();
             auth.onAuthStateChanged(user => {
                 if (!user) window.location.href = 'index.html';
                 else {
@@ -96,6 +118,13 @@
                 }
             });
         });
+
+        function iniciarRelogio() {
+            const el = document.getElementById('relogioTopo');
+            setInterval(() => {
+                el.textContent = new Date().toLocaleTimeString('pt-BR');
+            }, 1000);
+        }
 
         function carregarDados() {
             db.collection("users").where("Email", "==", currentUser.email).get()
@@ -106,27 +135,66 @@
                     document.getElementById('infoRA').textContent = data.RegistroAcademico;
                     document.getElementById('infoEmail').textContent = currentUser.email;
                     document.getElementById('infoCurso').textContent = data.Curso;
-                    return db.collection("presencas").where("RegistroAcademico", "==", data.RegistroAcademico).get();
+                    return db.collection("presencas").where("RegistroAcademico", "==", data.RegistroAcademico).orderBy('Data', 'desc').limit(50).get();
                 }
             })
-            .then(snapshot => { if (snapshot) processarEstatisticas(snapshot); })
+            .then(snapshot => { 
+                if (snapshot) {
+                    dadosCache = [];
+                    snapshot.forEach(doc => dadosCache.push(doc.data()));
+                    processarEstatisticas(); 
+                }
+            })
             .catch(err => console.error(err));
         }
 
-        function processarEstatisticas(snapshot) {
+        function processarEstatisticas() {
             let p=0, f=0, j=0;
             const materias = {};
-            snapshot.forEach(doc => {
-                const d = doc.data();
-                if (d.Status === 'Presente') p++; else if (d.Status === 'Falta' || d.Status === 'Ausente') f++; else j++;
+            
+            dadosCache.forEach(d => {
+                if (d.Status === 'Presente') p++; 
+                else if (d.Status === 'Falta' || d.Status === 'Ausente') f++; 
+                else j++;
+
                 if (!materias[d.Materia]) materias[d.Materia] = { total: 0, p: 0 };
                 materias[d.Materia].total++;
                 if (d.Status === 'Presente') materias[d.Materia].p++;
             });
+
             document.getElementById('statPresencas').textContent = p;
             document.getElementById('statFaltas').textContent = f;
             document.getElementById('statJustificadas').textContent = j;
             renderizarGraficos(materias);
+        }
+
+        function abrirModalEstatistica(tipo) {
+            const tituloMap = { 'Presente': 'Últimas Presenças', 'Falta': 'Últimas Faltas', 'Justificado': 'Justificativas/Atrasos' };
+            document.getElementById('modalStatsTitle').textContent = tituloMap[tipo] || 'Detalhes';
+            
+            const listaEl = document.getElementById('modalStatsList');
+            listaEl.innerHTML = '';
+
+            const filtrados = dadosCache.filter(d => {
+                if (tipo === 'Presente') return d.Status === 'Presente';
+                if (tipo === 'Falta') return d.Status === 'Falta' || d.Status === 'Ausente';
+                return d.Status === 'Justificado' || d.Status === 'Atraso';
+            }).slice(0, 10);
+
+            if (filtrados.length === 0) {
+                listaEl.innerHTML = '<div class="p-3 text-center text-muted">Nenhum registro recente.</div>';
+            } else {
+                filtrados.forEach(d => {
+                    let dataF = d.Data;
+                    if(d.Data && d.Data.includes('-')) { const p = d.Data.split('-'); dataF = `${p[2]}/${p[1]}`; }
+                    const item = document.createElement('div');
+                    item.className = 'list-group-item bg-transparent border-secondary d-flex justify-content-between align-items-center';
+                    item.style.color = 'var(--saad-text)';
+                    item.innerHTML = `<div><strong>${dataF}</strong> - ${d.Materia}</div><span class="badge bg-secondary">${d.HoraEntrada}</span>`;
+                    listaEl.appendChild(item);
+                });
+            }
+            new bootstrap.Modal(document.getElementById('modalStats')).show();
         }
 
         function renderizarGraficos(materias) {
@@ -135,13 +203,11 @@
             for (const [nome, dados] of Object.entries(materias)) {
                 const pct = Math.round((dados.p / dados.total) * 100);
                 
-                // Lógica da Barrinha Vermelha: Se 0%, mostra 2% e fica vermelho
-                let displayWidth = pct;
-                if (pct === 0) displayWidth = 2;
-
+                // Lógica da Barrinha Vermelha se 0%
+                let displayWidth = pct === 0 ? 2 : pct;
                 let corBarra = 'linear-gradient(135deg, #00b09b, #96c93d)'; // Verde
                 if (pct < 75) corBarra = 'linear-gradient(135deg, #f7971e, #ffd200)'; // Amarelo
-                if (pct < 50) corBarra = 'linear-gradient(135deg, #ff416c, #ff4b2b)'; // Vermelho
+                if (pct < 50 || pct === 0) corBarra = 'linear-gradient(135deg, #ff416c, #ff4b2b)'; // Vermelho
 
                 const html = `
                     <div class="mb-3">
