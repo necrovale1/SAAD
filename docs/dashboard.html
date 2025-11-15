@@ -25,7 +25,7 @@
                     <span class="relogio-header" id="relogioGlobal">--:--:--</span>
                 </div>
 
-                <span class="text-white me-3 d-none d-md-block small"><i class="fas fa-user-circle me-1"></i><span id="studentName">...</span></span>
+                <span class="text-white me-3 d-none d-md-block small"><i class="fas fa-user-circle me-1"></i><span id="studentName">Carregando...</span></span>
                 <a href="perfil.html" class="btn saad-header-btn me-2" id="btnPerfil"><i class="fas fa-user me-1"></i>Perfil</a>
                 <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
@@ -36,12 +36,12 @@
     <div class="container-fluid py-4" id="mainContainer">
         <div class="text-center py-5">
             <i class="fas fa-circle-notch fa-spin fa-3x text-secondary"></i>
-            <p class="mt-3 text-muted">Carregando painel...</p>
+            <p class="mt-3 text-muted">Identificando usuário...</p>
         </div>
     </div>
 
     <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content saad-card border-0">
                 <div class="modal-header border-bottom border-secondary">
                     <h5 class="modal-title" id="modalTitle">Detalhes</h5>
@@ -86,6 +86,7 @@
         }
 
         function carregarPainelCorreto() {
+            // Busca dados do usuário para saber o tipo (UserType)
             db.collection("users").doc(currentUser.uid).get()
             .then(doc => {
                 if (!doc.exists) return db.collection("users").where("Email", "==", currentUser.email).get().then(s => s.empty?null:s.docs[0].data());
@@ -93,9 +94,9 @@
             })
             .then(data => {
                 if (!data) { alert("Erro: Usuário não encontrado."); return; }
-                document.getElementById('studentName').textContent = data.Nome.split(' ')[0];
+                document.getElementById('studentName').textContent = data.Nome || 'Usuário';
 
-                // Lógica de Roteamento
+                // === SELETOR DE DASHBOARDS ===
                 if (data.Email === 'admin.ti@escola.com' || data.Cargo === 'Administrador de Sistemas') {
                     renderizarDashboardTI();
                 } else if (data.UserType === 'Gestor') {
@@ -108,19 +109,150 @@
             });
         }
 
-        // === 1. PROFESSOR (Agrupado por Turma) ===
+        // ==================================================
+        // 1. DASHBOARD GESTOR (DIRETOR)
+        // Visão: Histórico por Dia -> Detalhe por Matéria
+        // ==================================================
+        function renderizarDashboardGestor() {
+            const html = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div><h2 class="mb-1">Painel da Diretoria</h2><p class="text-muted mb-0">Visão Geral da Escola</p></div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>1.250</h3><small class="text-muted">Total Alunos</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3 id="mediaGeral">--%</h3><small class="text-muted">Presença Média</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>45</h3><small class="text-muted">Professores</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center text-danger"><h3>5</h3><small class="text-muted">Turmas Críticas</small></div></div>
+                </div>
+
+                <div class="saad-card p-4">
+                    <h5 class="mb-3">Histórico de Frequência (Agrupado por Dia)</h5>
+                    <p class="text-muted small mb-3">Clique na data para ver o desempenho de cada turma e professor.</p>
+                    <div class="table-responsive">
+                        <table class="table saad-table table-hover align-middle">
+                            <thead><tr><th>Data</th><th>Total Aulas</th><th>Presença Média da Escola</th><th>Situação</th><th>Ação</th></tr></thead>
+                            <tbody id="tabelaGestorDias"><tr><td colspan="5" class="text-center"><i class="fas fa-spinner fa-spin"></i> Analisando dados...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>`;
+            document.getElementById('mainContainer').innerHTML = html;
+
+            // Busca volume grande de dados para agrupar
+            db.collection("presencas").orderBy("Data", "desc").limit(400).get().then(snap => {
+                const diasMap = {};
+                let totalGeralP = 0, totalGeralT = 0;
+
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if (!diasMap[d.Data]) diasMap[d.Data] = { data: d.Data, total: 0, p: 0, registros: [] };
+                    
+                    diasMap[d.Data].total++; // Total de alunos esperados naquele dia (baseado nas chamadas)
+                    if ((d.Status || "").toLowerCase().includes('presente')) {
+                        diasMap[d.Data].p++;
+                        totalGeralP++;
+                    }
+                    totalGeralT++;
+                    diasMap[d.Data].registros.push(d); // Guarda o registro cru para o modal
+                });
+
+                document.getElementById('mediaGeral').textContent = totalGeralT > 0 ? `${Math.round((totalGeralP/totalGeralT)*100)}%` : '0%';
+                
+                const tbody = document.getElementById('tabelaGestorDias');
+                tbody.innerHTML = '';
+
+                // Ordena dias e cria linhas
+                Object.values(diasMap).sort((a,b) => a.data < b.data ? 1 : -1).forEach(dia => {
+                    const pct = Math.round((dia.p / dia.total) * 100);
+                    let badge = pct < 70 ? '<span class="badge bg-danger">Crítico</span>' : (pct < 85 ? '<span class="badge bg-warning text-dark">Atenção</span>' : '<span class="badge bg-success">Bom</span>');
+                    
+                    // ID único seguro para salvar no window
+                    const safeID = dia.data.replace(/[^0-9]/g, '');
+                    window[`dia_${safeID}`] = dia.registros;
+
+                    tbody.innerHTML += `
+                        <tr class="clickable-row" onclick="abrirDetalhesDiaGestor('${dia.data}', '${safeID}')">
+                            <td><i class="fas fa-calendar-day me-2 text-primary"></i>${formatarData(dia.data)}</td>
+                            <td>${dia.registros.length} registros</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2 fw-bold">${pct}%</span>
+                                    <div class="progress flex-grow-1" style="height: 6px; width: 80px;">
+                                        <div class="progress-bar ${pct < 70 ? 'bg-danger' : 'bg-success'}" style="width: ${pct}%"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${badge}</td>
+                            <td><button class="btn btn-sm btn-outline-secondary"><i class="fas fa-eye"></i> Ver Turmas</button></td>
+                        </tr>`;
+                });
+            });
+        }
+
+        function abrirDetalhesDiaGestor(dataString, idDados) {
+            const registros = window[`dia_${idDados}`] || [];
+            document.getElementById('modalTitle').textContent = `Visão Detalhada: ${formatarData(dataString)}`;
+            
+            // Agrupa os registros daquele dia por MATÉRIA
+            const turmasMap = {};
+            registros.forEach(reg => {
+                const mat = reg.Materia || "Geral";
+                if (!turmasMap[mat]) turmasMap[mat] = { nome: mat, total: 0, p: 0 };
+                turmasMap[mat].total++;
+                if ((reg.Status||"").toLowerCase().includes('presente')) turmasMap[mat].p++;
+            });
+
+            let html = `
+                <div class="p-3 bg-light border-bottom mb-3">
+                    <small class="text-muted">Resumo das aulas ministradas nesta data:</small>
+                </div>
+                <div class="table-responsive px-3">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light"><tr><th>Matéria / Turma</th><th>Professor Responsável</th><th>Presença da Turma</th><th>Status</th></tr></thead>
+                        <tbody>`;
+            
+            Object.values(turmasMap).forEach(t => {
+                const pct = Math.round((t.p / t.total) * 100);
+                // Simula nome do professor baseado na matéria (já que não temos vínculo relacional direto aqui)
+                const profFake = "Prof. " + t.nome.split(' ')[0] + " Silva";
+                
+                html += `
+                    <tr>
+                        <td><strong>${t.nome}</strong></td>
+                        <td><i class="fas fa-chalkboard-teacher me-2 text-muted"></i>${profFake}</td>
+                        <td>
+                             <div class="d-flex align-items-center">
+                                <span class="me-2 small">${pct}% (${t.p}/${t.total})</span>
+                                <div class="progress flex-grow-1" style="height: 5px; width: 60px;"><div class="progress-bar ${pct<75?'bg-danger':'bg-success'}" style="width: ${pct}%"></div></div>
+                            </div>
+                        </td>
+                        <td>${pct < 75 ? '<span class="badge bg-danger">Baixa Freq.</span>' : '<span class="badge bg-success">Normal</span>'}</td>
+                    </tr>`;
+            });
+            html += '</tbody></table></div>';
+            
+            document.getElementById('modalBody').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('modalDetalhes')).show();
+        }
+
+
+        // ==================================================
+        // 2. DASHBOARD PROFESSOR
+        // Visão: Minhas Matérias -> Lista de Alunos
+        // ==================================================
         function renderizarDashboardProfessor(profData) {
             const html = `
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div><h3 class="mb-1">Minhas Turmas</h3><p class="text-muted mb-0">Gestão de Frequência</p></div>
+                    <div><h3 class="mb-1">Sala Virtual</h3><p class="text-muted mb-0">Gerenciamento de Turmas</p></div>
                 </div>
+                
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="saad-card p-4 mb-4">
-                            <h5 class="mb-3">Turmas Ativas</h5>
+                            <h5 class="mb-3">Minhas Turmas (Ativas)</h5>
                             <div class="table-responsive">
                                 <table class="table saad-table table-hover align-middle">
-                                    <thead><tr><th>Matéria / Turma</th><th>Presença Média</th><th>Última Aula</th><th>Ação</th></tr></thead>
+                                    <thead><tr><th>Matéria</th><th>Alunos Presentes (Hoje)</th><th>Última Aula</th><th>Ação</th></tr></thead>
                                     <tbody id="tabelaProf"><tr><td colspan="4" class="text-center"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody>
                                 </table>
                             </div>
@@ -128,140 +260,102 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="saad-card p-4">
-                            <h5 class="mb-3">Resumo Semanal da Presença</h5>
-                            <p class="text-muted small">Desempenho dos alunos nas suas aulas.</p>
-                            <div id="resumoSemanalContainer">
-                                </div>
+                            <h5 class="mb-3">Resumo das Turmas</h5>
+                            <p class="small text-muted">Média de presença por matéria.</p>
+                            <div id="resumoProfContainer"></div>
                         </div>
                     </div>
                 </div>`;
             document.getElementById('mainContainer').innerHTML = html;
 
-            db.collection("presencas").orderBy("Data", "desc").limit(150).get().then(snap => {
-                const turmas = {};
+            // Busca dados gerais (simulando que o professor vê suas materias)
+            db.collection("presencas").orderBy("Data", "desc").limit(100).get().then(snap => {
+                const materias = {};
+                const hoje = new Date().toISOString().split('T')[0];
+
                 snap.forEach(doc => {
                     const d = doc.data();
-                    if (!turmas[d.Materia]) turmas[d.Materia] = { nome: d.Materia, total: 0, p: 0, ultimaData: d.Data, alunos: [] };
+                    if (!materias[d.Materia]) materias[d.Materia] = { nome: d.Materia, total: 0, p: 0, hojeP: 0, ultimaData: d.Data, alunos: [] };
                     
-                    turmas[d.Materia].total++;
-                    if ((d.Status||"").includes('Presente')) turmas[d.Materia].p++;
-                    
-                    turmas[d.Materia].alunos.push({ ra: d.RegistroAcademico, status: d.Status, data: d.Data, hora: d.HoraEntrada });
+                    materias[d.Materia].total++;
+                    if ((d.Status||"").includes('Presente')) {
+                        materias[d.Materia].p++;
+                        if(d.Data === hoje) materias[d.Materia].hojeP++;
+                    }
+                    materias[d.Materia].alunos.push(d);
                 });
 
                 const tbody = document.getElementById('tabelaProf');
-                const resumoContainer = document.getElementById('resumoSemanalContainer');
-                tbody.innerHTML = ''; resumoContainer.innerHTML = '';
+                const resumo = document.getElementById('resumoProfContainer');
+                tbody.innerHTML = ''; resumo.innerHTML = '';
 
-                Object.values(turmas).forEach(t => {
-                    const pct = Math.round((t.p / t.total) * 100);
-                    const safeID = t.nome.replace(/[^a-zA-Z0-9]/g, '_');
-                    window[`dados_${safeID}`] = t.alunos;
+                Object.values(materias).forEach(mat => {
+                    const pct = Math.round((mat.p / mat.total) * 100);
+                    const safeID = mat.nome.replace(/[^a-zA-Z0-9]/g, '_');
+                    window[`turma_${safeID}`] = mat.alunos;
 
-                    // Linha da Tabela
+                    // Tabela Principal
                     tbody.innerHTML += `
                         <tr>
-                            <td><span class="fw-bold text-primary">${t.nome}</span></td>
-                            <td><div class="d-flex align-items-center"><span class="me-2 small fw-bold">${pct}%</span><div class="progress flex-grow-1" style="height: 5px; width: 60px;"><div class="progress-bar ${pct<70?'bg-danger':'bg-success'}" style="width: ${pct}%"></div></div></div></td>
-                            <td>${formatarData(t.ultimaData)}</td>
-                            <td><button class="btn btn-sm btn-outline-secondary" onclick="abrirModalTurma('${t.nome}', '${safeID}')"><i class="fas fa-list"></i> Detalhes</button></td>
+                            <td><span class="fw-bold text-primary">${mat.nome}</span></td>
+                            <td><span class="badge bg-success rounded-pill">${mat.hojeP} presentes</span></td>
+                            <td>${formatarData(mat.ultimaData)}</td>
+                            <td><button class="btn btn-sm btn-outline-primary" onclick="abrirChamadaProf('${mat.nome}', '${safeID}')"><i class="fas fa-list-ul"></i> Detalhes</button></td>
                         </tr>`;
-
-                    // Barra Lateral (Responsiva)
-                    resumoContainer.innerHTML += `
+                    
+                    // Resumo Lateral
+                    resumo.innerHTML += `
                         <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1"><small>${t.nome}</small><small class="${pct<75?'text-danger':'text-success'} fw-bold">${pct}%</small></div>
+                            <div class="d-flex justify-content-between mb-1"><small>${mat.nome}</small><small class="fw-bold ${pct<75?'text-danger':'text-success'}">${pct}%</small></div>
                             <div class="progress" style="height: 6px; background: var(--saad-border);"><div class="progress-bar ${pct<75?'bg-danger':'bg-success'}" style="width: ${pct}%"></div></div>
                         </div>`;
                 });
-
-                if(Object.keys(turmas).length === 0) tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Nenhuma aula recente.</td></tr>';
             });
         }
 
-        function abrirModalTurma(nome, id) {
-            const alunos = window[`dados_${id}`] || [];
-            document.getElementById('modalTitle').textContent = `Diário de Classe: ${nome}`;
-            let html = `<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead class="table-light"><tr><th>RA Aluno</th><th>Data</th><th>Horário</th><th>Status</th></tr></thead><tbody>`;
-            alunos.slice(0, 50).forEach(a => {
-                html += `<tr><td class="fw-bold">${a.ra}</td><td>${formatarData(a.data)}</td><td>${a.hora}</td><td>${getStatusBadge(a.status)}</td></tr>`;
+        function abrirChamadaProf(nome, id) {
+            const alunos = window[`turma_${id}`] || [];
+            document.getElementById('modalTitle').textContent = `Diário: ${nome}`;
+            let html = `<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead class="table-light"><tr><th>RA Aluno</th><th>Data</th><th>Entrada/Saída</th><th>Status</th></tr></thead><tbody>`;
+            alunos.slice(0, 30).forEach(a => {
+                html += `<tr><td class="fw-bold">${a.RegistroAcademico}</td><td>${formatarData(a.Data)}</td><td>${a.HoraEntrada} - ${a.HoraSaida}</td><td>${getStatusBadge(a.Status)}</td></tr>`;
             });
             html += '</tbody></table></div>';
             document.getElementById('modalBody').innerHTML = html;
             new bootstrap.Modal(document.getElementById('modalDetalhes')).show();
         }
 
-        // === 2. GESTOR (Dinâmico) ===
-        function renderizarDashboardGestor() {
-            const html = `
-                <h3 class="mb-4">Painel da Diretoria</h3>
-                <div class="row mb-4">
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>1.250</h3><small class="text-muted">Alunos</small></div></div>
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3 id="mediaEscola">--%</h3><small class="text-muted">Média Geral</small></div></div>
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>45</h3><small class="text-muted">Professores</small></div></div>
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center text-danger"><h3>5</h3><small class="text-muted">Turmas Críticas</small></div></div>
-                </div>
+
+        // ==================================================
+        // 3. DASHBOARD ADMIN TI (Logs)
+        // ==================================================
+        function renderizarDashboardTI() {
+            document.getElementById('mainContainer').innerHTML = `
+                <div class="alert alert-dark mb-4"><i class="fas fa-terminal me-2"></i>Painel de Controle TI</div>
                 <div class="row">
-                    <div class="col-lg-6 mb-4">
-                        <div class="saad-card p-4 h-100">
-                            <h5 class="mb-4">Frequência por Turma (Dinâmico)</h5>
-                            <div id="gestorBarrasContainer" style="max-height: 300px; overflow-y: auto;"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 mb-4">
-                        <div class="saad-card p-4 h-100">
-                            <h5 class="mb-3">Últimos Registros</h5>
-                            <div class="table-responsive"><table class="table saad-table table-sm"><thead><tr><th>Hora</th><th>RA Aluno</th><th>Matéria</th><th>Status</th></tr></thead><tbody id="tabelaGestor"></tbody></table></div>
+                    <div class="col-lg-12">
+                        <div class="saad-card p-0 overflow-hidden">
+                            <div class="p-3 bg-dark text-white d-flex justify-content-between"><span>System Logs</span><span class="badge bg-success">LIVE</span></div>
+                            <div class="p-3 font-monospace" style="background:#111; color:#0f0; height:400px; overflow-y:auto; font-size:0.85rem;">
+                                <div>[SYSTEM] Connection established on port 443... OK</div>
+                                <div>[DB] Firestore READ operation latency: 24ms</div>
+                                <div>[AUTH] User authentication request... Approved</div>
+                                <div class="text-warning">[WARN] High memory usage on node-04</div>
+                                <div>[API] Face recognition service responded (200 OK)</div>
+                            </div>
                         </div>
                     </div>
                 </div>`;
-            document.getElementById('mainContainer').innerHTML = html;
-
-            db.collection("presencas").orderBy("Data", "desc").limit(200).get().then(snap => {
-                const turmas = {};
-                let totalP = 0, totalG = 0;
-                const tbody = document.getElementById('tabelaGestor');
-                tbody.innerHTML = '';
-
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    if (!turmas[d.Materia]) turmas[d.Materia] = { nome: d.Materia, t: 0, p: 0 };
-                    turmas[d.Materia].t++;
-                    totalG++;
-                    if ((d.Status||"").includes('Presente')) { turmas[d.Materia].p++; totalP++; }
-                    
-                    // Popula tabela de ultimos registros (apenas os 10 primeiros)
-                    if(tbody.childElementCount < 10) {
-                        tbody.innerHTML += `<tr><td>${d.HoraEntrada}</td><td>${d.RegistroAcademico}</td><td><small>${d.Materia}</small></td><td>${getStatusBadge(d.Status)}</td></tr>`;
-                    }
-                });
-
-                document.getElementById('mediaEscola').textContent = totalG > 0 ? `${Math.round((totalP/totalG)*100)}%` : '0%';
-                
-                const barrasContainer = document.getElementById('gestorBarrasContainer');
-                barrasContainer.innerHTML = '';
-                
-                // Gera barras dinâmicas
-                Object.values(turmas).sort((a,b) => (a.p/a.t) - (b.p/b.t)).forEach(t => {
-                    const pct = Math.round((t.p / t.t) * 100);
-                    barrasContainer.innerHTML += `
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between"><small>${t.nome}</small><small class="fw-bold">${pct}%</small></div>
-                            <div class="progress" style="height: 8px; background: var(--saad-border);"><div class="progress-bar ${pct<75?'bg-danger':'bg-success'}" style="width: ${pct}%"></div></div>
-                        </div>`;
-                });
-            });
         }
 
-        // === 3. ADMIN TI ===
-        function renderizarDashboardTI() {
-            document.getElementById('mainContainer').innerHTML = `<div class="alert alert-dark mb-4"><i class="fas fa-terminal me-2"></i>Painel TI</div><div class="saad-card p-4 bg-dark text-success font-monospace">System Online...<br>DB Connected.<br>Auth Service OK.</div>`;
-        }
-
-        // === 4. ALUNO ===
+        // ==================================================
+        // 4. DASHBOARD ALUNO (Visão Pessoal)
+        // ==================================================
         function renderizarDashboardAluno(userData) {
             const html = `
-                <h3 class="mb-4">Minhas Aulas</h3>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div><h2 class="mb-1">Minhas Aulas</h2><p class="text-muted mb-0">Olá, ${userData.Nome.split(' ')[0]}</p></div>
+                </div>
                 <div class="row">
                     <div class="col-lg-3"><div class="saad-stats-card p-4 mb-3 text-center"><h3 id="totalPresencas">0</h3><small>Presenças</small></div></div>
                     <div class="col-lg-3"><div class="saad-stats-card p-4 mb-3 text-center text-danger"><h3 id="totalFaltas">0</h3><small>Faltas</small></div></div>
@@ -283,7 +377,7 @@
             });
         }
 
-        // Utils
+        // UTILS
         function formatarData(s) { if(!s) return '--'; if(s.includes('-')) { const p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; } return s; }
         function getStatusBadge(s) { let c='bg-secondary'; s=(s||"").toLowerCase(); if(s.includes('presente')) c='saad-badge-presente'; else if(s.includes('falta')) c='saad-badge-falta'; return `<span class="badge ${c}">${s}</span>`; }
         function alternarTema() { const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"; document.documentElement.setAttribute("data-theme", novo); localStorage.setItem("tema", novo); }
