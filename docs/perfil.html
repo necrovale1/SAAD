@@ -7,12 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script>
-        (function() {
-            const temaSalvo = localStorage.getItem("tema") || "light";
-            document.documentElement.setAttribute("data-theme", temaSalvo);
-        })();
-    </script>
+    <script> (function() { const temaSalvo = localStorage.getItem("tema") || "light"; document.documentElement.setAttribute("data-theme", temaSalvo); })(); </script>
     <style> #relogioTopo { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); } </style>
 </head>
 <body class="saad-body">
@@ -27,12 +22,10 @@
             </div>
         </div>
     </nav>
-
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="text-center mb-5"><div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-circle"></i></div><h2>Dados do Usuário</h2></div>
-                
                 <div class="saad-card p-4 mb-4">
                     <h4 class="mb-4">Informações</h4>
                     <div class="row g-3">
@@ -42,20 +35,19 @@
                         <div class="col-md-6"><label class="form-label saad-label" id="labelCurso">Curso</label><div class="saad-input" id="infoCurso">...</div></div>
                     </div>
                 </div>
-
                 <div class="saad-card p-4" id="cardStats" style="display:none;">
                     <h4 class="mb-4">Desempenho</h4>
                     <div class="row text-center">
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statPresencas">0</h4><small>Presenças</small></div></div>
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statJustificadas">0</h4><small>Justificadas</small></div></div>
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statFaltas">0</h4><small>Faltas</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Presente')"><h4 id="statPresencas">0</h4><small>Presenças</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Justificado')"><h4 id="statJustificadas">0</h4><small>Justificadas</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Falta')"><h4 id="statFaltas">0</h4><small>Faltas</small></div></div>
                     </div>
                     <div id="graficoFrequencia" class="mt-4"></div>
                 </div>
             </div>
         </div>
     </div>
-
+    <div class="modal fade" id="modalStats" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content saad-card"><div class="modal-body p-0"><div class="list-group list-group-flush" id="modalStatsList"></div></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -63,13 +55,11 @@
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
-        let currentUser = null;
-
+        let currentUser = null, dadosCache = [];
         document.addEventListener('DOMContentLoaded', () => {
             setInterval(() => document.getElementById('relogioTopo').textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
             auth.onAuthStateChanged(user => { if(!user) window.location.href='index.html'; else { currentUser=user; carregarDados(); }});
         });
-
         function carregarDados() {
             db.collection("users").doc(currentUser.uid).get().then(doc => {
                 if(!doc.exists) return db.collection("users").where("Email", "==", currentUser.email).get().then(s=>s.empty?null:s.docs[0].data());
@@ -78,42 +68,62 @@
                 if(!data) return;
                 document.getElementById('infoNome').textContent = data.Nome;
                 document.getElementById('infoEmail').textContent = currentUser.email;
-                
-                if(data.UserType === 'Professor' || data.UserType === 'Gestor') {
+                if(data.UserType !== 'Aluno') {
                     document.getElementById('divRA').style.display = 'none';
                     document.getElementById('labelCurso').textContent = 'Cargo';
                     document.getElementById('infoCurso').textContent = data.Cargo || 'Staff';
-                    document.getElementById('cardStats').style.display = 'none'; // ESCONDE STATS
+                    document.getElementById('cardStats').style.display = 'none';
                 } else {
                     document.getElementById('infoRA').textContent = data.RegistroAcademico;
                     document.getElementById('infoCurso').textContent = data.Curso;
-                    document.getElementById('cardStats').style.display = 'block'; // MOSTRA STATS
+                    document.getElementById('cardStats').style.display = 'block';
                     carregarStats(data.RegistroAcademico);
                 }
             });
         }
-
         function carregarStats(ra) {
             db.collection("presencas").where("RegistroAcademico", "==", ra).orderBy('Data', 'desc').limit(100).get().then(snap => {
+                dadosCache = [];
                 let p=0, f=0, j=0, m={};
                 snap.forEach(doc => {
                     const d=doc.data();
-                    if((d.Status||"").includes('Presente')) p++; else f++;
-                    if(!m[d.Materia]) m[d.Materia]={t:0,p:0};
-                    m[d.Materia].t++;
-                    if((d.Status||"").includes('Presente')) m[d.Materia].p++;
+                    dadosCache.push(d);
+                    const st = (d.Status||"").toLowerCase();
+                    if(st.includes('presente')) p++; else if(st.includes('falta')) f++; else j++;
+                    const mat = d.Materia || "Geral";
+                    if(!m[mat]) m[mat] = {t:0, p:0};
+                    m[mat].t++;
+                    if(st.includes('presente')) m[mat].p++;
                 });
                 document.getElementById('statPresencas').textContent = p;
                 document.getElementById('statFaltas').textContent = f;
-                
+                document.getElementById('statJustificadas').textContent = j;
                 const container = document.getElementById('graficoFrequencia');
                 container.innerHTML = '';
                 Object.entries(m).forEach(([n, d]) => {
                     const pct = Math.round((d.p/d.t)*100);
+                    const dw = pct===0 ? 2 : pct;
                     const cor = pct<75 ? '#ff416c' : '#00b09b';
-                    container.innerHTML += `<div class="mb-2"><div class="d-flex justify-content-between"><small>${n}</small><small>${pct}%</small></div><div class="progress" style="height:6px; background:var(--saad-border)"><div class="progress-bar" style="width:${pct}%; background:${cor}"></div></div></div>`;
+                    container.innerHTML += `<div class="mb-2"><div class="d-flex justify-content-between"><small>${n}</small><small>${pct}%</small></div><div class="progress" style="height:6px; background:var(--saad-border)"><div class="progress-bar" style="width:${dw}%; background:${cor}"></div></div></div>`;
                 });
             });
+        }
+        function abrirModal(tipo) {
+            const lista = document.getElementById('modalStatsList');
+            lista.innerHTML = '';
+            const filtrados = dadosCache.filter(d => {
+                const s = (d.Status||"").toLowerCase();
+                if(tipo === 'Presente') return s.includes('presente');
+                if(tipo === 'Falta') return s.includes('falta');
+                return !s.includes('presente') && !s.includes('falta');
+            }).slice(0, 10);
+            if(filtrados.length === 0) lista.innerHTML = '<div class="p-3 text-center">Sem registros.</div>';
+            else filtrados.forEach(d => {
+                let dt = d.Data;
+                if(dt.includes('-')) dt = dt.split('-').reverse().join('/');
+                lista.innerHTML += `<div class="list-group-item bg-transparent text-reset border-secondary d-flex justify-content-between"><div><strong>${d.Materia}</strong><br><small>${dt}</small></div><span class="badge bg-secondary">${d.HoraEntrada}</span></div>`;
+            });
+            new bootstrap.Modal(document.getElementById('modalStats')).show();
         }
         function alternarTema() { const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"; document.documentElement.setAttribute("data-theme", novo); localStorage.setItem("tema", novo); }
         function sair() { auth.signOut().then(() => window.location.href='index.html'); }
