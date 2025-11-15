@@ -57,13 +57,13 @@ html, body {
 
 .text-muted { color: var(--saad-text-secondary) !important; }
 
-/* ===== BOTÃO FLUTUANTE LOGIN (CORREÇÃO FINAL) ===== */
+/* ===== BOTÃO FLUTUANTE LOGIN (CORREÇÃO) ===== */
 .theme-toggle-login {
     position: absolute;
     top: 20px;
     right: 20px;
     z-index: 1000;
-    /* !important garante que a cor do tema sobreponha qualquer padrão branco */
+    /* Força a cor do tema (preto no claro, branco no escuro) */
     background-color: var(--saad-card) !important; 
     color: var(--saad-text) !important;
     border: 1px solid var(--saad-border) !important;
@@ -89,9 +89,9 @@ html, body {
     color: inherit !important;
 }
 
-/* ===== LOGIN & INPUTS ===== */
+/* ===== LOGIN & INPUTS (Sem Flash) ===== */
 .clickable-icon { cursor: pointer; transition: color 0.2s; }
-.clickable-icon:hover { color: var(--saad-primary); }
+.clickable-icon:hover { color: var(--saad-primary) !important; }
 
 .saad-profile-badge {
     background-color: var(--saad-card);
@@ -111,13 +111,13 @@ html, body {
     border: 1px solid var(--saad-border);
 }
 
-/* Força background para evitar flash branco */
+/* Força background e remove transição para evitar piscar branco */
 .input-group-text, .saad-input-icon {
     background-color: var(--saad-card) !important; 
     border: none; 
     border-right: 1px solid var(--saad-border) !important; 
     color: var(--saad-text-secondary) !important;
-    transition: none;
+    transition: none; 
 }
 
 .saad-input { 
@@ -147,7 +147,7 @@ html, body {
 
 .saad-header-btn { 
     border: 2px solid rgba(255,255,255,0.3); 
-    color: white; /* Padrão para o header azul */
+    color: white; 
     border-radius: 8px; padding: 8px 16px; transition: all 0.3s ease; 
 }
 .saad-header-btn:hover { background: rgba(255,255,255,0.1); color: white; transform: translateY(-1px); }
