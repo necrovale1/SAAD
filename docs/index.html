@@ -21,7 +21,7 @@
 </head>
 <body class="saad-body">
     
-    <button class="btn saad-header-btn theme-toggle-login" onclick="alternarTema()" title="Alternar Tema">
+    <button class="btn saad-header-btn theme-toggle-login theme-toggle-login-btn" onclick="alternarTema()" title="Alternar Tema">
         <i class="fas fa-moon"></i>
     </button>
 
@@ -71,7 +71,7 @@
                             <div class="text-center">
                                 <small class="text-muted">
                                     <i class="fas fa-mobile-alt me-1"></i>
-                                    Use o app mobile para cadastrar seu rosto e frequência!
+                                    Use o app mobile para cadastrar seu rosto!
                                 </small>
                             </div>
                         </form>
@@ -96,10 +96,10 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        let perfilAtual = 0; // 0: Aluno, 1: Professor, 2: Gestor
+        let perfilAtual = 0; 
         const perfis = [
             { nome: 'Acesso Aluno', label: 'Registro Acadêmico (RA)', place: 'Digite seu RA', icon: 'fa-id-card' },
-            { nome: 'Acesso Professor', label: 'E-mail Institucional', place: 'professor@escola.com', icon: 'fa-chalkboard-teacher' },
+            { nome: 'Acesso Professor', label: 'E-mail Institucional', place: 'prof@escola.com', icon: 'fa-chalkboard-teacher' },
             { nome: 'Acesso Gestor', label: 'E-mail Corporativo', place: 'gestor@admin.com', icon: 'fa-user-tie' }
         ];
 
@@ -111,13 +111,10 @@
         function alternarPerfil() {
             perfilAtual = (perfilAtual + 1) % perfis.length;
             const p = perfis[perfilAtual];
-            
-            // Atualiza textos e ícones
             document.getElementById('badgePerfil').innerHTML = `<i class="fas ${p.icon} me-2"></i>${p.nome}`;
             document.getElementById('labelLogin').textContent = p.label;
             document.getElementById('loginInput').placeholder = p.place;
             document.getElementById('iconeLogin').className = `fas ${p.icon}`;
-            
             const input = document.getElementById('loginInput');
             input.value = '';
             input.focus();
@@ -137,16 +134,14 @@
             btn.disabled = true;
 
             if (perfilAtual === 0) {
-                // ALUNO: Busca RA no banco
                 db.collection("users").where("RegistroAcademico", "==", loginValue).get()
                 .then(snap => {
                     if (!snap.empty) return auth.signInWithEmailAndPassword(snap.docs[0].data().Email, senha);
-                    throw new Error("RA não encontrado na base de dados.");
+                    throw new Error("RA não encontrado.");
                 })
                 .then(() => sucessoLogin())
                 .catch(err => erroLogin(err, btn));
             } else {
-                // PROFESSOR/GESTOR: Login direto por email
                 auth.signInWithEmailAndPassword(loginValue, senha)
                 .then(() => sucessoLogin())
                 .catch(err => erroLogin(err, btn));
