@@ -21,11 +21,7 @@
             <div class="d-flex align-items-center">
                 <span class="text-white me-3 d-none d-md-block"><i class="fas fa-user-graduate me-1"></i><span id="studentName">Carregando...</span></span>
                 <a href="perfil.html" class="btn saad-header-btn me-2"><i class="fas fa-user me-1"></i>Meu Perfil</a>
-                
-                <button class="btn saad-header-btn me-2 theme-toggle-nav" onclick="alternarTema()">
-                    <i class="fas fa-moon"></i>
-                </button>
-                
+                <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
             </div>
         </div>
@@ -149,8 +145,6 @@
         let currentUser = null, listaPresencasCache = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            const tema = localStorage.getItem("tema") || "light";
-            atualizarIconeTema(tema);
             verificarAuth();
             iniciarRelogio();
         });
@@ -290,14 +284,7 @@
             const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
             document.documentElement.setAttribute("data-theme", novo);
             localStorage.setItem("tema", novo);
-            atualizarIconeTema(novo);
         }
-        
-        function atualizarIconeTema(tema) {
-            const icon = document.querySelector('.theme-toggle-nav i');
-            if(icon) icon.className = tema === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-
         function sair() { auth.signOut().then(() => window.location.href = 'index.html'); }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
