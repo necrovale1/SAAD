@@ -142,7 +142,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase.js"></script>
 
-    <script>
+   <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
         let currentUser = null;
@@ -166,39 +166,39 @@
         function carregarDadosUsuario() {
             if (!currentUser) return;
 
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
+            // CORREÇÃO: Busca na coleção 'users' pelo campo 'Email'
+            db.collection("users").where("Email", "==", currentUser.email).get()
                 .then(snapshot => {
                     if (!snapshot.empty) {
                         const userData = snapshot.docs[0].data();
                         
-                        // Preencher informações
-                        document.getElementById('infoNome').textContent = userData.nome || 'Não informado';
-                        document.getElementById('infoRA').textContent = userData.ra || 'Não informado';
+                        // CORREÇÃO: Campos com iniciais Maiúsculas
+                        document.getElementById('infoNome').textContent = userData.Nome || 'Não informado';
+                        document.getElementById('infoRA').textContent = userData.RegistroAcademico || 'Não informado';
                         document.getElementById('infoEmail').textContent = currentUser.email;
-                        document.getElementById('infoCurso').textContent = userData.curso || 'Não informado';
-                        document.getElementById('infoSemestre').textContent = userData.semestre || 'Não informado';
-                        document.getElementById('infoInstituicao').textContent = userData.instituicao || 'Não informado';
+                        document.getElementById('infoCurso').textContent = userData.Curso || 'Não informado';
+                        
+                        // Adaptando campos que não criamos no script, mas o site espera
+                        document.getElementById('infoSemestre').textContent = userData.Nivel || '1º Semestre'; 
+                        document.getElementById('infoInstituicao').textContent = 'SAAD Instituição';
                     }
                 })
                 .catch(error => {
                     console.error("Erro ao carregar dados:", error);
-                    showAlert('Erro ao carregar dados do usuário', 'danger');
                 });
         }
 
         function carregarEstatisticas() {
             if (!currentUser) return;
 
-            // Buscar RA do usuário primeiro
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
+            db.collection("users").where("Email", "==", currentUser.email).get()
                 .then(snapshot => {
                     if (!snapshot.empty) {
                         const userData = snapshot.docs[0].data();
-                        const userRA = userData.ra;
+                        const userRA = userData.RegistroAcademico; // Campo correto
                         
-                        // Buscar presenças
                         return db.collection("presencas")
-                            .where("ra", "==", userRA)
+                            .where("RegistroAcademico", "==", userRA)
                             .get();
                     }
                 })
@@ -206,14 +206,10 @@
                     if (snapshot && !snapshot.empty) {
                         calcularEstatisticas(snapshot);
                     } else {
-                        document.getElementById('statTotalAulas').textContent = '0';
-                        document.getElementById('statPresencas').textContent = '0';
-                        document.getElementById('statFaltas').textContent = '0';
+                        zerarEstatisticas();
                     }
                 })
-                .catch(error => {
-                    console.error("Erro ao carregar estatísticas:", error);
-                });
+                .catch(error => console.error("Erro estatísticas:", error));
         }
 
         function calcularEstatisticas(snapshot) {
@@ -223,16 +219,21 @@
 
             snapshot.forEach(doc => {
                 const dados = doc.data();
-                if (dados.status === 'Presente') presencas++;
-                if (dados.status === 'Falta') faltas++;
+                if (dados.Status === 'Presente') presencas++;
+                if (dados.Status === 'Ausente' || dados.Status === 'Falta') faltas++;
             });
 
             document.getElementById('statTotalAulas').textContent = total;
             document.getElementById('statPresencas').textContent = presencas;
             document.getElementById('statFaltas').textContent = faltas;
 
-            // Gerar gráfico simples
             gerarGraficoFrequencia(snapshot);
+        }
+
+        function zerarEstatisticas() {
+            document.getElementById('statTotalAulas').textContent = '0';
+            document.getElementById('statPresencas').textContent = '0';
+            document.getElementById('statFaltas').textContent = '0';
         }
 
         function gerarGraficoFrequencia(snapshot) {
@@ -240,14 +241,14 @@
             
             snapshot.forEach(doc => {
                 const dados = doc.data();
-                const materia = dados.materia || 'Outras';
+                const materia = dados.Materia || 'Outras'; // Campo Materia maiúsculo
                 
                 if (!frequenciaPorMateria[materia]) {
                     frequenciaPorMateria[materia] = { total: 0, presentes: 0 };
                 }
                 
                 frequenciaPorMateria[materia].total++;
-                if (dados.status === 'Presente') {
+                if (dados.Status === 'Presente') {
                     frequenciaPorMateria[materia].presentes++;
                 }
             });
@@ -272,57 +273,28 @@
                         </div>
                         <div class="d-flex justify-content-between mt-1">
                             <small class="text-muted">${dados.presentes}/${dados.total} aulas</small>
-                            <small class="text-muted">${percentual}% de frequência</small>
                         </div>
                     </div>
                 `;
                 graficoContainer.innerHTML += graficoItem;
             }
-
-            if (Object.keys(frequenciaPorMateria).length === 0) {
-                graficoContainer.innerHTML = `
-                    <div class="text-center text-muted py-3">
-                        <i class="fas fa-chart-line fa-2x mb-2"></i>
-                        <p>Nenhum dado disponível para gerar estatísticas</p>
-                    </div>
-                `;
-            }
         }
 
         function alternarTema() {
             const html = document.documentElement;
-            const temaAtual = html.getAttribute("data-theme");
-            const novoTema = temaAtual === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", novoTema);
-            localStorage.setItem("tema", novoTema);
+            const tema = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+            html.setAttribute("data-theme", tema);
+            localStorage.setItem("tema", tema);
         }
 
         function sair() {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
-            });
+            auth.signOut().then(() => window.location.href = 'index.html');
         }
 
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
-            alertDiv.style.zIndex = '1050';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
-        }
-
-        // Aplicar tema salvo
-        const temaSalvo = localStorage.getItem("tema") || "light";
-        document.documentElement.setAttribute("data-theme", temaSalvo);
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("tema") || "light");
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
