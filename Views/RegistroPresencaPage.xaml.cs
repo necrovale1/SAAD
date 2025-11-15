@@ -137,5 +137,10 @@ namespace SAAD.Views
             await firebaseClient.Child("presencas").Child(entradaAberta.Key).PutAsync(entradaAberta.Object);
             await DisplayAlert("Até logo!", $"Saída registrada às {entradaAberta.Object.HoraSaida:HH:mm}.", "OK");
         }
+
+        private async void OnCadastrarAlunoClicked(object sender, EventArgs e)
+        {
+            await DisplayAlert("Sucesso", "Botão Cadastrar Aluno clicado!", "OK");
+        }
     }
 }

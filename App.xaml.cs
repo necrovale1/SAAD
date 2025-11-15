@@ -17,7 +17,7 @@ namespace SAAD
         // Este é agora o local correto para definir a janela principal.
         protected override Window CreateWindow(IActivationState activationState)
         {
-            return new Window(new AppShell());
+            return new Window(new Views.SplashPage());
         }
 
         public void SetTheme(Theme theme)

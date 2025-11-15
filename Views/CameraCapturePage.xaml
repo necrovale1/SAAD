@@ -12,7 +12,6 @@
         <cv:CameraView x:Name="cameraView"
                        Grid.RowSpan="3"
                        Grid.Column="0"
-                       Cameras="Front"
                        AutoStartPreview="True"
                        VerticalOptions="Fill" />
 
