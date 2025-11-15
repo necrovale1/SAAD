@@ -80,6 +80,9 @@
                         </form>
                     </div>
                 </div>
+                <div class="text-center mt-4">
+                    <small class="saad-footer-text">SAAD © 2025</small>
+                </div>
             </div>
         </div>
     </div>
@@ -92,15 +95,17 @@
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
+        
         let perfilAtual = 0; 
         const perfis = [
-            { nome: 'Acesso Aluno', label: 'Registro Acadêmico (RA)', place: 'Digite seu RA', icon: 'fa-id-card' },
-            { nome: 'Acesso Professor', label: 'E-mail Institucional', place: 'prof@escola.com', icon: 'fa-chalkboard-teacher' },
-            { nome: 'Acesso Gestor', label: 'E-mail Corporativo', place: 'gestor@admin.com', icon: 'fa-user-tie' }
+            { nome: 'Acesso Aluno', label: 'Registro Acadêmico (RA)', place: 'Digite seu RA', icon: 'fa-id-card', tipo: 'Aluno' },
+            { nome: 'Acesso Professor', label: 'E-mail Institucional', place: 'prof@escola.com', icon: 'fa-chalkboard-teacher', tipo: 'Professor' },
+            { nome: 'Acesso Gestor', label: 'E-mail Corporativo', place: 'diretor@escola.com', icon: 'fa-user-tie', tipo: 'Gestor' }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            atualizarIconeTema(localStorage.getItem("tema") || "light");
+            const temaSalvo = localStorage.getItem("tema") || "light";
+            atualizarIconeTema(temaSalvo);
         });
 
         function toggleSenha() {
@@ -126,6 +131,7 @@
             document.getElementById('loginInput').placeholder = p.place;
             document.getElementById('iconeLogin').className = `fas ${p.icon}`;
             document.getElementById('loginInput').value = '';
+            document.getElementById('loginInput').focus();
         }
 
         function login() {
@@ -133,22 +139,40 @@
             const senha = document.getElementById("senha").value;
             const btn = document.getElementById('btnLogin');
 
-            if(!loginValue || !senha) { alert('Preencha os campos!'); return; }
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            if(!loginValue || !senha) { showAlert('Preencha todos os campos.', 'warning'); return; }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Autenticando...';
+            btn.disabled = true;
 
             if (perfilAtual === 0) {
+                // ALUNO: Busca por RA
                 db.collection("users").where("RegistroAcademico", "==", loginValue).get()
                 .then(snap => {
                     if (!snap.empty) return auth.signInWithEmailAndPassword(snap.docs[0].data().Email, senha);
                     throw new Error("RA não encontrado.");
                 })
-                .then(() => window.location.href = "dashboard.html")
-                .catch(err => { alert("Erro: " + err.message); btn.innerHTML = 'Entrar'; });
+                .then(() => sucessoLogin())
+                .catch(err => erroLogin(err, btn));
             } else {
+                // STAFF: Login direto por Email
                 auth.signInWithEmailAndPassword(loginValue, senha)
-                .then(() => window.location.href = "dashboard.html")
-                .catch(err => { alert("Erro: " + err.message); btn.innerHTML = 'Entrar'; });
+                .then(() => sucessoLogin())
+                .catch(err => erroLogin(err, btn));
             }
+        }
+
+        function sucessoLogin() {
+            showAlert('Login realizado!', 'success');
+            setTimeout(() => window.location.href = "dashboard.html", 1000);
+        }
+
+        function erroLogin(error, btn) {
+            let msg = error.message;
+            if (error.code === 'auth/wrong-password') msg = 'Senha incorreta.';
+            if (error.code === 'auth/user-not-found') msg = 'Usuário não encontrado.';
+            showAlert(msg, 'danger');
+            btn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Entrar';
+            btn.disabled = false;
         }
 
         function alternarTema() {
@@ -157,12 +181,17 @@
             localStorage.setItem("tema", novo);
             atualizarIconeTema(novo);
         }
-
         function atualizarIconeTema(tema) {
             const icon = document.querySelector('.theme-toggle-login i');
             if(icon) icon.className = tema === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
-        
+        function showAlert(message, type) {
+            const old = document.querySelector('.alert'); if(old) old.remove();
+            const div = document.createElement('div');
+            div.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            div.innerHTML = `${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+            document.querySelector('form').prepend(div);
+        }
         document.addEventListener('keypress', function(e) { if (e.key === 'Enter') login(); });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
