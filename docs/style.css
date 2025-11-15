@@ -37,7 +37,7 @@
 
 /* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg); /* Evita fundo branco ao carregar */
+  background: var(--saad-bg); /* Essencial para evitar flash branco */
 }
 
 .saad-body {
@@ -45,6 +45,7 @@ html, body {
   color: var(--saad-text);
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .saad-card {
@@ -69,13 +70,12 @@ html, body {
     border-radius: 6px;
 }
 
-/* ===== BOTÃO FLUTUANTE LOGIN (CORREÇÃO FINAL) ===== */
+/* ===== BOTÃO FLUTUANTE LOGIN ===== */
 .theme-toggle-login {
     position: absolute;
     top: 20px;
     right: 20px;
     z-index: 1000;
-    /* !important garante que a cor do tema vença qualquer padrão do navegador */
     background-color: var(--saad-card) !important; 
     color: var(--saad-text) !important;
     border: 1px solid var(--saad-border) !important;
@@ -96,10 +96,7 @@ html, body {
     color: var(--saad-primary) !important;
 }
 
-/* Garante a cor do ícone dentro do botão */
-.theme-toggle-login i {
-    color: inherit !important;
-}
+.theme-toggle-login i { color: inherit !important; }
 
 /* ===== LOGIN & INPUTS ===== */
 .clickable-icon { cursor: pointer; transition: color 0.2s; }
@@ -123,7 +120,6 @@ html, body {
     border: 1px solid var(--saad-border);
 }
 
-/* Força background e remove transição para evitar flash */
 .input-group-text, .saad-input-icon {
     background-color: var(--saad-card) !important; 
     border: none; 
@@ -138,11 +134,13 @@ html, body {
     color: var(--saad-text) !important; 
     padding: 10px 12px; 
 }
-/* CORREÇÃO: Placeholder (texto "Digite seu RA") responsivo */
+
+/* Placeholder responsivo */
 .saad-input::placeholder {
     color: var(--saad-text-secondary) !important;
-    opacity: 0.7;
-} 
+    opacity: 0.6;
+}
+
 .saad-input:focus { box-shadow: none; }
 
 .saad-input-group:focus-within {
@@ -186,7 +184,7 @@ html, body {
 .saad-badge-falta { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; }
 .saad-badge-atraso, .saad-badge-justificado { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; font-weight: 600; }
 
-/* ===== TABELAS ===== */
+/* ===== TABELA PRINCIPAL (Dashboard) ===== */
 .table { --bs-table-bg: transparent; --bs-table-color: var(--saad-text); border-color: var(--saad-border); margin-bottom: 0; }
 .saad-table { background: var(--saad-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--saad-border); }
 .saad-table thead th { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); color: white; border: none; padding: 15px; font-weight: 600; white-space: nowrap; }
@@ -194,9 +192,115 @@ html, body {
 .saad-table tbody tr:hover { background-color: rgba(128, 128, 128, 0.05); }
 .clickable-row { cursor: pointer; transition: background-color 0.2s; }
 
-/* ===== MODAL FIX ===== */
-.modal-content { background-color: var(--saad-card); color: var(--saad-text); border: 1px solid var(--saad-border); }
-.modal-header, .modal-footer { border-color: var(--saad-border); }
+/* ========================================================================== */
+/* ===== ESTILO PREMIUM PARA MODAL DE DETALHES (PROFESSOR/GESTOR) ===== */
+/* ========================================================================== */
+
+#modalDetalhes .modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    background-color: var(--saad-card);
+}
+
+#modalDetalhes .modal-header {
+    border-bottom: 1px solid var(--saad-border);
+    padding: 1.5rem;
+    background-color: var(--saad-bg); /* Fundo levemente diferente do card */
+}
+
+#modalDetalhes .modal-title {
+    font-weight: 700;
+    color: var(--saad-text);
+    font-size: 1.25rem;
+}
+
+#modalDetalhes .modal-body {
+    padding: 0; /* Remove padding padrão para a tabela expandir */
+    background-color: var(--saad-card);
+}
+
+/* Tabela do Modal - Visual Limpo e Neutro (Cinza) */
+#modalDetalhes .table {
+    width: 100%;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Cabeçalho da Tabela do Modal - Cinza Neutro */
+#modalDetalhes .table thead th {
+    background: #f1f3f5 !important; /* Cinza muito claro */
+    color: #495057 !important; /* Cinza escuro */
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+    box-shadow: none; /* Remove sombra se houver */
+}
+
+[data-theme="dark"] #modalDetalhes .table thead th {
+    background: #252525 !important;
+    color: #adb5bd !important;
+    border-bottom-color: #383838;
+}
+
+/* Células do Modal */
+#modalDetalhes .table tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--saad-border);
+    color: var(--saad-text);
+    font-size: 0.9rem;
+}
+
+#modalDetalhes .table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Hover nas linhas do modal */
+#modalDetalhes .table tbody tr:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+[data-theme="dark"] #modalDetalhes .table tbody tr:hover {
+    background-color: rgba(255,255,255,0.03);
+}
+
+/* Remove Cores "Azuis" (Primary) do texto dentro do modal e troca por Neutro */
+#modalDetalhes .text-primary, 
+#modalDetalhes .fw-bold.text-primary {
+    color: var(--saad-text) !important; /* Força cor do texto padrão */
+    font-weight: 600;
+}
+
+/* Ícones dentro do modal - Cinza suave em vez de azul */
+#modalDetalhes i.fas {
+    color: var(--saad-text-secondary) !important;
+}
+
+/* Badges dentro do modal - Estilo mais sóbrio */
+#modalDetalhes .badge {
+    border-radius: 6px;
+    padding: 0.4em 0.8em;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+/* Barra de rolagem do modal */
+#modalDetalhes .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#modalDetalhes .modal-footer {
+    border-top: 1px solid var(--saad-border);
+    padding: 1rem 1.5rem;
+    background-color: var(--saad-bg);
+}
+
+/* Fix para botão de fechar no modal */
 .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
 [data-theme="light"] .btn-close { filter: none; }
 
@@ -205,4 +309,3 @@ html, body {
 ::-webkit-scrollbar-track { background: var(--saad-bg); }
 ::-webkit-scrollbar-thumb { background: var(--saad-border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--saad-primary); }
-
