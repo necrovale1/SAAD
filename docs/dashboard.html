@@ -30,20 +30,7 @@
     <div class="container-fluid py-4" id="mainContainer">
         <div class="text-center py-5">
             <i class="fas fa-circle-notch fa-spin fa-3x text-secondary"></i>
-            <p class="mt-3 text-muted">Carregando painel...</p>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content saad-card border-0">
-                <div class="modal-header border-bottom border-secondary">
-                    <h5 class="modal-title">Detalhes</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4" id="modalBodyContent">
-                    </div>
-            </div>
+            <p class="mt-3 text-muted">Carregando seu painel...</p>
         </div>
     </div>
 
@@ -74,59 +61,67 @@
         function carregarPainelCorreto() {
             db.collection("users").doc(currentUser.uid).get()
             .then(doc => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    document.getElementById('studentName').textContent = data.Nome || 'Usuário';
-                    
-                    // Roteamento de Dashboards
-                    if (data.Email === 'admin.ti@escola.com' || (data.UserType === 'Gestor' && data.Cargo === 'Administrador de Sistemas')) {
-                        renderizarDashboardTI();
-                    } else if (data.Email === 'diretor@escola.com' || data.UserType === 'Gestor') {
-                        renderizarDashboardGestor();
-                    } else if (data.UserType === 'Professor') {
-                        renderizarDashboardProfessor();
-                    } else {
-                        renderizarDashboardAluno(data); // Padrão Aluno
-                    }
-                } else {
-                    // Fallback para busca por email se não achar UID
-                    db.collection("users").where("Email", "==", currentUser.email).get().then(snap => {
-                        if(!snap.empty) {
-                            const data = snap.docs[0].data();
-                            document.getElementById('studentName').textContent = data.Nome;
-                            if(data.UserType === 'Professor') renderizarDashboardProfessor();
-                            else renderizarDashboardAluno(data);
-                        }
-                    });
+                // Tenta achar por UID ou por Email (fallback)
+                if (doc.exists) return doc.data();
+                return db.collection("users").where("Email", "==", currentUser.email).get().then(s => s.empty ? null : s.docs[0].data());
+            })
+            .then(data => {
+                if (!data) {
+                    alert("Usuário não encontrado no banco de dados.");
+                    return;
+                }
+                
+                document.getElementById('studentName').textContent = data.Nome || 'Usuário';
+                
+                // ROTEAMENTO DE PAINÉIS
+                // 1. Admin TI (Se for o email específico ou cargo Admin)
+                if (data.Email === 'admin.ti@escola.com' || (data.UserType === 'Gestor' && data.Cargo === 'Administrador de Sistemas')) {
+                    renderizarDashboardTI();
+                } 
+                // 2. Gestor (Diretor)
+                else if (data.UserType === 'Gestor') {
+                    renderizarDashboardGestor();
+                } 
+                // 3. Professor
+                else if (data.UserType === 'Professor') {
+                    renderizarDashboardProfessor();
+                } 
+                // 4. Aluno (Padrão)
+                else {
+                    renderizarDashboardAluno(data);
                 }
             });
         }
 
-        // ================== 1. DASHBOARD DO ALUNO ==================
+        // === DASHBOARD ALUNO ===
         function renderizarDashboardAluno(userData) {
-            const container = document.getElementById('mainContainer');
-            container.innerHTML = `
+            const html = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div><h2 class="mb-1">Minhas Aulas</h2><p class="text-muted mb-0">Acompanhe sua frequência.</p></div>
+                    <div class="text-end"><small class="fw-bold text-primary fs-5" id="relogio">--:--:--</small></div>
+                </div>
                 <div class="row">
                     <div class="col-lg-3 mb-4">
-                        <div class="saad-stats-card p-4 mb-3"><div class="d-flex align-items-center mb-3"><div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);"><i class="fas fa-check-circle"></i></div><div><h4 class="mb-0" id="totalPresencas">0</h4><small class="text-muted">Presenças</small></div></div></div>
-                        <div class="saad-stats-card p-4 mb-3"><div class="d-flex align-items-center mb-3"><div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);"><i class="fas fa-times-circle"></i></div><div><h4 class="mb-0" id="totalFaltas">0</h4><small class="text-muted">Faltas</small></div></div></div>
+                        <div class="saad-stats-card p-4 mb-3"><div class="d-flex align-items-center"><div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);"><i class="fas fa-check-circle"></i></div><div><h4 class="mb-0" id="totalPresencas">0</h4><small class="text-muted">Presenças</small></div></div></div>
+                        <div class="saad-stats-card p-4 mb-3"><div class="d-flex align-items-center"><div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);"><i class="fas fa-times-circle"></i></div><div><h4 class="mb-0" id="totalFaltas">0</h4><small class="text-muted">Faltas</small></div></div></div>
                     </div>
                     <div class="col-lg-9">
                         <div class="saad-card p-4">
-                            <h5 class="mb-3">Minhas Aulas</h5>
+                            <h5 class="mb-3">Histórico Recente</h5>
                             <div class="table-responsive"><table class="table saad-table table-hover align-middle"><thead><tr><th>Data</th><th>Matéria</th><th>Status</th></tr></thead><tbody id="tabelaAluno"></tbody></table></div>
                         </div>
                     </div>
                 </div>`;
-            
-            // Carregar dados do aluno
+            document.getElementById('mainContainer').innerHTML = html;
+            iniciarRelogio();
+
             db.collection("presencas").where("RegistroAcademico", "==", userData.RegistroAcademico).orderBy("Data", "desc").limit(20).get()
             .then(snap => {
                 const tbody = document.getElementById('tabelaAluno');
                 let p=0, f=0;
                 snap.forEach(doc => {
                     const d = doc.data();
-                    if(d.Status.includes('Presente')) p++; else f++;
+                    if((d.Status||"").includes('Presente')) p++; else f++;
                     tbody.innerHTML += `<tr><td>${formatarData(d.Data)}</td><td>${d.Materia}</td><td>${getStatusBadge(d.Status)}</td></tr>`;
                 });
                 document.getElementById('totalPresencas').textContent = p;
@@ -134,44 +129,46 @@
             });
         }
 
-        // ================== 2. DASHBOARD DO GESTOR (Diretor) ==================
+        // === DASHBOARD GESTOR (Diretor) ===
         function renderizarDashboardGestor() {
-            const container = document.getElementById('mainContainer');
-            container.innerHTML = `
-                <h3 class="mb-4">Painel da Diretoria <small class="text-muted fs-6 ms-2">Visão Geral da Escola</small></h3>
-                <div class="row mb-4">
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>1,250</h3><small class="text-muted">Alunos Ativos</small></div></div>
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>85%</h3><small class="text-muted">Frequência Média Hoje</small></div></div>
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>42</h3><small class="text-muted">Professores</small></div></div>
-                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center text-danger"><h3>15</h3><small class="text-muted">Alertas de Evasão</small></div></div>
+            const html = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div><h2 class="mb-1">Painel da Diretoria</h2><p class="text-muted mb-0">Visão Geral da Escola</p></div>
+                    <div class="text-end"><small class="fw-bold text-primary fs-5" id="relogio">--:--:--</small></div>
                 </div>
                 
+                <div class="row mb-4">
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>1.250</h3><small class="text-muted">Alunos Matriculados</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>92%</h3><small class="text-muted">Presença Hoje</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>45</h3><small class="text-muted">Professores Ativos</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center text-danger"><h3>12</h3><small class="text-muted">Alertas Críticos</small></div></div>
+                </div>
+
                 <div class="row">
                     <div class="col-lg-6 mb-4">
                         <div class="saad-card p-4 h-100">
-                            <h5>Frequência por Curso (Hoje)</h5>
-                            <div class="mt-4">
-                                <div class="mb-3"><div class="d-flex justify-content-between"><small>Ensino Médio</small><small>92%</small></div><div class="progress" style="height: 8px;"><div class="progress-bar bg-success" style="width: 92%"></div></div></div>
-                                <div class="mb-3"><div class="d-flex justify-content-between"><small>Téc. Informática</small><small>88%</small></div><div class="progress" style="height: 8px;"><div class="progress-bar bg-info" style="width: 88%"></div></div></div>
-                                <div class="mb-3"><div class="d-flex justify-content-between"><small>Téc. Enfermagem</small><small>95%</small></div><div class="progress" style="height: 8px;"><div class="progress-bar bg-success" style="width: 95%"></div></div></div>
-                                <div class="mb-3"><div class="d-flex justify-content-between"><small>Direito</small><small>78%</small></div><div class="progress" style="height: 8px;"><div class="progress-bar bg-warning" style="width: 78%"></div></div></div>
-                            </div>
+                            <h5 class="mb-4">Frequência por Curso (Hoje)</h5>
+                            <div class="mb-3"><div class="d-flex justify-content-between"><small>Ensino Médio</small><small>95%</small></div><div class="progress" style="height: 8px;"><div class="progress-bar bg-success" style="width: 95%"></div></div></div>
+                            <div class="mb-3"><div class="d-flex justify-content-between"><small>Téc. Informática</small><small>88%</small></div><div class="progress" style="height: 8px;"><div class="progress-bar bg-info" style="width: 88%"></div></div></div>
+                            <div class="mb-3"><div class="d-flex justify-content-between"><small>Direito</small><small>75%</small></div><div class="progress" style="height: 8px;"><div class="progress-bar bg-warning" style="width: 75%"></div></div></div>
                         </div>
                     </div>
                     <div class="col-lg-6 mb-4">
                         <div class="saad-card p-4 h-100">
-                            <h5>Últimos Registros da Escola</h5>
+                            <h5 class="mb-3">Registros em Tempo Real</h5>
                             <div class="table-responsive">
-                                <table class="table saad-table table-sm">
-                                    <thead><tr><th>Hora</th><th>Aluno</th><th>Curso</th><th>Status</th></tr></thead>
+                                <table class="table saad-table table-sm align-middle">
+                                    <thead><tr><th>Hora</th><th>Aluno (RA)</th><th>Matéria</th><th>Status</th></tr></thead>
                                     <tbody id="tabelaGestor"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>`;
+            document.getElementById('mainContainer').innerHTML = html;
+            iniciarRelogio();
 
-            // Carrega logs gerais
+            // Carrega últimos registros gerais
             db.collection("presencas").orderBy("Data", "desc").limit(10).get().then(snap => {
                 const tbody = document.getElementById('tabelaGestor');
                 snap.forEach(doc => {
@@ -181,17 +178,20 @@
             });
         }
 
-        // ================== 3. DASHBOARD DO PROFESSOR ==================
+        // === DASHBOARD PROFESSOR ===
         function renderizarDashboardProfessor() {
-            const container = document.getElementById('mainContainer');
-            container.innerHTML = `
-                <h3 class="mb-4">Sala dos Professores</h3>
+            const html = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div><h2 class="mb-1">Sala Virtual</h2><p class="text-muted mb-0">Gerenciamento de Turmas</p></div>
+                    <div class="text-end"><small class="fw-bold text-primary fs-5" id="relogio">--:--:--</small></div>
+                </div>
+                
                 <div class="row">
                     <div class="col-md-8">
                         <div class="saad-card p-4 mb-4">
                             <div class="d-flex justify-content-between mb-3">
-                                <h5>Minhas Turmas - Presença Recente</h5>
-                                <button class="btn btn-sm btn-outline-primary">Nova Chamada</button>
+                                <h5>Atividades Recentes</h5>
+                                <button class="btn btn-sm btn-primary">Nova Chamada</button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table saad-table align-middle">
@@ -203,15 +203,17 @@
                     </div>
                     <div class="col-md-4">
                         <div class="saad-card p-4">
-                            <h5>Resumo da Semana</h5>
+                            <h5>Resumo Semanal</h5>
                             <ul class="list-group list-group-flush mt-3">
-                                <li class="list-group-item bg-transparent d-flex justify-content-between"><span>Aulas Dadas</span><strong>12</strong></li>
-                                <li class="list-group-item bg-transparent d-flex justify-content-between"><span>Média Freq.</span><strong>89%</strong></li>
-                                <li class="list-group-item bg-transparent d-flex justify-content-between"><span>Justificativas</span><strong>3</strong></li>
+                                <li class="list-group-item bg-transparent d-flex justify-content-between"><span>Aulas Ministradas</span><strong>14</strong></li>
+                                <li class="list-group-item bg-transparent d-flex justify-content-between"><span>Média Freq.</span><strong>82%</strong></li>
+                                <li class="list-group-item bg-transparent d-flex justify-content-between"><span>Pendências</span><strong class="text-danger">2</strong></li>
                             </ul>
                         </div>
                     </div>
                 </div>`;
+            document.getElementById('mainContainer').innerHTML = html;
+            iniciarRelogio();
 
             db.collection("presencas").orderBy("Data", "desc").limit(15).get().then(snap => {
                 const tbody = document.getElementById('tabelaProf');
@@ -223,64 +225,69 @@
                             <td><i class="fas fa-user-graduate me-2 text-muted"></i>${d.RegistroAcademico}</td>
                             <td>${d.Materia}</td>
                             <td>${getStatusBadge(d.Status)}</td>
-                            <td><button class="btn btn-sm btn-light" onclick="alert('Ver detalhes do aluno ${d.RegistroAcademico}')"><i class="fas fa-eye"></i></button></td>
+                            <td><button class="btn btn-sm btn-light" onclick="alert('Detalhes do aluno ${d.RegistroAcademico}')"><i class="fas fa-eye"></i></button></td>
                         </tr>`;
                 });
             });
         }
 
-        // ================== 4. DASHBOARD ADMIN TI ==================
+        // === DASHBOARD ADMIN TI ===
         function renderizarDashboardTI() {
-            const container = document.getElementById('mainContainer');
-            container.innerHTML = `
-                <div class="alert alert-dark mb-4"><i class="fas fa-terminal me-2"></i>Modo Administrador de Sistema</div>
+            const html = `
+                <div class="alert alert-dark mb-4 d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-terminal me-2"></i>Painel de Administração do Sistema</span>
+                    <span class="badge bg-success">ONLINE</span>
+                </div>
                 <div class="row">
                     <div class="col-lg-4">
-                        <div class="saad-card p-3 mb-3 font-monospace small">
-                            <h6 class="text-success">SERVER STATUS: ONLINE</h6>
-                            <div>Database: Connected (Firestore)</div>
-                            <div>Auth Service: Active</div>
-                            <div>Latency: 24ms</div>
-                            <div class="mt-2 text-muted">Last backup: 2h ago</div>
+                        <div class="saad-card p-3 mb-3 font-monospace small bg-dark text-light border-0">
+                            <h6 class="text-success mb-3">SYSTEM STATUS</h6>
+                            <div class="d-flex justify-content-between"><span>Database:</span><span class="text-success">Connected</span></div>
+                            <div class="d-flex justify-content-between"><span>Auth Service:</span><span class="text-success">Active</span></div>
+                            <div class="d-flex justify-content-between"><span>Latency:</span><span class="text-warning">24ms</span></div>
+                            <div class="mt-3 border-top pt-2 text-muted">Last backup: 2h ago</div>
                         </div>
                     </div>
                     <div class="col-lg-8">
                         <div class="saad-card p-4">
-                            <h5>Logs de Movimentação de Dados</h5>
+                            <h5>Logs de Sistema</h5>
                             <div class="table-responsive mt-3">
                                 <table class="table table-sm font-monospace text-muted" style="font-size: 0.85rem;">
-                                    <thead><tr><th>Time</th><th>Event</th><th>User ID</th><th>Details</th></tr></thead>
+                                    <thead><tr><th>Time</th><th>Level</th><th>User ID</th><th>Action</th></tr></thead>
                                     <tbody>
-                                        <tr><td>10:42:05</td><td><span class="badge bg-success">WRITE</span></td><td>uid_ax9...</td><td>Presenca registered</td></tr>
-                                        <tr><td>10:41:12</td><td><span class="badge bg-primary">AUTH</span></td><td>uid_bb2...</td><td>User Login (Teacher)</td></tr>
-                                        <tr><td>10:40:55</td><td><span class="badge bg-warning text-dark">WARN</span></td><td>System</td><td>High latency detected</td></tr>
-                                        <tr><td>10:38:10</td><td><span class="badge bg-success">WRITE</span></td><td>uid_cc1...</td><td>New User Created</td></tr>
-                                        <tr><td>10:35:00</td><td><span class="badge bg-primary">AUTH</span></td><td>uid_dd4...</td><td>User Login (Student)</td></tr>
+                                        <tr><td>14:42:05</td><td><span class="badge bg-success">INFO</span></td><td>uid_x9a...</td><td>User Login (Gestor)</td></tr>
+                                        <tr><td>14:41:12</td><td><span class="badge bg-primary">WRITE</span></td><td>uid_bb2...</td><td>Presenca registrada</td></tr>
+                                        <tr><td>14:40:55</td><td><span class="badge bg-warning text-dark">WARN</span></td><td>System</td><td>High latency detected</td></tr>
+                                        <tr><td>14:38:10</td><td><span class="badge bg-success">INFO</span></td><td>uid_cc1...</td><td>New User Created</td></tr>
+                                        <tr><td>14:35:00</td><td><span class="badge bg-primary">AUTH</span></td><td>uid_dd4...</td><td>User Login (Student)</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
                 </div>`;
+            document.getElementById('mainContainer').innerHTML = html;
         }
 
-        // Funções Utilitárias
-        function formatarData(dataString) {
-            if(!dataString) return '--';
-            if(dataString.includes('-')) {
-                const p = dataString.split('-');
-                return `${p[2]}/${p[1]}/${p[0]}`;
-            }
-            return dataString;
+        // --- UTILS ---
+        function iniciarRelogio() {
+            const el = document.getElementById('relogio');
+            if(el) setInterval(() => el.textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
         }
 
-        function getStatusBadge(status) {
+        function formatarData(s) {
+            if(!s) return '--';
+            if(s.includes('-')) { const p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
+            return s;
+        }
+
+        function getStatusBadge(s) {
             let c = 'bg-secondary';
-            const s = (status || "").toLowerCase();
+            s = (s||"").toLowerCase();
             if(s.includes('presente')) c = 'saad-badge-presente';
             else if(s.includes('falta') || s.includes('ausente')) c = 'saad-badge-falta';
             else if(s.includes('justific')) c = 'saad-badge-justificado';
-            return `<span class="badge ${c}">${status}</span>`;
+            return `<span class="badge ${c}">${s}</span>`;
         }
 
         function alternarTema() {
