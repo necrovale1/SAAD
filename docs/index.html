@@ -95,17 +95,15 @@
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
-        
         let perfilAtual = 0; 
         const perfis = [
-            { nome: 'Acesso Aluno', label: 'Registro Acadêmico (RA)', place: 'Digite seu RA', icon: 'fa-id-card', tipo: 'Aluno' },
-            { nome: 'Acesso Professor', label: 'E-mail Institucional', place: 'prof@escola.com', icon: 'fa-chalkboard-teacher', tipo: 'Professor' },
-            { nome: 'Acesso Gestor', label: 'E-mail Corporativo', place: 'diretor@escola.com', icon: 'fa-user-tie', tipo: 'Gestor' }
+            { nome: 'Acesso Aluno', label: 'Registro Acadêmico (RA)', place: 'Digite seu RA', icon: 'fa-id-card' },
+            { nome: 'Acesso Professor', label: 'E-mail Institucional', place: 'prof@escola.com', icon: 'fa-chalkboard-teacher' },
+            { nome: 'Acesso Gestor', label: 'E-mail Corporativo', place: 'diretor@escola.com', icon: 'fa-user-tie' }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const temaSalvo = localStorage.getItem("tema") || "light";
-            atualizarIconeTema(temaSalvo);
+            atualizarIconeTema(localStorage.getItem("tema") || "light");
         });
 
         function toggleSenha() {
@@ -115,11 +113,17 @@
                 if(confirm("Deseja mesmo mostrar sua senha?")) {
                     input.type = 'text';
                     icon.className = 'fas fa-eye-slash';
-                    setTimeout(() => { input.type = 'password'; icon.className = 'fas fa-eye'; }, 3000);
+                    icon.style.color = 'var(--saad-primary)';
+                    setTimeout(() => {
+                        input.type = 'password';
+                        icon.className = 'fas fa-eye';
+                        icon.style.color = '';
+                    }, 3000);
                 }
             } else {
                 input.type = 'password';
                 icon.className = 'fas fa-eye';
+                icon.style.color = '';
             }
         }
 
@@ -145,7 +149,6 @@
             btn.disabled = true;
 
             if (perfilAtual === 0) {
-                // ALUNO: Busca por RA
                 db.collection("users").where("RegistroAcademico", "==", loginValue).get()
                 .then(snap => {
                     if (!snap.empty) return auth.signInWithEmailAndPassword(snap.docs[0].data().Email, senha);
@@ -154,7 +157,6 @@
                 .then(() => sucessoLogin())
                 .catch(err => erroLogin(err, btn));
             } else {
-                // STAFF: Login direto por Email
                 auth.signInWithEmailAndPassword(loginValue, senha)
                 .then(() => sucessoLogin())
                 .catch(err => erroLogin(err, btn));
@@ -162,7 +164,7 @@
         }
 
         function sucessoLogin() {
-            showAlert('Login realizado!', 'success');
+            showAlert('Login realizado com sucesso!', 'success');
             setTimeout(() => window.location.href = "dashboard.html", 1000);
         }
 
