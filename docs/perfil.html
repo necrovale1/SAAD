@@ -19,13 +19,10 @@
         <div class="container-fluid">
             <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
-                <span class="text-white me-3 d-none d-md-block small" id="relogioTopo">--:--:--</span>
-                <a href="dashboard.html" class="btn saad-header-btn me-2"><i class="fas fa-home me-1"></i>Dashboard</a>
+                <span class="me-3 d-none d-md-block small fw-bold" id="relogioTopo">--:--:--</span>
                 
-                <button class="btn saad-header-btn me-2 theme-toggle-nav" onclick="alternarTema()">
-                    <i class="fas fa-moon"></i>
-                </button>
-
+                <a href="dashboard.html" class="btn saad-header-btn me-2"><i class="fas fa-home me-1"></i>Dashboard</a>
+                <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
                 <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
             </div>
         </div>
@@ -62,7 +59,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Justificado')">
-                                <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-clock"></i></div>
+                                <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-clock text-white"></i></div>
                                 <h4 class="mb-1" id="statJustificadas">0</h4><small class="text-muted">Justificadas</small>
                             </div>
                         </div>
@@ -111,8 +108,6 @@
         let dadosCache = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            const tema = localStorage.getItem("tema") || "light";
-            atualizarIconeTema(tema);
             iniciarRelogio();
             auth.onAuthStateChanged(user => {
                 if (!user) window.location.href = 'index.html';
@@ -212,7 +207,10 @@
 
             for (const [nome, dados] of Object.entries(materias)) {
                 const pct = dados.total > 0 ? Math.round((dados.p / dados.total) * 100) : 0;
+                
+                // CORREÇÃO: Barrinha Vermelha Mínima (2%)
                 let displayWidth = pct === 0 ? 2 : pct;
+                
                 let corBarra = 'linear-gradient(135deg, #00b09b, #96c93d)';
                 if (pct < 75) corBarra = 'linear-gradient(135deg, #f7971e, #ffd200)';
                 if (pct < 50 || pct === 0) corBarra = 'linear-gradient(135deg, #ff416c, #ff4b2b)';
@@ -236,14 +234,7 @@
             const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
             document.documentElement.setAttribute("data-theme", novo);
             localStorage.setItem("tema", novo);
-            atualizarIconeTema(novo);
         }
-        
-        function atualizarIconeTema(tema) {
-            const icon = document.querySelector('.theme-toggle-nav i');
-            if(icon) icon.className = tema === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        }
-
         function sair() { auth.signOut().then(() => window.location.href = 'index.html'); }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
