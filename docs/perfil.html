@@ -7,322 +7,127 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script> (function() { const temaSalvo = localStorage.getItem("tema") || "light"; document.documentElement.setAttribute("data-theme", temaSalvo); })(); </script>
+    <style> #relogioTopo { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); } </style>
 </head>
 <body class="saad-body">
-    <!-- Header -->
     <nav class="navbar saad-header navbar-expand-lg shadow-sm">
         <div class="container-fluid">
-            <span class="navbar-brand saad-navbar-brand mb-0">
-                <i class="fas fa-fingerprint me-2"></i>SAAD
-            </span>
-            
+            <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
-                <a href="dashboard.html" class="btn saad-header-btn me-2">
-                    <i class="fas fa-home me-1"></i>Dashboard
-                </a>
-                <button class="btn saad-header-btn me-2" onclick="alternarTema()">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="btn saad-header-btn btn-logout" onclick="sair()">
-                    <i class="fas fa-sign-out-alt me-1"></i>Sair
-                </button>
+                <div class="d-none d-md-flex align-items-center text-white me-4"><i class="fas fa-clock me-2 opacity-75"></i><span id="relogioTopo">--:--:--</span></div>
+                <a href="dashboard.html" class="btn saad-header-btn me-2"><i class="fas fa-home me-1"></i>Dashboard</a>
+                <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
+                <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
             </div>
         </div>
     </nav>
-
-    <!-- Conteúdo Principal -->
     <div class="container py-4">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <!-- Header Perfil -->
-                <div class="text-center mb-5">
-                    <div class="saad-logo mb-3 mx-auto">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <h2>Meu Perfil Acadêmico</h2>
-                    <p class="text-muted">Gerencie suas informações pessoais</p>
-                </div>
-
-                <!-- Card de Informações -->
+                <div class="text-center mb-5"><div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-circle"></i></div><h2>Dados do Usuário</h2></div>
                 <div class="saad-card p-4 mb-4">
-                    <h4 class="mb-4"><i class="fas fa-info-circle me-2"></i>Informações Pessoais</h4>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label saad-label">Nome Completo</label>
-                            <div class="saad-input p-3" id="infoNome">Carregando...</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label saad-label">Registro Acadêmico (RA)</label>
-                            <div class="saad-input p-3" id="infoRA">Carregando...</div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label saad-label">Email Institucional</label>
-                            <div class="saad-input p-3" id="infoEmail">Carregando...</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label saad-label">Curso</label>
-                            <div class="saad-input p-3" id="infoCurso">Carregando...</div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label saad-label">Semestre</label>
-                            <div class="saad-input p-3" id="infoSemestre">Carregando...</div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label saad-label">Instituição</label>
-                            <div class="saad-input p-3" id="infoInstituicao">Carregando...</div>
-                        </div>
+                    <h4 class="mb-4">Informações</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label saad-label">Nome</label><div class="saad-input" id="infoNome">...</div></div>
+                        <div class="col-md-6"><label class="form-label saad-label">Email</label><div class="saad-input" id="infoEmail">...</div></div>
+                        <div class="col-md-6" id="divRA"><label class="form-label saad-label">RA</label><div class="saad-input" id="infoRA">...</div></div>
+                        <div class="col-md-6"><label class="form-label saad-label" id="labelCurso">Curso</label><div class="saad-input" id="infoCurso">...</div></div>
                     </div>
                 </div>
-
-                <!-- Card de Estatísticas -->
-                <div class="saad-card p-4">
-                    <h4 class="mb-4"><i class="fas fa-chart-bar me-2"></i>Estatísticas Acadêmicas</h4>
-                    
+                <div class="saad-card p-4" id="cardStats" style="display:none;">
+                    <h4 class="mb-4">Desempenho</h4>
                     <div class="row text-center">
-                        <div class="col-md-4 mb-3">
-                            <div class="saad-stats-card p-3">
-                                <div class="saad-stats-icon mx-auto mb-2">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                                <h4 class="mb-1" id="statTotalAulas">0</h4>
-                                <small class="text-muted">Total de Aulas</small>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="saad-stats-card p-3">
-                                <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <h4 class="mb-1" id="statPresencas">0</h4>
-                                <small class="text-muted">Presenças</small>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="saad-stats-card p-3">
-                                <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">
-                                    <i class="fas fa-times-circle"></i>
-                                </div>
-                                <h4 class="mb-1" id="statFaltas">0</h4>
-                                <small class="text-muted">Faltas</small>
-                            </div>
-                        </div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Presente')"><h4 id="statPresencas">0</h4><small>Presenças</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Justificado')"><h4 id="statJustificadas">0</h4><small>Justificadas</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Falta')"><h4 id="statFaltas">0</h4><small>Faltas</small></div></div>
                     </div>
-
-                    <!-- Gráfico de Frequência Simples -->
-                    <div class="mt-4">
-                        <label class="form-label saad-label mb-3">Frequência por Matéria</label>
-                        <div id="graficoFrequencia">
-                            <!-- Gráfico será gerado dinamicamente -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Informações do Sistema -->
-                <div class="saad-card p-4 mt-4">
-                    <h5><i class="fas fa-mobile-alt me-2"></i>App Mobile SAAD</h5>
-                    <p class="text-muted mb-0">
-                        Use o aplicativo mobile para cadastrar seu rosto e registrar entradas/saídas 
-                        através do reconhecimento facial.
-                    </p>
+                    <div id="graficoFrequencia" class="mt-4"></div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Firebase -->
+    <div class="modal fade" id="modalStats" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content saad-card"><div class="modal-body p-0"><div class="list-group list-group-flush" id="modalStatsList"></div></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase.js"></script>
-
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
-        let currentUser = null;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            verificarAuth();
+        let currentUser = null, dadosCache = [];
+        document.addEventListener('DOMContentLoaded', () => {
+            setInterval(() => document.getElementById('relogioTopo').textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
+            auth.onAuthStateChanged(user => { if(!user) window.location.href='index.html'; else { currentUser=user; carregarDados(); }});
         });
-
-        function verificarAuth() {
-            auth.onAuthStateChanged(user => {
-                if (!user) {
-                    window.location.href = 'index.html';
+        function carregarDados() {
+            db.collection("users").doc(currentUser.uid).get().then(doc => {
+                if(!doc.exists) return db.collection("users").where("Email", "==", currentUser.email).get().then(s=>s.empty?null:s.docs[0].data());
+                return doc.data();
+            }).then(data => {
+                if(!data) return;
+                document.getElementById('infoNome').textContent = data.Nome;
+                document.getElementById('infoEmail').textContent = currentUser.email;
+                if(data.UserType !== 'Aluno') {
+                    document.getElementById('divRA').style.display = 'none';
+                    document.getElementById('labelCurso').textContent = 'Cargo';
+                    document.getElementById('infoCurso').textContent = data.Cargo || 'Staff';
+                    document.getElementById('cardStats').style.display = 'none';
                 } else {
-                    currentUser = user;
-                    carregarDadosUsuario();
-                    carregarEstatisticas();
+                    document.getElementById('infoRA').textContent = data.RegistroAcademico;
+                    document.getElementById('infoCurso').textContent = data.Curso;
+                    document.getElementById('cardStats').style.display = 'block';
+                    carregarStats(data.RegistroAcademico);
                 }
             });
         }
-
-        function carregarDadosUsuario() {
-            if (!currentUser) return;
-
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
-                .then(snapshot => {
-                    if (!snapshot.empty) {
-                        const userData = snapshot.docs[0].data();
-                        
-                        // Preencher informações
-                        document.getElementById('infoNome').textContent = userData.nome || 'Não informado';
-                        document.getElementById('infoRA').textContent = userData.ra || 'Não informado';
-                        document.getElementById('infoEmail').textContent = currentUser.email;
-                        document.getElementById('infoCurso').textContent = userData.curso || 'Não informado';
-                        document.getElementById('infoSemestre').textContent = userData.semestre || 'Não informado';
-                        document.getElementById('infoInstituicao').textContent = userData.instituicao || 'Não informado';
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao carregar dados:", error);
-                    showAlert('Erro ao carregar dados do usuário', 'danger');
+        function carregarStats(ra) {
+            db.collection("presencas").where("RegistroAcademico", "==", ra).orderBy('Data', 'desc').limit(100).get().then(snap => {
+                dadosCache = [];
+                let p=0, f=0, j=0, m={};
+                snap.forEach(doc => {
+                    const d=doc.data();
+                    dadosCache.push(d);
+                    const st = (d.Status||"").toLowerCase();
+                    if(st.includes('presente')) p++; else if(st.includes('falta')) f++; else j++;
+                    const mat = d.Materia || "Geral";
+                    if(!m[mat]) m[mat] = {t:0, p:0};
+                    m[mat].t++;
+                    if(st.includes('presente')) m[mat].p++;
                 });
-        }
-
-        function carregarEstatisticas() {
-            if (!currentUser) return;
-
-            // Buscar RA do usuário primeiro
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
-                .then(snapshot => {
-                    if (!snapshot.empty) {
-                        const userData = snapshot.docs[0].data();
-                        const userRA = userData.ra;
-                        
-                        // Buscar presenças
-                        return db.collection("presencas")
-                            .where("ra", "==", userRA)
-                            .get();
-                    }
-                })
-                .then(snapshot => {
-                    if (snapshot && !snapshot.empty) {
-                        calcularEstatisticas(snapshot);
-                    } else {
-                        document.getElementById('statTotalAulas').textContent = '0';
-                        document.getElementById('statPresencas').textContent = '0';
-                        document.getElementById('statFaltas').textContent = '0';
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao carregar estatísticas:", error);
+                document.getElementById('statPresencas').textContent = p;
+                document.getElementById('statFaltas').textContent = f;
+                document.getElementById('statJustificadas').textContent = j;
+                const container = document.getElementById('graficoFrequencia');
+                container.innerHTML = '';
+                Object.entries(m).forEach(([n, d]) => {
+                    const pct = Math.round((d.p/d.t)*100);
+                    const dw = pct===0 ? 2 : pct;
+                    const cor = pct<75 ? '#ff416c' : '#00b09b';
+                    container.innerHTML += `<div class="mb-2"><div class="d-flex justify-content-between"><small>${n}</small><small>${pct}%</small></div><div class="progress" style="height:6px; background:var(--saad-border)"><div class="progress-bar" style="width:${dw}%; background:${cor}"></div></div></div>`;
                 });
-        }
-
-        function calcularEstatisticas(snapshot) {
-            let total = snapshot.size;
-            let presencas = 0;
-            let faltas = 0;
-
-            snapshot.forEach(doc => {
-                const dados = doc.data();
-                if (dados.status === 'Presente') presencas++;
-                if (dados.status === 'Falta') faltas++;
-            });
-
-            document.getElementById('statTotalAulas').textContent = total;
-            document.getElementById('statPresencas').textContent = presencas;
-            document.getElementById('statFaltas').textContent = faltas;
-
-            // Gerar gráfico simples
-            gerarGraficoFrequencia(snapshot);
-        }
-
-        function gerarGraficoFrequencia(snapshot) {
-            const frequenciaPorMateria = {};
-            
-            snapshot.forEach(doc => {
-                const dados = doc.data();
-                const materia = dados.materia || 'Outras';
-                
-                if (!frequenciaPorMateria[materia]) {
-                    frequenciaPorMateria[materia] = { total: 0, presentes: 0 };
-                }
-                
-                frequenciaPorMateria[materia].total++;
-                if (dados.status === 'Presente') {
-                    frequenciaPorMateria[materia].presentes++;
-                }
-            });
-
-            const graficoContainer = document.getElementById('graficoFrequencia');
-            graficoContainer.innerHTML = '';
-
-            for (const [materia, dados] of Object.entries(frequenciaPorMateria)) {
-                const percentual = dados.total > 0 ? Math.round((dados.presentes / dados.total) * 100) : 0;
-                
-                const graficoItem = `
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="small">${materia}</span>
-                            <span class="small">${percentual}%</span>
-                        </div>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar" role="progressbar" 
-                                 style="width: ${percentual}%; background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark));" 
-                                 aria-valuenow="${percentual}" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between mt-1">
-                            <small class="text-muted">${dados.presentes}/${dados.total} aulas</small>
-                            <small class="text-muted">${percentual}% de frequência</small>
-                        </div>
-                    </div>
-                `;
-                graficoContainer.innerHTML += graficoItem;
-            }
-
-            if (Object.keys(frequenciaPorMateria).length === 0) {
-                graficoContainer.innerHTML = `
-                    <div class="text-center text-muted py-3">
-                        <i class="fas fa-chart-line fa-2x mb-2"></i>
-                        <p>Nenhum dado disponível para gerar estatísticas</p>
-                    </div>
-                `;
-            }
-        }
-
-        function alternarTema() {
-            const html = document.documentElement;
-            const temaAtual = html.getAttribute("data-theme");
-            const novoTema = temaAtual === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", novoTema);
-            localStorage.setItem("tema", novoTema);
-        }
-
-        function sair() {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
             });
         }
-
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
-            alertDiv.style.zIndex = '1050';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
+        function abrirModal(tipo) {
+            const lista = document.getElementById('modalStatsList');
+            lista.innerHTML = '';
+            const filtrados = dadosCache.filter(d => {
+                const s = (d.Status||"").toLowerCase();
+                if(tipo === 'Presente') return s.includes('presente');
+                if(tipo === 'Falta') return s.includes('falta');
+                return !s.includes('presente') && !s.includes('falta');
+            }).slice(0, 10);
+            if(filtrados.length === 0) lista.innerHTML = '<div class="p-3 text-center">Sem registros.</div>';
+            else filtrados.forEach(d => {
+                let dt = d.Data;
+                if(dt.includes('-')) dt = dt.split('-').reverse().join('/');
+                lista.innerHTML += `<div class="list-group-item bg-transparent text-reset border-secondary d-flex justify-content-between"><div><strong>${d.Materia}</strong><br><small>${dt}</small></div><span class="badge bg-secondary">${d.HoraEntrada}</span></div>`;
+            });
+            new bootstrap.Modal(document.getElementById('modalStats')).show();
         }
-
-        // Aplicar tema salvo
-        const temaSalvo = localStorage.getItem("tema") || "light";
-        document.documentElement.setAttribute("data-theme", temaSalvo);
+        function alternarTema() { const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"; document.documentElement.setAttribute("data-theme", novo); localStorage.setItem("tema", novo); }
+        function sair() { auth.signOut().then(() => window.location.href='index.html'); }
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

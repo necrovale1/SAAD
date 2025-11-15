@@ -7,157 +7,52 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        (function() {
+            const temaSalvo = localStorage.getItem("tema") || "light";
+            document.documentElement.setAttribute("data-theme", temaSalvo);
+        })();
+    </script>
 </head>
 <body class="saad-body">
-    <!-- Header -->
-    <nav class="navbar saad-header navbar-expand-lg shadow-sm">
+    <nav class="navbar saad-header navbar-expand-lg shadow-sm sticky-top">
         <div class="container-fluid">
-            <span class="navbar-brand saad-navbar-brand mb-0">
-                <i class="fas fa-fingerprint me-2"></i>SAAD
-            </span>
-            
+            <span class="navbar-brand saad-navbar-brand mb-0"><i class="fas fa-fingerprint me-2"></i>SAAD</span>
             <div class="d-flex align-items-center">
-                <span class="text-white me-3 d-none d-md-block">
-                    <i class="fas fa-user-graduate me-1"></i>
-                    <span id="studentName">Carregando...</span>
-                </span>
-                <a href="perfil.html" class="btn saad-header-btn me-2">
-                    <i class="fas fa-user me-1"></i>Meu Perfil
-                </a>
-                <button class="btn saad-header-btn me-2" onclick="alternarTema()">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="btn saad-header-btn btn-logout" onclick="sair()">
-                    <i class="fas fa-sign-out-alt me-1"></i>Sair
-                </button>
+                <div class="d-none d-md-flex align-items-center me-4 text-white">
+                    <i class="fas fa-clock me-2 opacity-75"></i>
+                    <span class="relogio-header" id="relogioGlobal">--:--:--</span>
+                </div>
+                <span class="text-white me-3 d-none d-md-block small"><i class="fas fa-user-circle me-1"></i><span id="studentName">Carregando...</span></span>
+                <a href="perfil.html" class="btn saad-header-btn me-2" id="btnPerfil"><i class="fas fa-user me-1"></i>Perfil</a>
+                <button class="btn saad-header-btn me-2" onclick="alternarTema()"><i class="fas fa-moon"></i></button>
+                <button class="btn saad-header-btn btn-logout" onclick="sair()"><i class="fas fa-sign-out-alt me-1"></i>Sair</button>
             </div>
         </div>
     </nav>
 
-    <!-- Conteúdo Principal -->
-    <div class="container-fluid py-4">
-        <div class="row">
-            <!-- Sidebar Stats -->
-            <div class="col-lg-3 mb-4">
-                <div class="saad-stats-card p-4 mb-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="saad-stats-icon me-3">
-                            <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <div>
-                            <h4 class="mb-0" id="totalAulas">0</h4>
-                            <small class="text-muted">Total de Aulas</small>
-                        </div>
-                    </div>
-                </div>
+    <div class="container-fluid py-4" id="mainContainer">
+        <div class="text-center py-5">
+            <i class="fas fa-circle-notch fa-spin fa-3x text-secondary"></i>
+            <p class="mt-3 text-muted">Carregando painel...</p>
+        </div>
+    </div>
 
-                <div class="saad-stats-card p-4 mb-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #00b09b, #96c93d);">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div>
-                            <h4 class="mb-0" id="totalPresencas">0</h4>
-                            <small class="text-muted">Presenças</small>
-                        </div>
-                    </div>
+    <div class="modal fade" id="modalDetalhes" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content saad-card border-0">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title" id="modalTitle">Detalhes</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-
-                <div class="saad-stats-card p-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="saad-stats-icon me-3" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">
-                            <i class="fas fa-times-circle"></i>
-                        </div>
-                        <div>
-                            <h4 class="mb-0" id="totalFaltas">0</h4>
-                            <small class="text-muted">Faltas</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-lg-9">
-                <!-- Header Dashboard -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="mb-1">Dashboard de Presenças</h2>
-                        <p class="text-muted mb-0">Acompanhe sua frequência acadêmica</p>
-                    </div>
-                    <div class="text-end">
-                        <small class="text-muted" id="dataAtual"></small>
-                    </div>
-                </div>
-
-                <!-- Filtros -->
-                <div class="saad-card p-4 mb-4">
-                    <h5 class="mb-3"><i class="fas fa-filter me-2"></i>Filtrar Presenças</h5>
-                    <form id="filtroForm" class="row g-3">
-                        <div class="col-md-3">
-                            <label class="form-label saad-label">Data Início</label>
-                            <input type="date" class="form-control saad-input" id="dataInicio">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label saad-label">Data Fim</label>
-                            <input type="date" class="form-control saad-input" id="dataFim">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label saad-label">Matéria</label>
-                            <select class="form-select saad-input" id="materia">
-                                <option value="">Todas as Matérias</option>
-                                <option value="Matemática">Matemática</option>
-                                <option value="Português">Português</option>
-                                <option value="História">História</option>
-                                <option value="Geografia">Geografia</option>
-                                <option value="Física">Física</option>
-                                <option value="Química">Química</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn saad-btn-primary w-100" onclick="filtrarPresencas()">
-                                <i class="fas fa-search me-1"></i>Filtrar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Tabela de Presenças -->
-                <div class="saad-card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Registro de Presenças</h5>
-                        <span class="badge saad-badge-presente" id="totalRegistros">0 registros</span>
-                    </div>
-                    
-                    <div class="table-responsive">
-                        <table class="table saad-table">
-                            <thead>
-                                <tr>
-                                    <th>Data</th>
-                                    <th>Matéria</th>
-                                    <th>Horário Entrada</th>
-                                    <th>Horário Saída</th>
-                                    <th>Status</th>
-                                    <th>Professor</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tabelaPresencas">
-                                <tr>
-                                    <td colspan="6" class="text-center py-4">
-                                        <div class="text-muted">
-                                            <i class="fas fa-search fa-2x mb-2"></i>
-                                            <p>Use os filtros para buscar suas presenças</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="modal-body p-0" id="modalBody"></div>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -168,237 +63,229 @@
         const db = firebase.firestore();
         let currentUser = null;
 
-        // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
+            iniciarRelogioGlobal();
             verificarAuth();
-            atualizarData();
-            carregarDadosUsuario();
         });
+
+        function iniciarRelogioGlobal() {
+            const el = document.getElementById('relogioGlobal');
+            setInterval(() => el.textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
+        }
 
         function verificarAuth() {
             auth.onAuthStateChanged(user => {
-                if (!user) {
-                    window.location.href = 'index.html';
-                } else {
+                if (!user) window.location.href = 'index.html';
+                else {
                     currentUser = user;
-                    carregarPresencas();
+                    carregarPainelCorreto();
                 }
             });
         }
 
-        function carregarDadosUsuario() {
-            if (currentUser) {
-                db.collection("usuarios").where("email", "==", currentUser.email).get()
-                    .then(snapshot => {
-                        if (!snapshot.empty) {
-                            const userData = snapshot.docs[0].data();
-                            document.getElementById('studentName').textContent = userData.nome || 'Aluno';
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Erro ao carregar dados:", error);
-                    });
-            }
-        }
+        function carregarPainelCorreto() {
+            db.collection("users").doc(currentUser.uid).get()
+            .then(doc => {
+                if (!doc.exists) return db.collection("users").where("Email", "==", currentUser.email).get().then(s => s.empty?null:s.docs[0].data());
+                return doc.data();
+            })
+            .then(data => {
+                if (!data) { alert("Erro: Usuário não encontrado."); return; }
+                document.getElementById('studentName').textContent = data.Nome || 'Usuário';
 
-        function atualizarData() {
-            const now = new Date();
-            document.getElementById('dataAtual').textContent = 
-                now.toLocaleDateString('pt-BR', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-        }
-
-        function carregarPresencas() {
-            if (!currentUser) return;
-
-            // Buscar RA do usuário primeiro
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
-                .then(snapshot => {
-                    if (!snapshot.empty) {
-                        const userData = snapshot.docs[0].data();
-                        const userRA = userData.ra;
-                        
-                        // Agora buscar presenças pelo RA
-                        return db.collection("presencas")
-                            .where("ra", "==", userRA)
-                            .orderBy("data", "desc")
-                            .limit(50)
-                            .get();
-                    }
-                })
-                .then(snapshot => {
-                    if (snapshot && !snapshot.empty) {
-                        atualizarTabela(snapshot);
-                        atualizarEstatisticas(snapshot);
-                    } else {
-                        document.getElementById('tabelaPresencas').innerHTML = `
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-inbox fa-2x mb-2"></i>
-                                        <p>Nenhum registro de presença encontrado</p>
-                                        <small>Seus registros aparecerão aqui após as aulas</small>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao carregar presenças:", error);
-                    showAlert('Erro ao carregar presenças: ' + error.message, 'danger');
-                });
-        }
-
-        function filtrarPresencas() {
-            const dataInicio = document.getElementById("dataInicio").value;
-            const dataFim = document.getElementById("dataFim").value;
-            const materia = document.getElementById("materia").value;
-
-            let query = db.collection("presencas");
-
-            // Buscar RA do usuário primeiro
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
-                .then(snapshot => {
-                    if (!snapshot.empty) {
-                        const userData = snapshot.docs[0].data();
-                        const userRA = userData.ra;
-                        
-                        query = query.where("ra", "==", userRA);
-
-                        // Aplicar filtros
-                        if (dataInicio) {
-                            query = query.where("data", ">=", new Date(dataInicio));
-                        }
-                        if (dataFim) {
-                            const dataFimObj = new Date(dataFim);
-                            dataFimObj.setHours(23, 59, 59);
-                            query = query.where("data", "<=", dataFimObj);
-                        }
-                        if (materia) {
-                            query = query.where("materia", "==", materia);
-                        }
-
-                        return query.orderBy("data", "desc").get();
-                    }
-                })
-                .then(snapshot => {
-                    if (snapshot && !snapshot.empty) {
-                        atualizarTabela(snapshot);
-                        atualizarEstatisticas(snapshot);
-                    } else {
-                        document.getElementById('tabelaPresencas').innerHTML = `
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-search fa-2x mb-2"></i>
-                                        <p>Nenhum registro encontrado com os filtros aplicados</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                        document.getElementById('totalRegistros').textContent = '0 registros';
-                    }
-                })
-                .catch(error => {
-                    console.error("Erro ao filtrar:", error);
-                    showAlert('Erro ao filtrar presenças: ' + error.message, 'danger');
-                });
-        }
-
-        function atualizarTabela(snapshot) {
-            const tabela = document.getElementById("tabelaPresencas");
-            tabela.innerHTML = "";
-
-            snapshot.forEach(doc => {
-                const dados = doc.data();
-                const data = dados.data.toDate();
-                const statusBadge = getStatusBadge(dados.status);
-                
-                const linha = `
-                    <tr>
-                        <td>${data.toLocaleDateString('pt-BR')}</td>
-                        <td>
-                            <strong>${dados.materia}</strong>
-                            ${dados.turma ? `<br><small class="text-muted">Turma: ${dados.turma}</small>` : ''}
-                        </td>
-                        <td>${dados.horaEntrada || '--:--'}</td>
-                        <td>${dados.horaSaida || '--:--'}</td>
-                        <td>${statusBadge}</td>
-                        <td>${dados.professor || 'Não informado'}</td>
-                    </tr>
-                `;
-                tabela.innerHTML += linha;
-            });
-
-            document.getElementById('totalRegistros').textContent = `${snapshot.size} registros`;
-        }
-
-        function atualizarEstatisticas(snapshot) {
-            let total = snapshot.size;
-            let presencas = 0;
-            let faltas = 0;
-
-            snapshot.forEach(doc => {
-                const dados = doc.data();
-                if (dados.status === 'Presente') presencas++;
-                if (dados.status === 'Falta') faltas++;
-            });
-
-            document.getElementById('totalAulas').textContent = total;
-            document.getElementById('totalPresencas').textContent = presencas;
-            document.getElementById('totalFaltas').textContent = faltas;
-        }
-
-        function getStatusBadge(status) {
-            const statusMap = {
-                'Presente': 'saad-badge-presente',
-                'Falta': 'saad-badge-falta',
-                'Atraso': 'saad-badge-atraso'
-            };
-            
-            const badgeClass = statusMap[status] || 'saad-badge-falta';
-            return `<span class="badge ${badgeClass}">${status}</span>`;
-        }
-
-        function alternarTema() {
-            const html = document.documentElement;
-            const temaAtual = html.getAttribute("data-theme");
-            const novoTema = temaAtual === "dark" ? "light" : "dark";
-            html.setAttribute("data-theme", novoTema);
-            localStorage.setItem("tema", novoTema);
-        }
-
-        function sair() {
-            auth.signOut().then(() => {
-                window.location.href = 'index.html';
+                if (data.Email === 'admin.ti@escola.com' || data.Cargo === 'Administrador de Sistemas') {
+                    renderizarDashboardTI();
+                } else if (data.UserType === 'Gestor') {
+                    renderizarDashboardGestor();
+                } else if (data.UserType === 'Professor') {
+                    renderizarDashboardProfessor(data);
+                } else {
+                    renderizarDashboardAluno(data);
+                }
             });
         }
 
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
-            alertDiv.style.zIndex = '1050';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
+        // === GESTOR ===
+        function renderizarDashboardGestor() {
+            const html = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div><h2 class="mb-1">Painel da Diretoria</h2><p class="text-muted mb-0">Visão Geral da Escola</p></div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>1.250</h3><small class="text-muted">Alunos</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3 id="mediaGeral">--%</h3><small class="text-muted">Média Geral</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center"><h3>45</h3><small class="text-muted">Professores</small></div></div>
+                    <div class="col-md-3"><div class="saad-stats-card p-4 text-center text-danger"><h3>5</h3><small class="text-muted">Críticas</small></div></div>
+                </div>
+                <div class="saad-card p-4">
+                    <h5 class="mb-3">Histórico de Frequência (Por Dia)</h5>
+                    <div class="table-responsive">
+                        <table class="table saad-table table-hover align-middle">
+                            <thead><tr><th>Data</th><th>Total Aulas</th><th>Presença Média</th><th>Situação</th><th>Ação</th></tr></thead>
+                            <tbody id="tabelaGestorDias"><tr><td colspan="5" class="text-center"><i class="fas fa-spinner fa-spin"></i> Calculando...</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>`;
+            document.getElementById('mainContainer').innerHTML = html;
+
+            db.collection("presencas").orderBy("Data", "desc").limit(400).get().then(snap => {
+                const diasMap = {};
+                let tP = 0, tT = 0;
+
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if (!diasMap[d.Data]) diasMap[d.Data] = { data: d.Data, total: 0, p: 0, registros: [] };
+                    diasMap[d.Data].total++;
+                    if ((d.Status||"").toLowerCase().includes('presente')) { diasMap[d.Data].p++; tP++; }
+                    tT++;
+                    diasMap[d.Data].registros.push(d);
+                });
+
+                document.getElementById('mediaGeral').textContent = tT > 0 ? `${Math.round((tP/tT)*100)}%` : '0%';
+                const tbody = document.getElementById('tabelaGestorDias');
+                tbody.innerHTML = '';
+
+                Object.values(diasMap).sort((a,b) => a.data < b.data ? 1 : -1).forEach(dia => {
+                    const pct = Math.round((dia.p / dia.total) * 100);
+                    let badge = pct < 70 ? '<span class="badge bg-danger">Crítico</span>' : '<span class="badge bg-success">Bom</span>';
+                    const safeID = dia.data.replace(/[^0-9]/g, '');
+                    window[`dia_${safeID}`] = dia.registros;
+
+                    tbody.innerHTML += `
+                        <tr class="clickable-row" onclick="abrirDetalhesDiaGestor('${dia.data}', '${safeID}')">
+                            <td><i class="fas fa-calendar-day me-2 text-muted"></i>${formatarData(dia.data)}</td>
+                            <td>${dia.total} aulas</td>
+                            <td><div class="d-flex align-items-center"><span class="me-2 fw-bold">${pct}%</span><div class="progress flex-grow-1" style="height: 6px; width: 80px;"><div class="progress-bar ${pct < 70 ? 'bg-danger' : 'bg-success'}" style="width: ${pct}%"></div></div></div></td>
+                            <td>${badge}</td>
+                            <td><button class="btn btn-sm btn-outline-secondary">Ver</button></td>
+                        </tr>`;
+                });
+            });
         }
 
-        // Aplicar tema salvo
-        const temaSalvo = localStorage.getItem("tema") || "light";
-        document.documentElement.setAttribute("data-theme", temaSalvo);
+        function abrirDetalhesDiaGestor(dataStr, idDados) {
+            const regs = window[`dia_${idDados}`] || [];
+            document.getElementById('modalTitle').textContent = `Visão Detalhada: ${formatarData(dataStr)}`;
+            const turmas = {};
+            regs.forEach(r => {
+                const mat = r.Materia || "Geral";
+                if (!turmas[mat]) turmas[mat] = { nome: mat, t: 0, p: 0 };
+                turmas[mat].t++;
+                if ((r.Status||"").toLowerCase().includes('presente')) turmas[mat].p++;
+            });
+            let html = `<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead class="table-light"><tr><th>Matéria / Turma</th><th>Professor</th><th>Presença</th><th>Status</th></tr></thead><tbody>`;
+            Object.values(turmas).forEach(t => {
+                const pct = Math.round((t.p / t.t) * 100);
+                html += `<tr><td><strong>${t.nome}</strong></td><td>Prof. ${t.nome.split(' ')[0]}</td><td>${pct}% (${t.p}/${t.t})</td><td>${pct < 75 ? '<span class="badge bg-danger">Baixa</span>' : '<span class="badge bg-success">Normal</span>'}</td></tr>`;
+            });
+            html += '</tbody></table></div>';
+            document.getElementById('modalBody').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('modalDetalhes')).show();
+        }
+
+        // === PROFESSOR ===
+        function renderizarDashboardProfessor(profData) {
+            const html = `
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div><h3 class="mb-1">Minhas Turmas</h3><p class="text-muted mb-0">Gestão de Frequência</p></div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="saad-card p-4 mb-4">
+                            <h5 class="mb-3">Turmas Ativas</h5>
+                            <div class="table-responsive">
+                                <table class="table saad-table table-hover align-middle">
+                                    <thead><tr><th>Matéria</th><th>Presença Média</th><th>Última Aula</th><th>Ação</th></tr></thead>
+                                    <tbody id="tabelaProf"><tr><td colspan="4" class="text-center"><i class="fas fa-spinner fa-spin"></i></td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="saad-card p-4">
+                            <h5 class="mb-3">Resumo Semanal</h5>
+                            <p class="text-muted small">Desempenho dos alunos.</p>
+                            <div id="resumoSemanalContainer"></div>
+                        </div>
+                    </div>
+                </div>`;
+            document.getElementById('mainContainer').innerHTML = html;
+
+            db.collection("presencas").orderBy("Data", "desc").limit(150).get().then(snap => {
+                const turmas = {};
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if (!turmas[d.Materia]) turmas[d.Materia] = { nome: d.Materia, total: 0, p: 0, ultimaData: d.Data, alunos: [] };
+                    turmas[d.Materia].total++;
+                    if ((d.Status||"").includes('Presente')) turmas[d.Materia].p++;
+                    turmas[d.Materia].alunos.push({ ra: d.RegistroAcademico, status: d.Status, data: d.Data, hora: d.HoraEntrada });
+                });
+
+                const tbody = document.getElementById('tabelaProf');
+                const resumo = document.getElementById('resumoSemanalContainer');
+                tbody.innerHTML = ''; resumo.innerHTML = '';
+
+                Object.values(turmas).forEach(t => {
+                    const pct = Math.round((t.p / t.total) * 100);
+                    const safeID = t.nome.replace(/[^a-zA-Z0-9]/g, '_');
+                    window[`dados_${safeID}`] = t.alunos;
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><span class="fw-bold">${t.nome}</span></td>
+                            <td><div class="d-flex align-items-center"><span class="me-2 small fw-bold">${pct}%</span><div class="progress flex-grow-1" style="height: 5px; width: 60px;"><div class="progress-bar ${pct<70?'bg-danger':'bg-success'}" style="width: ${pct}%"></div></div></div></td>
+                            <td>${formatarData(t.ultimaData)}</td>
+                            <td><button class="btn btn-sm btn-outline-secondary" onclick="abrirModalTurma('${t.nome}', '${safeID}')">Detalhes</button></td>
+                        </tr>`;
+
+                    resumo.innerHTML += `<div class="mb-3"><div class="d-flex justify-content-between mb-1"><small>${t.nome}</small><small class="${pct<75?'text-danger':'text-success'} fw-bold">${pct}%</small></div><div class="progress" style="height: 6px; background: var(--saad-border);"><div class="progress-bar ${pct<75?'bg-danger':'bg-success'}" style="width: ${pct}%"></div></div></div>`;
+                });
+            });
+        }
+
+        function abrirModalTurma(nome, id) {
+            const alunos = window[`dados_${id}`] || [];
+            document.getElementById('modalTitle').textContent = `Diário: ${nome}`;
+            let html = `<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead class="table-light"><tr><th>RA Aluno</th><th>Data</th><th>Horário</th><th>Status</th></tr></thead><tbody>`;
+            alunos.slice(0, 50).forEach(a => {
+                html += `<tr><td class="fw-bold">${a.ra}</td><td>${formatarData(a.data)}</td><td>${a.hora}</td><td>${getStatusBadge(a.status)}</td></tr>`;
+            });
+            html += '</tbody></table></div>';
+            document.getElementById('modalBody').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('modalDetalhes')).show();
+        }
+
+        // === ADMIN TI ===
+        function renderizarDashboardTI() {
+            document.getElementById('mainContainer').innerHTML = `<div class="alert alert-dark mb-4"><i class="fas fa-terminal me-2"></i>Painel TI</div><div class="saad-card p-4 bg-dark text-success font-monospace">System Online...<br>DB Connected.<br>Auth Service OK.</div>`;
+        }
+
+        // === ALUNO ===
+        function renderizarDashboardAluno(userData) {
+            const html = `
+                <div class="d-flex justify-content-between align-items-center mb-4"><div><h2 class="mb-1">Minhas Aulas</h2><p class="text-muted mb-0">Olá, ${userData.Nome.split(' ')[0]}</p></div></div>
+                <div class="row"><div class="col-lg-3"><div class="saad-stats-card p-4 mb-3 text-center"><h3 id="totalPresencas">0</h3><small>Presenças</small></div></div><div class="col-lg-3"><div class="saad-stats-card p-4 mb-3 text-center text-danger"><h3 id="totalFaltas">0</h3><small>Faltas</small></div></div><div class="col-lg-6"><div class="saad-card p-4"><div class="table-responsive"><table class="table saad-table"><thead><tr><th>Data</th><th>Matéria</th><th>Status</th></tr></thead><tbody id="tabelaAluno"></tbody></table></div></div></div></div>`;
+            document.getElementById('mainContainer').innerHTML = html;
+
+            db.collection("presencas").where("RegistroAcademico", "==", userData.RegistroAcademico).orderBy("Data", "desc").limit(20).get()
+            .then(snap => {
+                const tbody = document.getElementById('tabelaAluno');
+                let p=0, f=0;
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    if((d.Status||"").includes('Presente')) p++; else f++;
+                    tbody.innerHTML += `<tr><td>${formatarData(d.Data)}</td><td>${d.Materia}</td><td>${getStatusBadge(d.Status)}</td></tr>`;
+                });
+                document.getElementById('totalPresencas').textContent = p;
+                document.getElementById('totalFaltas').textContent = f;
+            });
+        }
+
+        function formatarData(s) { if(!s) return '--'; if(s.includes('-')) { const p = s.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; } return s; }
+        function getStatusBadge(s) { let c='bg-secondary'; s=(s||"").toLowerCase(); if(s.includes('presente')) c='saad-badge-presente'; else if(s.includes('falta')) c='saad-badge-falta'; return `<span class="badge ${c}">${s}</span>`; }
+        function alternarTema() { const novo = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark"; document.documentElement.setAttribute("data-theme", novo); localStorage.setItem("tema", novo); }
+        function sair() { auth.signOut().then(() => window.location.href = 'index.html'); }
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
