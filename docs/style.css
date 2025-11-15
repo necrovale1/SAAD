@@ -37,7 +37,7 @@
 
 /* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg); /* Essencial para evitar flash branco */
+  background: var(--saad-bg); /* Evita fundo branco ao carregar */
 }
 
 .saad-body {
@@ -76,6 +76,7 @@ html, body {
     top: 20px;
     right: 20px;
     z-index: 1000;
+    /* !important garante que a cor do tema vença qualquer padrão do navegador */
     background-color: var(--saad-card) !important; 
     color: var(--saad-text) !important;
     border: 1px solid var(--saad-border) !important;
@@ -96,7 +97,10 @@ html, body {
     color: var(--saad-primary) !important;
 }
 
-.theme-toggle-login i { color: inherit !important; }
+/* Garante a cor do ícone dentro do botão */
+.theme-toggle-login i {
+    color: inherit !important;
+}
 
 /* ===== LOGIN & INPUTS ===== */
 .clickable-icon { cursor: pointer; transition: color 0.2s; }
@@ -120,6 +124,7 @@ html, body {
     border: 1px solid var(--saad-border);
 }
 
+/* Força background e remove transição para evitar flash */
 .input-group-text, .saad-input-icon {
     background-color: var(--saad-card) !important; 
     border: none; 
@@ -184,7 +189,7 @@ html, body {
 .saad-badge-falta { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; }
 .saad-badge-atraso, .saad-badge-justificado { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; font-weight: 600; }
 
-/* ===== TABELA PRINCIPAL (Dashboard) ===== */
+/* ===== TABELAS ===== */
 .table { --bs-table-bg: transparent; --bs-table-color: var(--saad-text); border-color: var(--saad-border); margin-bottom: 0; }
 .saad-table { background: var(--saad-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--saad-border); }
 .saad-table thead th { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); color: white; border: none; padding: 15px; font-weight: 600; white-space: nowrap; }
@@ -193,7 +198,7 @@ html, body {
 .clickable-row { cursor: pointer; transition: background-color 0.2s; }
 
 /* ========================================================================== */
-/* ===== ESTILO PREMIUM PARA MODAL DE DETALHES (PROFESSOR/GESTOR) ===== */
+/* ===== ESTILO NEUTRO E LIMPO PARA MODAIS (PROFESSOR/GESTOR) ===== */
 /* ========================================================================== */
 
 #modalDetalhes .modal-content {
@@ -238,7 +243,7 @@ html, body {
     letter-spacing: 0.5px;
     border-bottom: 1px solid #dee2e6;
     padding: 1rem 1.5rem;
-    box-shadow: none; /* Remove sombra se houver */
+    box-shadow: none;
 }
 
 [data-theme="dark"] #modalDetalhes .table thead th {
@@ -268,14 +273,13 @@ html, body {
     background-color: rgba(255,255,255,0.03);
 }
 
-/* Remove Cores "Azuis" (Primary) do texto dentro do modal e troca por Neutro */
+/* Remove cores "Azuis" e usa Neutro */
 #modalDetalhes .text-primary, 
 #modalDetalhes .fw-bold.text-primary {
-    color: var(--saad-text) !important; /* Força cor do texto padrão */
+    color: var(--saad-text) !important;
     font-weight: 600;
 }
 
-/* Ícones dentro do modal - Cinza suave em vez de azul */
 #modalDetalhes i.fas {
     color: var(--saad-text-secondary) !important;
 }
@@ -288,7 +292,6 @@ html, body {
     font-size: 0.75rem;
 }
 
-/* Barra de rolagem do modal */
 #modalDetalhes .modal-body {
     max-height: 70vh;
     overflow-y: auto;
@@ -300,7 +303,6 @@ html, body {
     background-color: var(--saad-bg);
 }
 
-/* Fix para botão de fechar no modal */
 .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
 [data-theme="light"] .btn-close { filter: none; }
 
