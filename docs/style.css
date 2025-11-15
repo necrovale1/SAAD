@@ -3,15 +3,15 @@
   /* Tema Claro */
   --saad-primary: #fc0349;
   --saad-primary-dark: #d0023b;
-  --saad-bg-light: #F0F2F5; /* Cinza bem claro, melhor que branco puro */
+  --saad-bg-light: #F0F2F5; /* Levemente mais escuro que branco puro para contraste */
   --saad-card-light: #FFFFFF;
   --saad-text-light: #202020;
   --saad-text-secondary-light: #606060;
   --saad-border-light: #E0E0E0;
   
-  /* Tema Escuro (Ajuste de Profundidade) */
+  /* Tema Escuro (Ajustado para contraste) */
   --saad-bg-dark: #121212; /* Fundo quase preto */
-  --saad-card-dark: #1E1E1E; /* Card cinza escuro */
+  --saad-card-dark: #1E1E1E; /* Cards cinza escuro -> Destaca do fundo */
   --saad-text-dark: #E0E0E0;
   --saad-text-secondary-dark: #B0B0B0;
   --saad-border-dark: #333333;
@@ -35,7 +35,11 @@
   color-scheme: light;
 }
 
-/* ===== GERAL ===== */
+/* ===== GERAL (Anti-Flash) ===== */
+html, body {
+  background: var(--saad-bg); /* Garante fundo imediato */
+}
+
 .saad-body {
   background: var(--saad-bg);
   color: var(--saad-text);
@@ -50,60 +54,32 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Texto secundário (data, labels) */
-.text-muted {
-    color: var(--saad-text-secondary) !important;
-}
+.text-muted { color: var(--saad-text-secondary) !important; }
 
-/* ===== LOGIN (Ícone Interativo) ===== */
-.clickable-icon {
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.clickable-icon:hover {
-    color: var(--saad-primary);
-    background-color: rgba(252, 3, 73, 0.1);
+/* ===== LOGIN ===== */
+.clickable-icon { cursor: pointer; transition: all 0.2s; }
+.clickable-icon:hover { color: var(--saad-primary); background-color: rgba(252, 3, 73, 0.1); }
+
+/* Badge do Perfil (Correção de Cor) */
+.saad-profile-badge {
+    background-color: var(--saad-bg);
+    color: var(--saad-text);
+    border: 1px solid var(--saad-border);
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
 }
 
 /* ===== TABELAS ===== */
-.table {
-    --bs-table-bg: transparent;
-    --bs-table-color: var(--saad-text);
-    border-color: var(--saad-border);
-    margin-bottom: 0;
-}
-
-.saad-table {
-  background: var(--saad-card);
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid var(--saad-border);
-}
-
-.saad-table thead th {
-  background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark));
-  color: white;
-  border: none;
-  padding: 15px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.saad-table tbody td {
-  padding: 12px 15px;
-  border-bottom: 1px solid var(--saad-border);
-  vertical-align: middle;
-  color: var(--saad-text);
-}
-
-.saad-table tbody tr:hover {
-    background-color: rgba(128, 128, 128, 0.05);
-}
-
-.clickable-row {
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
+.table { --bs-table-bg: transparent; --bs-table-color: var(--saad-text); border-color: var(--saad-border); margin-bottom: 0; }
+.saad-table { background: var(--saad-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--saad-border); }
+.saad-table thead th { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); color: white; border: none; padding: 15px; font-weight: 600; white-space: nowrap; }
+.saad-table tbody td { padding: 12px 15px; border-bottom: 1px solid var(--saad-border); vertical-align: middle; color: var(--saad-text); }
+.saad-table tbody tr:hover { background-color: rgba(128, 128, 128, 0.05); }
+.clickable-row { cursor: pointer; transition: background-color 0.2s; }
 
 /* ===== INPUTS & BOTÕES ===== */
 .saad-input-group { border-radius: 10px; overflow: hidden; border: 1px solid var(--saad-border); }
@@ -111,28 +87,15 @@
 .saad-input { background: var(--saad-card); border: 1px solid var(--saad-border); color: var(--saad-text); padding: 10px 12px; border-radius: 8px; }
 .saad-input:focus { background: var(--saad-card); border-color: var(--saad-primary); color: var(--saad-text); box-shadow: 0 0 0 0.2rem rgba(252, 3, 73, 0.25); }
 .input-group .saad-input { border: none; }
+.saad-btn-primary { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); border: none; border-radius: 10px; padding: 12px; font-weight: 600; color: white; transition: all 0.3s ease; }
+.saad-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(252, 3, 73, 0.4); color: white; }
 
-.saad-btn-primary { 
-    background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); 
-    border: none; border-radius: 10px; padding: 12px; font-weight: 600; color: white; transition: all 0.3s ease; 
-}
-.saad-btn-primary:hover { 
-    transform: translateY(-2px); box-shadow: 0 5px 15px rgba(252, 3, 73, 0.4); color: white; 
-}
-
-/* ===== BADGES ===== */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 10px;
-    font-weight: 500;
-}
+/* ===== BADGES & ICONS ===== */
+.badge { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; font-weight: 500; }
 .saad-badge-presente { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; }
 .saad-badge-falta { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; }
 .saad-badge-atraso, .saad-badge-justificado { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; font-weight: 600; }
 
-/* ===== HEADER & LOGO ===== */
 .saad-header { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); border-bottom: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 .saad-navbar-brand { color: white !important; font-weight: 700; font-size: 1.5rem; }
 .saad-header-btn { border: 2px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; padding: 8px 16px; transition: all 0.3s ease; }
