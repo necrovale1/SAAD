@@ -9,9 +9,9 @@
   --saad-text-secondary-light: #606060;
   --saad-border-light: #E0E0E0;
   
-  /* Tema Escuro (Ajustado para contraste e profundidade) */
-  --saad-bg-dark: #121212; /* Fundo quase preto */
-  --saad-card-dark: #1E1E1E; /* Card cinza escuro */
+  /* Tema Escuro */
+  --saad-bg-dark: #121212;
+  --saad-card-dark: #1E1E1E;
   --saad-text-dark: #E0E0E0;
   --saad-text-secondary-dark: #B0B0B0;
   --saad-border-dark: #333333;
@@ -23,7 +23,7 @@
   --saad-text: var(--saad-text-dark);
   --saad-text-secondary: var(--saad-text-secondary-dark);
   --saad-border: var(--saad-border-dark);
-  color-scheme: dark; /* Corrige controles nativos do navegador */
+  color-scheme: dark;
 }
 
 [data-theme="light"] {
@@ -35,9 +35,9 @@
   color-scheme: light;
 }
 
-/* ===== GERAL (Anti-Flash) ===== */
+/* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg); /* Define o fundo imediatamente */
+  background: var(--saad-bg); /* Previne fundo branco ao carregar */
 }
 
 .saad-body {
@@ -57,13 +57,12 @@ html, body {
 
 .text-muted { color: var(--saad-text-secondary) !important; }
 
-/* ===== LOGIN & INPUTS ===== */
-.clickable-icon { cursor: pointer; transition: all 0.2s; }
-.clickable-icon:hover { color: var(--saad-primary); background-color: rgba(252, 3, 73, 0.1); }
+/* ===== LOGIN & INPUTS (Correção de Flash) ===== */
+.clickable-icon { cursor: pointer; transition: color 0.2s; }
+.clickable-icon:hover { color: var(--saad-primary) !important; }
 
-/* Badge do Perfil (Adaptável ao tema) */
 .saad-profile-badge {
-    background-color: var(--saad-card); /* Usa a cor do cartão, não branco fixo */
+    background-color: var(--saad-card);
     color: var(--saad-text);
     border: 1px solid var(--saad-border);
     font-weight: 500;
@@ -71,7 +70,6 @@ html, body {
     border-radius: 20px;
     display: inline-flex;
     align-items: center;
-    transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -79,16 +77,16 @@ html, body {
     border-radius: 10px; 
     overflow: hidden; 
     border: 1px solid var(--saad-border);
-    transition: border-color 0.3s ease;
+    /* Remover transição de borda pode ajudar a reduzir percepção de flash */
 }
 
-/* Correção para evitar o "piscar" branco dos ícones de input */
+/* FORÇA o background para evitar que o Bootstrap coloque branco no focus/hover */
 .input-group-text, .saad-input-icon {
     background-color: var(--saad-card) !important; 
     border: none; 
     border-right: 1px solid var(--saad-border) !important; 
     color: var(--saad-text-secondary) !important;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    transition: none; /* Remove transição para evitar piscar na troca de tema */
 }
 
 .saad-input { 
@@ -98,7 +96,11 @@ html, body {
     padding: 10px 12px; 
 }
 
-.saad-input:focus { box-shadow: none; }
+.saad-input:focus { 
+    background-color: var(--saad-card) !important; 
+    color: var(--saad-text) !important;
+    box-shadow: none; 
+}
 
 .saad-input-group:focus-within {
     border-color: var(--saad-primary);
@@ -108,23 +110,33 @@ html, body {
 .saad-btn-primary { 
     background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); 
     border: none; border-radius: 10px; padding: 12px; font-weight: 600; color: white; 
-    transition: transform 0.2s ease, box-shadow 0.2s ease; 
+    transition: transform 0.2s ease; 
 }
 .saad-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(252, 3, 73, 0.4); color: white; }
 
-/* ===== TABELAS ===== */
-.table { --bs-table-bg: transparent; --bs-table-color: var(--saad-text); border-color: var(--saad-border); margin-bottom: 0; }
-.saad-table { background: var(--saad-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--saad-border); }
-.saad-table thead th { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); color: white; border: none; padding: 15px; font-weight: 600; white-space: nowrap; }
-.saad-table tbody td { padding: 12px 15px; border-bottom: 1px solid var(--saad-border); vertical-align: middle; color: var(--saad-text); }
-.saad-table tbody tr:hover { background-color: rgba(128, 128, 128, 0.05); }
-.clickable-row { cursor: pointer; transition: background-color 0.2s; }
-
-/* ===== HEADER & LOGO ===== */
+/* ===== HEADER & BOTÕES ===== */
 .saad-header { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); border-bottom: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 .saad-navbar-brand { color: white !important; font-weight: 700; font-size: 1.5rem; }
-.saad-header-btn { border: 2px solid rgba(255,255,255,0.3); color: white; border-radius: 8px; padding: 8px 16px; transition: all 0.3s ease; }
+
+.saad-header-btn { 
+    border: 2px solid rgba(255,255,255,0.3); 
+    color: white; /* Botões do Header sempre brancos */
+    border-radius: 8px; padding: 8px 16px; transition: all 0.3s ease; 
+}
 .saad-header-btn:hover { background: rgba(255,255,255,0.1); color: white; transform: translateY(-1px); }
+
+/* BOTÃO DE TEMA DA TELA DE LOGIN (Correção da Lua Branca) */
+button.theme-toggle-login-btn {
+    background-color: var(--saad-card) !important;
+    color: var(--saad-text) !important; /* Força cor do texto correta (preto no claro) */
+    border: 1px solid var(--saad-border) !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+button.theme-toggle-login-btn:hover {
+    background-color: var(--saad-bg) !important;
+    color: var(--saad-primary) !important;
+    border-color: var(--saad-primary) !important;
+}
 
 /* ===== CARDS & STATS ===== */
 .saad-stats-card { background: var(--saad-card); border: 1px solid var(--saad-border); border-radius: 12px; transition: all 0.3s ease; }
@@ -142,8 +154,15 @@ html, body {
 .badge { display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; font-weight: 500; }
 .saad-badge-presente { background: linear-gradient(135deg, #00b09b, #96c93d); color: white; }
 .saad-badge-falta { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; }
-/* Badge amarela com texto escuro para contraste */
 .saad-badge-atraso, .saad-badge-justificado { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; font-weight: 600; }
+
+/* ===== TABELAS ===== */
+.table { --bs-table-bg: transparent; --bs-table-color: var(--saad-text); border-color: var(--saad-border); margin-bottom: 0; }
+.saad-table { background: var(--saad-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--saad-border); }
+.saad-table thead th { background: linear-gradient(135deg, var(--saad-primary), var(--saad-primary-dark)); color: white; border: none; padding: 15px; font-weight: 600; white-space: nowrap; }
+.saad-table tbody td { padding: 12px 15px; border-bottom: 1px solid var(--saad-border); vertical-align: middle; color: var(--saad-text); }
+.saad-table tbody tr:hover { background-color: rgba(128, 128, 128, 0.05); }
+.clickable-row { cursor: pointer; transition: background-color 0.2s; }
 
 @media (max-width: 768px) { .saad-card { margin-bottom: 15px; } }
 ::-webkit-scrollbar { width: 8px; }
