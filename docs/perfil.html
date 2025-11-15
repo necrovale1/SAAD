@@ -51,15 +51,16 @@
                     <h4 class="mb-4"><i class="fas fa-info-circle me-2"></i>Dados Cadastrais</h4>
                     <div class="row g-3">
                         <div class="col-md-6"><label class="form-label saad-label">Nome Completo</label><div class="saad-input" id="infoNome">Carregando...</div></div>
-                        <div class="col-md-6"><label class="form-label saad-label">RA</label><div class="saad-input" id="infoRA">Carregando...</div></div>
-                        <div class="col-md-6"><label class="form-label saad-label">Email</label><div class="saad-input" id="infoEmail">Carregando...</div></div>
-                        <div class="col-md-6"><label class="form-label saad-label">Curso</label><div class="saad-input" id="infoCurso">Carregando...</div></div>
+                        
+                        <div class="col-md-6" id="divRA"><label class="form-label saad-label">RA</label><div class="saad-input" id="infoRA">...</div></div>
+                        <div class="col-md-6"><label class="form-label saad-label">Email</label><div class="saad-input" id="infoEmail">...</div></div>
+                        <div class="col-md-6" id="divCurso"><label class="form-label saad-label" id="labelCurso">Curso</label><div class="saad-input" id="infoCurso">...</div></div>
                     </div>
                 </div>
 
-                <div class="saad-card p-4">
+                <div class="saad-card p-4" id="cardDesempenho">
                     <h4 class="mb-4"><i class="fas fa-chart-pie me-2"></i>Desempenho</h4>
-                    <p class="text-muted small mb-4">Toque nos cartões para ver o histórico detalhado.</p>
+                    <p class="text-muted small mb-4">Clique nos cards para ver detalhes.</p>
                     <div class="row text-center">
                         <div class="col-md-4 mb-3">
                             <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Presente')">
@@ -70,7 +71,7 @@
                         <div class="col-md-4 mb-3">
                             <div class="saad-stats-card clickable-stat p-3" onclick="abrirModalEstatistica('Justificado')">
                                 <div class="saad-stats-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fas fa-clock text-white"></i></div>
-                                <h4 class="mb-1" id="statJustificadas">0</h4><small class="text-muted">Justificadas</small>
+                                <h4 class="mb-1" id="statJustificadas">0</h4><small class="text-muted">Justificados</small>
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
@@ -132,9 +133,7 @@
 
         function iniciarRelogio() {
             const el = document.getElementById('relogioTopo');
-            const update = () => el.textContent = new Date().toLocaleTimeString('pt-BR');
-            update();
-            setInterval(update, 1000);
+            setInterval(() => el.textContent = new Date().toLocaleTimeString('pt-BR'), 1000);
         }
 
         function carregarDados() {
@@ -143,22 +142,35 @@
                 if (!snapshot.empty) {
                     const data = snapshot.docs[0].data();
                     document.getElementById('infoNome').textContent = data.Nome || 'Não informado';
-                    document.getElementById('infoRA').textContent = data.RegistroAcademico || 'Não informado';
                     document.getElementById('infoEmail').textContent = currentUser.email;
-                    document.getElementById('infoCurso').textContent = data.Curso || 'Não informado';
-                    return db.collection("presencas").where("RegistroAcademico", "==", data.RegistroAcademico).orderBy('Data', 'desc').limit(100).get();
+                    
+                    // Adaptação para Professor/Gestor
+                    if(data.UserType === 'Professor' || data.UserType === 'Gestor') {
+                        document.getElementById('labelCurso').textContent = 'Departamento/Cargo';
+                        document.getElementById('infoCurso').textContent = data.Departamento || data.Cargo || 'Staff';
+                        document.getElementById('divRA').style.display = 'none'; // Esconde RA
+                        document.getElementById('cardDesempenho').style.display = 'none'; // Esconde gráficos de notas
+                    } else {
+                        // É Aluno
+                        document.getElementById('infoRA').textContent = data.RegistroAcademico || '...';
+                        document.getElementById('infoCurso').textContent = data.Curso || '...';
+                        
+                        // Carrega estatísticas apenas se for aluno
+                        return db.collection("presencas").where("RegistroAcademico", "==", data.RegistroAcademico).orderBy('Data', 'desc').limit(100).get();
+                    }
                 }
             })
             .then(snapshot => { 
-                dadosCache = [];
                 if (snapshot && !snapshot.empty) {
+                    dadosCache = [];
                     snapshot.forEach(doc => dadosCache.push(doc.data()));
+                    processarEstatisticas(); 
+                } else if (snapshot) {
+                     document.getElementById('graficoFrequencia').innerHTML = '<div class="text-center text-muted">Nenhum registro.</div>';
                 }
-                processarEstatisticas(); 
             })
             .catch(err => {
                 console.error(err);
-                document.getElementById('graficoFrequencia').innerHTML = '<div class="text-center text-muted">Erro ao carregar dados.</div>';
             });
         }
 
@@ -166,16 +178,11 @@
             let p = 0, f = 0, j = 0;
             const materias = {};
             
-            if (dadosCache.length === 0) {
-                document.getElementById('graficoFrequencia').innerHTML = '<div class="text-center text-muted">Nenhum registro de aula encontrado.</div>';
-                return;
-            }
-
             dadosCache.forEach(d => {
                 const status = (d.Status || "").toLowerCase().trim();
                 if (status.includes('presente')) p++; 
                 else if (status.includes('falta') || status.includes('ausente')) f++; 
-                else j++;
+                else j++; 
 
                 const matNome = d.Materia || "Outros";
                 if (!materias[matNome]) materias[matNome] = { total: 0, p: 0 };
@@ -229,11 +236,11 @@
             }).slice(0, 20);
 
             if (filtrados.length === 0) {
-                listaEl.innerHTML = '<div class="p-4 text-center text-muted"><i class="fas fa-inbox fa-2x mb-2"></i><p class="mb-0">Nenhum registro deste tipo.</p></div>';
+                listaEl.innerHTML = '<div class="p-4 text-center text-muted">Nenhum registro deste tipo.</div>';
             } else {
                 filtrados.forEach(d => {
                     let dataF = d.Data;
-                    if(d.Data && d.Data.includes('-')) { const p = d.Data.split('-'); dataF = `${p[2]}/${p[1]}/${p[0]}`; }
+                    if(d.Data && d.Data.includes('-')) { const p = d.Data.split('-'); dataF = `${p[2]}/${p[1]}`; }
                     
                     let badgeClass = 'bg-secondary';
                     if(tipo === 'Presente') badgeClass = 'bg-success';
