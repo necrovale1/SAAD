@@ -172,7 +172,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             verificarAuth();
             atualizarData();
-            carregarDadosUsuario();
         });
 
         function verificarAuth() {
@@ -181,18 +180,21 @@
                     window.location.href = 'index.html';
                 } else {
                     currentUser = user;
-                    carregarPresencas();
+                    carregarDadosUsuario(); // Carrega nome no topo
+                    carregarPresencas();    // Carrega a tabela
                 }
             });
         }
 
         function carregarDadosUsuario() {
             if (currentUser) {
-                db.collection("usuarios").where("email", "==", currentUser.email).get()
+                // CORREÇÃO: Coleção 'users' e campo 'Email' (Maiúsculo)
+                db.collection("users").where("Email", "==", currentUser.email).get()
                     .then(snapshot => {
                         if (!snapshot.empty) {
                             const userData = snapshot.docs[0].data();
-                            document.getElementById('studentName').textContent = userData.nome || 'Aluno';
+                            // CORREÇÃO: Campo 'Nome'
+                            document.getElementById('studentName').textContent = userData.Nome || 'Aluno';
                         }
                     })
                     .catch(error => {
@@ -215,17 +217,20 @@
         function carregarPresencas() {
             if (!currentUser) return;
 
-            // Buscar RA do usuário primeiro
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
+            // 1. Buscar RA do usuário na coleção correta
+            db.collection("users").where("Email", "==", currentUser.email).get()
                 .then(snapshot => {
                     if (!snapshot.empty) {
                         const userData = snapshot.docs[0].data();
-                        const userRA = userData.ra;
+                        // CORREÇÃO: Campo 'RegistroAcademico'
+                        const userRA = userData.RegistroAcademico;
                         
-                        // Agora buscar presenças pelo RA
+                        // 2. Buscar presenças pelo RA
+                        // CORREÇÃO: Coleção 'presencas' e campo 'RegistroAcademico'
                         return db.collection("presencas")
-                            .where("ra", "==", userRA)
-                            .orderBy("data", "desc")
+                            .where("RegistroAcademico", "==", userRA)
+                            // Removi o orderBy temporariamente para evitar erro de índice se não existir no Firebase
+                            // .orderBy("Data", "desc") 
                             .limit(50)
                             .get();
                     }
@@ -235,22 +240,12 @@
                         atualizarTabela(snapshot);
                         atualizarEstatisticas(snapshot);
                     } else {
-                        document.getElementById('tabelaPresencas').innerHTML = `
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-inbox fa-2x mb-2"></i>
-                                        <p>Nenhum registro de presença encontrado</p>
-                                        <small>Seus registros aparecerão aqui após as aulas</small>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
+                        mostrarSemRegistros();
                     }
                 })
                 .catch(error => {
                     console.error("Erro ao carregar presenças:", error);
-                    showAlert('Erro ao carregar presenças: ' + error.message, 'danger');
+                    // showAlert('Erro ao carregar presenças: ' + error.message, 'danger');
                 });
         }
 
@@ -261,29 +256,21 @@
 
             let query = db.collection("presencas");
 
-            // Buscar RA do usuário primeiro
-            db.collection("usuarios").where("email", "==", currentUser.email).get()
+            db.collection("users").where("Email", "==", currentUser.email).get()
                 .then(snapshot => {
                     if (!snapshot.empty) {
-                        const userData = snapshot.docs[0].data();
-                        const userRA = userData.ra;
+                        const userRA = snapshot.docs[0].data().RegistroAcademico;
                         
-                        query = query.where("ra", "==", userRA);
+                        query = query.where("RegistroAcademico", "==", userRA);
 
-                        // Aplicar filtros
-                        if (dataInicio) {
-                            query = query.where("data", ">=", new Date(dataInicio));
-                        }
-                        if (dataFim) {
-                            const dataFimObj = new Date(dataFim);
-                            dataFimObj.setHours(23, 59, 59);
-                            query = query.where("data", "<=", dataFimObj);
-                        }
-                        if (materia) {
-                            query = query.where("materia", "==", materia);
-                        }
+                        // CORREÇÃO: Filtro por String de Data (pois salvamos como texto YYYY-MM-DD)
+                        if (dataInicio) query = query.where("Data", ">=", dataInicio);
+                        if (dataFim) query = query.where("Data", "<=", dataFim);
+                        
+                        // CORREÇÃO: Campo 'Materia' (Maiúsculo)
+                        if (materia) query = query.where("Materia", "==", materia);
 
-                        return query.orderBy("data", "desc").get();
+                        return query.get();
                     }
                 })
                 .then(snapshot => {
@@ -291,23 +278,11 @@
                         atualizarTabela(snapshot);
                         atualizarEstatisticas(snapshot);
                     } else {
-                        document.getElementById('tabelaPresencas').innerHTML = `
-                            <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="text-muted">
-                                        <i class="fas fa-search fa-2x mb-2"></i>
-                                        <p>Nenhum registro encontrado com os filtros aplicados</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
+                        mostrarSemRegistros();
                         document.getElementById('totalRegistros').textContent = '0 registros';
                     }
                 })
-                .catch(error => {
-                    console.error("Erro ao filtrar:", error);
-                    showAlert('Erro ao filtrar presenças: ' + error.message, 'danger');
-                });
+                .catch(error => console.error("Erro ao filtrar:", error));
         }
 
         function atualizarTabela(snapshot) {
@@ -316,20 +291,27 @@
 
             snapshot.forEach(doc => {
                 const dados = doc.data();
-                const data = dados.data.toDate();
-                const statusBadge = getStatusBadge(dados.status);
+                
+                // CORREÇÃO: Tratamento da Data (que vem como String do script)
+                let dataFormatada = dados.Data; 
+                if(dados.Data && dados.Data.includes('-')) {
+                    const partes = dados.Data.split('-');
+                    dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`; // Converte YYYY-MM-DD para DD/MM/YYYY
+                }
+
+                // CORREÇÃO: Campos com Maiúsculas (Materia, HoraEntrada, Status, etc)
+                const statusBadge = getStatusBadge(dados.Status);
                 
                 const linha = `
                     <tr>
-                        <td>${data.toLocaleDateString('pt-BR')}</td>
+                        <td>${dataFormatada}</td>
                         <td>
-                            <strong>${dados.materia}</strong>
-                            ${dados.turma ? `<br><small class="text-muted">Turma: ${dados.turma}</small>` : ''}
+                            <strong>${dados.Materia}</strong>
                         </td>
-                        <td>${dados.horaEntrada || '--:--'}</td>
-                        <td>${dados.horaSaida || '--:--'}</td>
+                        <td>${dados.HoraEntrada || '--:--'}</td>
+                        <td>${dados.HoraSaida || '--:--'}</td>
                         <td>${statusBadge}</td>
-                        <td>${dados.professor || 'Não informado'}</td>
+                        <td>${dados.Professor || 'Prof. Titular'}</td>
                     </tr>
                 `;
                 tabela.innerHTML += linha;
@@ -345,8 +327,9 @@
 
             snapshot.forEach(doc => {
                 const dados = doc.data();
-                if (dados.status === 'Presente') presencas++;
-                if (dados.status === 'Falta') faltas++;
+                // CORREÇÃO: Verifica 'Status' com maiúsculo
+                if (dados.Status === 'Presente') presencas++;
+                if (dados.Status === 'Ausente' || dados.Status === 'Falta') faltas++;
             });
 
             document.getElementById('totalAulas').textContent = total;
@@ -354,14 +337,29 @@
             document.getElementById('totalFaltas').textContent = faltas;
         }
 
+        function mostrarSemRegistros() {
+            document.getElementById('tabelaPresencas').innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>Nenhum registro encontrado.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
         function getStatusBadge(status) {
             const statusMap = {
                 'Presente': 'saad-badge-presente',
                 'Falta': 'saad-badge-falta',
-                'Atraso': 'saad-badge-atraso'
+                'Ausente': 'saad-badge-falta', // Script usa Ausente
+                'Atraso': 'saad-badge-atraso',
+                'Justificado': 'bg-warning text-dark' // Script usa Justificado
             };
-            
-            const badgeClass = statusMap[status] || 'saad-badge-falta';
+            // Badge padrão caso não encontre
+            const badgeClass = statusMap[status] || 'bg-secondary text-white';
             return `<span class="badge ${badgeClass}">${status}</span>`;
         }
 
@@ -379,26 +377,11 @@
             });
         }
 
-        function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
-            alertDiv.style.zIndex = '1050';
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
-        }
-
-        // Aplicar tema salvo
         const temaSalvo = localStorage.getItem("tema") || "light";
         document.documentElement.setAttribute("data-theme", temaSalvo);
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
