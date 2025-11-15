@@ -37,7 +37,7 @@
 
 /* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg); /* Evita fundo branco ao carregar */
+  background: var(--saad-bg);
 }
 
 .saad-body {
@@ -57,13 +57,12 @@ html, body {
 
 .text-muted { color: var(--saad-text-secondary) !important; }
 
-/* ===== BOTÃO FLUTUANTE LOGIN (CORREÇÃO) ===== */
+/* ===== BOTÃO FLUTUANTE LOGIN ===== */
 .theme-toggle-login {
     position: absolute;
     top: 20px;
     right: 20px;
     z-index: 1000;
-    /* Força a cor do tema (preto no claro, branco no escuro) */
     background-color: var(--saad-card) !important; 
     color: var(--saad-text) !important;
     border: 1px solid var(--saad-border) !important;
@@ -84,12 +83,9 @@ html, body {
     color: var(--saad-primary) !important;
 }
 
-/* Garante que o ícone dentro do botão herde a cor correta */
-.theme-toggle-login i {
-    color: inherit !important;
-}
+.theme-toggle-login i { color: inherit !important; }
 
-/* ===== LOGIN & INPUTS (Sem Flash) ===== */
+/* ===== LOGIN & INPUTS ===== */
 .clickable-icon { cursor: pointer; transition: color 0.2s; }
 .clickable-icon:hover { color: var(--saad-primary) !important; }
 
@@ -111,7 +107,6 @@ html, body {
     border: 1px solid var(--saad-border);
 }
 
-/* Força background e remove transição para evitar piscar branco */
 .input-group-text, .saad-input-icon {
     background-color: var(--saad-card) !important; 
     border: none; 
