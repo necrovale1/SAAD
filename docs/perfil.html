@@ -30,11 +30,12 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="text-center mb-5">
-                    <div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-graduate"></i></div>
-                    <h2>Meu Perfil Acadêmico</h2>
+                    <div class="saad-logo mb-3 mx-auto"><i class="fas fa-user-circle"></i></div>
+                    <h2>Dados do Usuário</h2>
                 </div>
+
                 <div class="saad-card p-4 mb-4">
-                    <h4 class="mb-4">Dados Cadastrais</h4>
+                    <h4 class="mb-4">Informações</h4>
                     <div class="row g-3">
                         <div class="col-md-6"><label class="form-label saad-label">Nome</label><div class="saad-input" id="infoNome">Carregando...</div></div>
                         <div class="col-md-6"><label class="form-label saad-label">Email</label><div class="saad-input" id="infoEmail">...</div></div>
@@ -42,12 +43,13 @@
                         <div class="col-md-6"><label class="form-label saad-label" id="labelCurso">Curso</label><div class="saad-input" id="infoCurso">...</div></div>
                     </div>
                 </div>
-                <div class="saad-card p-4" id="cardStats">
+
+                <div class="saad-card p-4" id="cardStats" style="display:none;">
                     <h4 class="mb-4">Desempenho</h4>
                     <div class="row text-center">
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Presente')"><h4 id="statPresencas">0</h4><small>Presenças</small></div></div>
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Justificado')"><h4 id="statJustificadas">0</h4><small>Justificadas</small></div></div>
-                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3" onclick="abrirModal('Falta')"><h4 id="statFaltas">0</h4><small>Faltas</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statPresencas">0</h4><small>Presenças</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statJustificadas">0</h4><small>Justificadas</small></div></div>
+                        <div class="col-md-4 mb-3"><div class="saad-stats-card clickable-stat p-3"><h4 id="statFaltas">0</h4><small class="text-muted">Faltas</small></div></div>
                     </div>
                     <div id="graficoFrequencia" class="mt-4"></div>
                 </div>
@@ -55,34 +57,41 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalStats" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content saad-card"><div class="modal-body p-0"><div class="list-group list-group-flush" id="modalStatsList"></div></div><div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button></div></div></div></div>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="firebase.js"></script>
+
     <script>
         const auth = firebase.auth();
         const db = firebase.firestore();
-        let currentUser = null, dadosCache = [];
+        let currentUser = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             auth.onAuthStateChanged(user => { if(!user) window.location.href='index.html'; else { currentUser=user; carregarDados(); }});
         });
 
         function carregarDados() {
-            db.collection("users").where("Email", "==", currentUser.email).get().then(snap => {
-                const data = snap.docs[0].data();
+            // Tenta buscar por UID primeiro, depois fallback por email
+            db.collection("users").doc(currentUser.uid).get().then(doc => {
+                if (!doc.exists) return db.collection("users").where("Email", "==", currentUser.email).get().then(s => s.empty?null:s.docs[0].data());
+                return doc.data();
+            }).then(data => {
+                if(!data) return;
                 document.getElementById('infoNome').textContent = data.Nome;
                 document.getElementById('infoEmail').textContent = currentUser.email;
-                if(data.UserType !== 'Aluno') {
-                    document.getElementById('divRA').style.display='none';
-                    document.getElementById('labelCurso').textContent = 'Cargo';
-                    document.getElementById('infoCurso').textContent = data.Cargo || 'Staff';
-                    document.getElementById('cardStats').style.display='none';
+
+                if(data.UserType === 'Professor' || data.UserType === 'Gestor') {
+                    document.getElementById('divRA').style.display = 'none';
+                    document.getElementById('labelCurso').textContent = 'Cargo / Depto';
+                    document.getElementById('infoCurso').textContent = data.Cargo || data.Departamento || 'Staff';
+                    // Garante que stats continuam ocultos
+                    document.getElementById('cardStats').style.display = 'none';
                 } else {
                     document.getElementById('infoRA').textContent = data.RegistroAcademico;
                     document.getElementById('infoCurso').textContent = data.Curso;
+                    // Mostra stats e carrega
+                    document.getElementById('cardStats').style.display = 'block';
                     carregarStats(data.RegistroAcademico);
                 }
             });
@@ -90,11 +99,9 @@
 
         function carregarStats(ra) {
             db.collection("presencas").where("RegistroAcademico", "==", ra).orderBy('Data', 'desc').limit(100).get().then(snap => {
-                dadosCache = [];
                 let p=0, f=0, j=0, materias={};
                 snap.forEach(doc => {
                     const d = doc.data();
-                    dadosCache.push(d);
                     const st = (d.Status||"").toLowerCase();
                     if(st.includes('presente')) p++; else if(st.includes('falta')) f++; else j++;
                     
@@ -103,38 +110,19 @@
                     materias[mat].t++;
                     if(st.includes('presente')) materias[mat].p++;
                 });
+                
                 document.getElementById('statPresencas').textContent = p;
                 document.getElementById('statFaltas').textContent = f;
                 document.getElementById('statJustificadas').textContent = j;
                 
                 const container = document.getElementById('graficoFrequencia');
                 container.innerHTML = '';
-                for(const [nome, d] of Object.entries(materias)) {
+                Object.entries(materias).forEach(([nome, d]) => {
                     const pct = Math.round((d.p/d.t)*100);
-                    const dw = pct===0 ? 2 : pct;
-                    const cor = pct<75 ? (pct<50 ? '#ff416c' : '#f7971e') : '#00b09b';
-                    container.innerHTML += `<div class="mb-3"><div class="d-flex justify-content-between"><small>${nome}</small><small>${pct}%</small></div><div class="progress" style="height:8px; background:var(--saad-border);"><div class="progress-bar" style="width:${dw}%; background:${cor};"></div></div></div>`;
-                }
+                    const cor = pct<75 ? (pct<50?'#ff416c':'#f7971e') : '#00b09b';
+                    container.innerHTML += `<div class="mb-3"><div class="d-flex justify-content-between"><small>${nome}</small><small>${pct}%</small></div><div class="progress" style="height:8px; background:var(--saad-border);"><div class="progress-bar" style="width:${pct}%; background:${cor};"></div></div></div>`;
+                });
             });
-        }
-
-        function abrirModal(tipo) {
-            const lista = document.getElementById('modalStatsList');
-            lista.innerHTML = '';
-            const filtrados = dadosCache.filter(d => {
-                const s = (d.Status||"").toLowerCase();
-                if(tipo === 'Presente') return s.includes('presente');
-                if(tipo === 'Falta') return s.includes('falta');
-                return !s.includes('presente') && !s.includes('falta');
-            }).slice(0, 10);
-            
-            if(filtrados.length === 0) lista.innerHTML = '<div class="p-3 text-center">Sem registros.</div>';
-            else filtrados.forEach(d => {
-                let dt = d.Data;
-                if(dt.includes('-')) dt = dt.split('-').reverse().join('/');
-                lista.innerHTML += `<div class="list-group-item bg-transparent text-reset border-secondary d-flex justify-content-between"><div><strong>${d.Materia}</strong><br><small>${dt}</small></div><span class="badge bg-secondary">${d.HoraEntrada}</span></div>`;
-            });
-            new bootstrap.Modal(document.getElementById('modalStats')).show();
         }
 
         function alternarTema() {
