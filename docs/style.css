@@ -37,7 +37,7 @@
 
 /* ===== GERAL ===== */
 html, body {
-  background: var(--saad-bg);
+  background: var(--saad-bg); /* Essencial para evitar flash branco */
 }
 
 .saad-body {
@@ -56,6 +56,18 @@ html, body {
 }
 
 .text-muted { color: var(--saad-text-secondary) !important; }
+.small-label { color: var(--saad-text-secondary); font-size: 0.85rem; }
+
+/* ===== RELÓGIO (Topo) ===== */
+.relogio-header {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    color: rgba(255,255,255,0.9);
+    font-size: 1.1rem;
+    background: rgba(0,0,0,0.1);
+    padding: 5px 10px;
+    border-radius: 6px;
+}
 
 /* ===== BOTÃO FLUTUANTE LOGIN (CORRIGIDO) ===== */
 .theme-toggle-login {
@@ -63,6 +75,7 @@ html, body {
     top: 20px;
     right: 20px;
     z-index: 1000;
+    /* !important garante que a cor do tema vença qualquer padrão do navegador */
     background-color: var(--saad-card) !important; 
     color: var(--saad-text) !important;
     border: 1px solid var(--saad-border) !important;
@@ -83,7 +96,10 @@ html, body {
     color: var(--saad-primary) !important;
 }
 
-.theme-toggle-login i { color: inherit !important; }
+/* Garante a cor do ícone dentro do botão */
+.theme-toggle-login i {
+    color: inherit !important;
+}
 
 /* ===== LOGIN & INPUTS ===== */
 .clickable-icon { cursor: pointer; transition: color 0.2s; }
@@ -107,6 +123,7 @@ html, body {
     border: 1px solid var(--saad-border);
 }
 
+/* Força background e remove transição para evitar flash */
 .input-group-text, .saad-input-icon {
     background-color: var(--saad-card) !important; 
     border: none; 
@@ -172,6 +189,12 @@ html, body {
 .saad-table tbody td { padding: 12px 15px; border-bottom: 1px solid var(--saad-border); vertical-align: middle; color: var(--saad-text); }
 .saad-table tbody tr:hover { background-color: rgba(128, 128, 128, 0.05); }
 .clickable-row { cursor: pointer; transition: background-color 0.2s; }
+
+/* ===== MODAL FIX ===== */
+.modal-content { background-color: var(--saad-card); color: var(--saad-text); border: 1px solid var(--saad-border); }
+.modal-header, .modal-footer { border-color: var(--saad-border); }
+.btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+[data-theme="light"] .btn-close { filter: none; }
 
 @media (max-width: 768px) { .saad-card { margin-bottom: 15px; } }
 ::-webkit-scrollbar { width: 8px; }
