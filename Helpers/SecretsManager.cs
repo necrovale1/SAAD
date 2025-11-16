@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 namespace SAAD.Helpers
 {
@@ -8,21 +9,38 @@ namespace SAAD.Helpers
 
         static SecretsManager()
         {
-            _configuration = new ConfigurationBuilder()
-                .AddUserSecrets<SecretsMarker>()
-                .Build();
+            var builder = new ConfigurationBuilder();
+
+            // Pega o assembly (o executável) onde este código está rodando
+            var assembly = Assembly.GetExecutingAssembly();
+
+            // O nome do recurso é: NomeDoProjeto.NomeDoArquivo
+            string resourceName = "SAAD.Helpers.secrets.json";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+
+            if (stream != null)
+            {
+                builder.AddJsonStream(stream);
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO CRÍTICO: Não foi encontrado o recurso '{resourceName}'. Verifique se a Build Action está como Embedded Resource.");
+            }
+
+            _configuration = builder.Build();
         }
 
-        // --- FIREBASE ---
-        public static string FirebaseUrl => _configuration["FirebaseUrl"];
-        public static string FirebaseSecret => _configuration["FirebaseSecret"];
+        // --- PROPRIEDADES ---
+        // O operador '??' evita que o app crashe se a chave não for lida
+        public static string FirebaseUrl => _configuration["FirebaseUrl"] ?? "";
 
-        // --- AZURE FACE API ---
-        // Use estes nomes exatos no seu secrets.json
-        public static string FaceApiKey => _configuration["FaceServiceKey"];
-        public static string FaceApiEndpoint => _configuration["FaceServiceEndpoint"];
+        // Mapeamos a sua ApiKey para aqui para que o Login funcione
+        public static string FirebaseSecret => _configuration["FirebaseSecret"] ?? "";
 
-        // --- CONSTANTES ---
+        public static string FaceApiKey => _configuration["FaceServiceKey"] ?? "";
+        public static string FaceApiEndpoint => _configuration["FaceServiceEndpoint"] ?? "";
+
         public const string PersonGroupId = "alunos-etec-3dsn-2025";
     }
 

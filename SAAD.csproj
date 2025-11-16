@@ -23,7 +23,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<MauiIcon Include="Resources\AppIcon\appicon.svg"   ForegroundFile="Resources\AppIcon\appiconfg.svg"   Color="#303030"   ForegroundScale="0.65" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#303030" />
 		<MauiImage Include="Resources\Images\*" />
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -41,6 +41,14 @@
 	<ItemGroup>
 	  <Content Remove="C:\Users\carol\.nuget\packages\facerecognitiondotnet\1.3.0.7\build\..\runtimes\win-AnyCPU\native\DlibDotNetNativeDnnAgeClassification.dll" />
 	  <Content Remove="C:\Users\carol\.nuget\packages\facerecognitiondotnet\1.3.0.7\build\..\runtimes\win-AnyCPU\native\DlibDotNetNativeDnnGenderClassification.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="secrets.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="Helpers\secrets.json" />
 	</ItemGroup>
 
 	<ItemGroup>
