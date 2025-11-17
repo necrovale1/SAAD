@@ -364,3 +364,9 @@ FodyWeavers.xsd
 
 # Ignorar arquivo de configuração do Google Services
 **/google-services.json
+/Helpers/secrets.json
+
+# Ignorar arquivos de segredos
+Helpers/secrets.json
+/Helpers/secrets.json
+/Platforms/Android/google-services.json
