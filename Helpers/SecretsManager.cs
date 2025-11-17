@@ -10,12 +10,8 @@ namespace SAAD.Helpers
         static SecretsManager()
         {
             var builder = new ConfigurationBuilder();
-
-            // Pega o assembly (o executável) onde este código está rodando
             var assembly = Assembly.GetExecutingAssembly();
-
-            // O nome do recurso é: NomeDoProjeto.NomeDoArquivo
-            string resourceName = "SAAD.Helpers.secrets.json";
+            string resourceName = "SAAD.Helpers.secrets.json"; // O SDK trata disto agora
 
             using var stream = assembly.GetManifestResourceStream(resourceName);
 
@@ -25,23 +21,23 @@ namespace SAAD.Helpers
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"ERRO CRÍTICO: Não foi encontrado o recurso '{resourceName}'. Verifique se a Build Action está como Embedded Resource.");
+                System.Diagnostics.Debug.WriteLine($"ERRO CRÍTICO: Não foi encontrado o recurso '{resourceName}'.");
             }
 
             _configuration = builder.Build();
         }
 
-        // --- PROPRIEDADES ---
-        // O operador '??' evita que o app crashe se a chave não for lida
-        public static string FirebaseUrl => _configuration["FirebaseUrl"] ?? "";
+        // --- Propriedades do Firebase (Mantidas) ---
+        public static string FirebaseUrl => _configuration["FirebaseDatabaseUrl"] ?? "";
+        public static string FirebaseSecret => _configuration["FirebaseApiKey"] ?? "";
 
-        // Mapeamos a sua ApiKey para aqui para que o Login funcione
-        public static string FirebaseSecret => _configuration["FirebaseSecret"] ?? "";
+        // --- NOVAS Propriedades do Face++ ---
+        public static string FaceApiKey => _configuration["FacePlusPlusApiKey"] ?? "";
+        public static string FaceApiSecret => _configuration["FacePlusPlusApiSecret"] ?? "";
 
-        public static string FaceApiKey => _configuration["FaceServiceKey"] ?? "";
-        public static string FaceApiEndpoint => _configuration["FaceServiceEndpoint"] ?? "";
-
-        public const string PersonGroupId = "alunos-etec-3dsn-2025";
+        // O "PersonGroup" do Azure é chamado de "outer_id" de um "FaceSet" no Face++
+        // Vamos manter o nome da constante para não quebrar a SplashPage
+        public const string PersonGroupId = "alunos_etec_3dsn_2025"; // Nota: Face++ não gosta de '-' no ID. Mudei para '_'.
     }
 
     public class SecretsMarker { }

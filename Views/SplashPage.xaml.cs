@@ -29,11 +29,26 @@ public partial class SplashPage : ContentPage
         }
         catch (Exception ex)
         {
-            bool tentarNovamente = await DisplayAlert("Erro de Conexão",
-                $"Não foi possível conectar ao serviço de reconhecimento facial.\nErro: {ex.Message}",
-                "Tentar Novamente", "Sair");
+            // --- INÍCIO DO CÓDIGO DE DEPURAÇÃO (Corrigido para Face++) ---
 
-            if (tentarNovamente)
+            // Vamos ler as chaves do Face++ que a app *acha* que tem
+            string debugKey = SAAD.Helpers.SecretsManager.FaceApiKey;
+            string debugSecret = SAAD.Helpers.SecretsManager.FaceApiSecret;
+
+            // Mostrar pré-visualização das chaves
+            string keyPreview = string.IsNullOrEmpty(debugKey) ? "VAZIA" : $"{debugKey.Substring(0, 4)}...{debugKey.Substring(debugKey.Length - 4)}";
+            string secretPreview = string.IsNullOrEmpty(debugSecret) ? "VAZIA" : $"{debugSecret.Substring(0, 4)}...{debugSecret.Substring(debugSecret.Length - 4)}";
+
+            string debugMessage = $"Face++ ApiKey: {keyPreview}\n" +
+                                  $"Face++ ApiSecret: {secretPreview}\n\n" +
+                                  $"Erro: {ex.Message}";
+
+            bool tentarNovamente = await DisplayAlert("Erro de Conexão (Debug Face++)",
+                                        debugMessage,
+                                        "Tentar Novamente", "Sair");
+            // --- FIM DO CÓDIGO DE DEPURAÇÃO ---
+
+            if (tentarNovamente)
             {
                 OnAppearing();
             }
@@ -41,6 +56,7 @@ public partial class SplashPage : ContentPage
             {
                 Application.Current.Quit();
             }
+        
         }
     }
 }

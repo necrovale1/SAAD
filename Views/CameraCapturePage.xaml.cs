@@ -1,6 +1,7 @@
 using Camera.MAUI;
 using CommunityToolkit.Mvvm.Messaging;
 using Firebase.Database;
+using Firebase.Database.Query;
 using SAAD.Helpers;
 using SAAD.Messages;
 using SAAD.Models;
@@ -24,7 +25,7 @@ namespace SAAD.Views
                     AuthTokenAsyncFactory = () => Task.FromResult(SecretsManager.FirebaseSecret)
                 });
 
-            // CORREÇÃO AQUI: Não passamos mais argumentos, ele pega sozinho do SecretsManager
+            // Construtor do serviço (agora não precisa de argumentos)
             faceService = new FaceRecognitionService();
         }
 
@@ -57,26 +58,46 @@ namespace SAAD.Views
             await StartRecognitionProcess(photoStream);
         }
 
+        // --- MÉTODO CORRIGIDO (Início) ---
+
+        /// <summary>
+        /// Este é o método que foi corrigido para usar a nova lógica do Face++
+        /// </summary>
         private async Task StartRecognitionProcess(Stream photoStream)
         {
             try
             {
-                var alunos = await firebaseClient.Child("users").OnceAsync<User>();
-                var listaDeAlunos = alunos
-                    .Where(u => u.Object.UserType == "Aluno")
-                    .Select(u => u.Object)
-                    .ToList();
+                // 1. Chamar o serviço Face++ (que agora só precisa da foto)
+                // O nome do método mudou de ReconhecerAluno para ReconhecerRostoAsync
+                string alunoIdReconhecido = await faceService.ReconhecerRostoAsync(photoStream);
 
-                var alunoReconhecido = await faceService.ReconhecerAluno(photoStream, listaDeAlunos);
-                SetLoading(false);
-
-                if (alunoReconhecido != null)
+                if (!string.IsNullOrEmpty(alunoIdReconhecido))
                 {
-                    WeakReferenceMessenger.Default.Send(new AlunoReconhecidoMessage(alunoReconhecido, isEntrada: true));
-                    await Navigation.PopAsync();
+                    // 2. Se o Face++ encontrou, ele retorna o ID do Firebase.
+                    // Agora, vamos buscar *apenas* esse aluno no Firebase.
+                    var aluno = await firebaseClient
+                                    .Child("users")
+                                    .Child(alunoIdReconhecido) // Busca o aluno pelo ID (Key)
+                                    .OnceSingleAsync<User>(); 
+
+                    if (aluno != null)
+                    {
+                        // 3. Sucesso! Encontramos o aluno.
+                        SetLoading(false); 
+                        WeakReferenceMessenger.Default.Send(new AlunoReconhecidoMessage(aluno, isEntrada: true));
+                        await Navigation.PopAsync();
+                    }
+                    else
+                    {
+                        // Isso seria estranho - O Face++ encontrou um ID que não existe no Firebase
+                        SetLoading(false);
+                        await DisplayAlert("Erro de Sincronia", "O rosto foi reconhecido, mas o aluno não foi encontrado na base de dados.", "OK");
+                    }
                 }
                 else
                 {
+                    // 4. Face++ não encontrou ninguém
+                    SetLoading(false);
                     await DisplayAlert("Não reconhecido", "Nenhum aluno foi identificado.", "Tentar Novamente");
                 }
             }
@@ -90,6 +111,8 @@ namespace SAAD.Views
                 if (photoStream != null) await photoStream.DisposeAsync();
             }
         }
+        
+        // --- MÉTODO CORRIGIDO (Fim) ---
 
         private void SetLoading(bool isLoading)
         {
