@@ -59,7 +59,7 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 
 ### Mobile
 - **.NET MAUI** - Desenvolvimento multiplataforma
-- **Visio** - Reconhecimento facial
+- **Face++** - Reconhecimento facial
 - **Firebase SDK** - Sincronização com backend
 
 ---
