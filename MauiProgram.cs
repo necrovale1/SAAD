@@ -1,4 +1,5 @@
 ﻿using Camera.MAUI;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SAAD.Services; // 👈 Adicione este 'using'
 using SAAD.Views;   // 👈 Adicione este 'using'
@@ -25,21 +26,16 @@ namespace SAAD
     		builder.Logging.AddDebug();
 #endif
 
-            // =========================================================
-            // ▼▼ GARANTA QUE ESTAS LINHAS ESTÃO AQUI ▼▼
-            // =========================================================
+            // 🔑 Carrega secrets.json
+            builder.Configuration.AddUserSecrets<App>();
 
-            // Registra os serviços para que o app saiba como criá-los
+            // Serviços
             builder.Services.AddSingleton<FaceDetectionService>();
             builder.Services.AddSingleton<FaceRecognitionService>();
 
-            // Registra as páginas que vão RECEBER os serviços
-            // (Transient = cria uma nova página toda vez que é chamada)
+            // Páginas
             builder.Services.AddTransient<SplashPage>();
-            // Adicione suas outras páginas que usam serviços aqui...
-            // ex: builder.Services.AddTransient<CadastroFacialPage>();
-
-            // =========================================================
+            // builder.Services.AddTransient<CadastroFacialPage>();
 
             return builder.Build();
         }
