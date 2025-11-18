@@ -61,7 +61,7 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 - **.NET MAUI** - Desenvolvimento multiplataforma
 - **Face++** - Reconhecimento facial
 - **Firebase SDK** - Sincronização com backend
-
+- ~~**Azure Visio** - Reconhecimento facial~~
 ---
 
 # 🎨 Paleta de Cores - SAAD
