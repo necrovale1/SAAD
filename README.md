@@ -55,8 +55,9 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 ### Backend & Infraestrutura
 - **Firebase Authentication** - Autenticação de usuários
 - **Firebase Firestore** - Banco de dados em tempo real
-- **Netlify** - Hospedagem e CDN
-
+- **Github Pages** - Hospedagem 
+- ~~**Netlify** - Hospedagem ~~~~
+  
 ### Mobile
 - **.NET MAUI** - Desenvolvimento multiplataforma
 - **Face++** - Reconhecimento facial
