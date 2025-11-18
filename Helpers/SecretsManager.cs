@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿// Removida a linha "using SAAD.Helpers;" de cima
+using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using SAAD.Helpers;
 
 namespace SAAD.Helpers
 {
@@ -12,34 +12,47 @@ namespace SAAD.Helpers
         {
             var builder = new ConfigurationBuilder();
             var assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "SAAD.Helpers.secrets.json"; // O SDK trata disto agora
+
+            // --- INÍCIO DA CORREÇÃO DINÂMICA ---
+            // Procura dinamicamente pelo recurso que termina com "secrets.json"
+            string resourceName = assembly.GetManifestResourceNames()
+                                          .FirstOrDefault(n => n.EndsWith("secrets.json", StringComparison.OrdinalIgnoreCase));
+
+            if (string.IsNullOrEmpty(resourceName))
+            {
+                System.Diagnostics.Debug.WriteLine($"ERRO CRÍTICO: Não foi encontrado NENHUM recurso terminando com 'secrets.json'.");
+                _configuration = builder.Build(); // Constrói uma config vazia
+                return;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"Info: Tentando carregar o recurso encontrado: '{resourceName}'");
+            // --- FIM DA CORREÇÃO DINÂMICA ---
 
             using var stream = assembly.GetManifestResourceStream(resourceName);
 
             if (stream != null)
             {
+                System.Diagnostics.Debug.WriteLine($"Sucesso: Recurso '{resourceName}' carregado.");
                 builder.AddJsonStream(stream);
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"ERRO CRÍTICO: Não foi encontrado o recurso '{resourceName}'.");
+                System.Diagnostics.Debug.WriteLine($"ERRO CRÍTICO: Falha ao carregar o stream do recurso '{resourceName}', embora o nome tenha sido encontrado.");
             }
 
             _configuration = builder.Build();
         }
 
-        // --- Propriedades do Firebase (Mantidas) ---
+        // --- Propriedades (O seu código existente) ---
         public static string FirebaseUrl => _configuration["FirebaseDatabaseUrl"] ?? "";
         public static string FirebaseSecret => _configuration["FirebaseApiKey"] ?? "";
 
-        // --- NOVAS Propriedades do Face++ ---
         public static string FaceApiKey => _configuration["FacePlusPlusApiKey"] ?? "";
         public static string FaceApiSecret => _configuration["FacePlusPlusApiSecret"] ?? "";
 
-        // O "PersonGroup" do Azure é chamado de "outer_id" de um "FaceSet" no Face++
-        // Vamos manter o nome da constante para não quebrar a SplashPage
-        public const string PersonGroupId = "alunos_etec_3dsn_2025"; // Nota: Face++ não gosta de '-' no ID. Mudei para '_'.
+        public const string PersonGroupId = "alunos_etec_3dsn_2025";
     }
 
     public class SecretsMarker { }
 }
+// Removida a chaveta '}' extra que estava no ficheiro anterior

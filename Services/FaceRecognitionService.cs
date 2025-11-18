@@ -36,8 +36,16 @@ namespace SAAD.Services
         {
             try
             {
-                var formData = CreateBaseFormData();
-                formData.Add(new StringContent(_faceSetOuterId), "outer_id");
+                // --- INÍCIO DA CORREÇÃO ---
+                // Esta chamada não envia ficheiros, por isso usa FormUrlEncodedContent
+                // (como sugerido nas suas dicas)
+                var formData = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("api_key", _apiKey),
+                    new KeyValuePair<string, string>("api_secret", _apiSecret),
+                    new KeyValuePair<string, string>("outer_id", _faceSetOuterId)
+                });
+                // --- FIM DA CORREÇÃO ---
 
                 var response = await _httpClient.PostAsync($"{ApiBaseUrl}faceset/getdetail", formData);
                 var responseString = await response.Content.ReadAsStringAsync();
@@ -75,9 +83,16 @@ namespace SAAD.Services
         /// </summary>
         private async Task CriarFaceSetAsync()
         {
-            var formData = CreateBaseFormData();
-            formData.Add(new StringContent(_faceSetOuterId), "outer_id");
-            formData.Add(new StringContent("Alunos ETEC 3DSN 2025"), "display_name");
+            // --- INÍCIO DA CORREÇÃO ---
+            // Esta chamada também não envia ficheiros, por isso usa FormUrlEncodedContent
+            var formData = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("api_key", _apiKey),
+                new KeyValuePair<string, string>("api_secret", _apiSecret),
+                new KeyValuePair<string, string>("outer_id", _faceSetOuterId),
+                new KeyValuePair<string, string>("display_name", "Alunos ETEC 3DSN 2025")
+            });
+            // --- FIM DA CORREÇÃO ---
 
             var response = await _httpClient.PostAsync($"{ApiBaseUrl}faceset/create", formData);
 
@@ -95,14 +110,14 @@ namespace SAAD.Services
 
         #endregion
 
+        // --- NENHUMA ALTERAÇÃO NECESSÁRIA DAQUI PARA BAIXO ---
+        // (Estas funções enviam imagens, por isso MultipartFormDataContent está CORRETO)
+
         #region 2. Funcionalidades Principais (Cadastro e Reconhecimento)
 
         /// <summary>
         /// Adiciona o rosto de um aluno ao nosso FaceSet (banco de dados).
         /// </summary>
-        /// <param name="imagemStream">A foto do aluno</param>
-        /// <param name="alunoId">O ID único do aluno (ex: o ID do Firebase)</param>
-        /// <returns>True se foi adicionado com sucesso</returns>
         public async Task<bool> AdicionarRostoAoFaceSetAsync(Stream imagemStream, string alunoId)
         {
             try
@@ -118,7 +133,7 @@ namespace SAAD.Services
                 // 2. Adicionar o "face_token" ao nosso FaceSet
                 var addFaceFormData = CreateBaseFormData();
                 addFaceFormData.Add(new StringContent(_faceSetOuterId), "outer_id");
-                addFaceFormData.Add(new StringContent(faceToken), "face_tokens"); // Adiciona o token da face
+                addFaceFormData.Add(new StringContent(faceToken), "face_tokens");
 
                 var addFaceResponse = await _httpClient.PostAsync($"{ApiBaseUrl}faceset/addface", addFaceFormData);
                 if (!addFaceResponse.IsSuccessStatusCode)
@@ -130,7 +145,7 @@ namespace SAAD.Services
                 // 3. Associar o "face_token" ao ID do aluno
                 var setUserIdFormData = CreateBaseFormData();
                 setUserIdFormData.Add(new StringContent(faceToken), "face_token");
-                setUserIdFormData.Add(new StringContent(alunoId), "user_id"); // O ID do aluno
+                setUserIdFormData.Add(new StringContent(alunoId), "user_id");
 
                 var setUserIdResponse = await _httpClient.PostAsync($"{ApiBaseUrl}face/setuserid", setUserIdFormData);
                 if (!setUserIdResponse.IsSuccessStatusCode)
@@ -152,17 +167,13 @@ namespace SAAD.Services
         /// <summary>
         /// Reconhece um rosto, comparando-o com o nosso banco de dados (FaceSet).
         /// </summary>
-        /// <param name="imagemStream">A foto tirada pela câmara</param>
-        /// <returns>O ID do aluno (se encontrado), ou null se não for reconhecido</returns>
         public async Task<string> ReconhecerRostoAsync(Stream imagemStream)
         {
             try
             {
-                // 1. Detetar o rosto na imagem (não precisamos do token, mas o /search faz)
-                // Vamos converter para Base64, pois a API /search aceita
                 var base64Image = await ConvertStreamToBase64(imagemStream);
 
-                // 2. Pesquisar o rosto no nosso FaceSet
+                // 2. Pesquisar o rosto no nosso FaceSet (envia imagem, usa Multipart)
                 var searchFormData = CreateBaseFormData();
                 searchFormData.Add(new StringContent(base64Image), "image_base64");
                 searchFormData.Add(new StringContent(_faceSetOuterId), "outer_id");
@@ -178,7 +189,6 @@ namespace SAAD.Services
                 var responseString = await searchResponse.Content.ReadAsStringAsync();
                 var searchJson = JObject.Parse(responseString);
 
-                // Verifica se encontrou alguma correspondência
                 var results = searchJson["results"];
                 if (results == null || !results.HasValues)
                 {
@@ -186,7 +196,6 @@ namespace SAAD.Services
                     return null;
                 }
 
-                // Pega a melhor correspondência
                 var bestMatch = results.OrderByDescending(r => (double)r["confidence"]).FirstOrDefault();
                 if (bestMatch == null)
                 {
@@ -197,7 +206,6 @@ namespace SAAD.Services
                 double confidence = (double)bestMatch["confidence"];
                 string userId = bestMatch["user_id"]?.ToString();
 
-                // Define um limiar de confiança (ex: 80%)
                 if (confidence > 80.0 && !string.IsNullOrEmpty(userId))
                 {
                     Debug.WriteLine($"Rosto reconhecido: Aluno {userId} com confiança {confidence}");
@@ -225,6 +233,8 @@ namespace SAAD.Services
         private async Task<string> DetectarRostoAsync(Stream imagemStream)
         {
             var base64Image = await ConvertStreamToBase64(imagemStream);
+
+            // Esta chamada envia imagem, por isso CreateBaseFormData (Multipart) está CORRETO
             var formData = CreateBaseFormData();
             formData.Add(new StringContent(base64Image), "image_base64");
 
@@ -246,12 +256,12 @@ namespace SAAD.Services
                 return null;
             }
 
-            // Retorna o token da primeira face encontrada
             return faces[0]["face_token"]?.ToString();
         }
 
         /// <summary>
-        /// Cria o formulário base com as chaves de API, necessário para todas as chamadas
+        /// Cria o formulário base (Multipart) com as chaves de API.
+        /// (Este método é usado pelas funções que enviam imagens)
         /// </summary>
         private MultipartFormDataContent CreateBaseFormData()
         {
