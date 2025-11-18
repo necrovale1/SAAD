@@ -117,14 +117,18 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 - [ ] Otimização de performance
       
 ---
-# Telas Atuais - 31/10 18:30 hrs - Carolina
+# Telas Atuais - 18/11 17:37 hrs - Carolina
 
 ### SplashScreen
  <img width="385" height="894" alt="image" src="https://github.com/user-attachments/assets/682db475-b928-41c2-a9b4-5b01c1ed3a79" />  <br>
-### Tela Inicial
- <img width="4000" height="1216" alt="image" src="https://github.com/user-attachments/assets/fc70b598-742e-4f7a-8a8b-45d28c68ed69" />  <br>
-### Camera Aberta
-<img width="380" height="885" alt="image" src="https://github.com/user-attachments/assets/e111efe4-53fe-4bad-b180-26d670d1f8c8" />  <br>
+### Tela Inicial - Tema Claro
+<img width="387" height="889" alt="image" src="https://github.com/user-attachments/assets/4747a352-304f-4586-a58c-17046261ac18" /> <br>
+### Tela Inicial - Tema Escuro
+<img width="382" height="887" alt="image" src="https://github.com/user-attachments/assets/1267ca6e-3833-4172-a32c-642cd297dcd4" /> <br>
+### Registrar Entrada
+<img width="381" height="891" alt="image" src="https://github.com/user-attachments/assets/8c8f4332-f807-49d2-9aa8-27388eb097ba" />  <br>
+
+
 
 ---
 ## Criação de Dados Fake para o Banco via script node.js 
