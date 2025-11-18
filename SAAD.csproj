@@ -85,9 +85,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<MauiXaml Update="Views\CadastroFacialPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Views\CameraCapturePage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

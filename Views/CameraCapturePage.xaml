@@ -2,64 +2,62 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:cv="clr-namespace:Camera.MAUI;assembly=Camera.MAUI"
+             xmlns:helpers="clr-namespace:SAAD.Helpers"
              x:Class="SAAD.Views.CameraCapturePage"
-             Title="Reconhecimento Facial">
+             Title="Reconhecimento"
+             BackgroundColor="Black">
 
-    <Grid RowDefinitions="Auto, *, Auto" 
-          ColumnDefinitions="*"
-          BackgroundColor="Black">
+    <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
 
         <cv:CameraView x:Name="cameraView"
                        Grid.RowSpan="3"
-                       Grid.Column="0"
                        AutoStartPreview="True"
                        VerticalOptions="Fill" />
 
-        <BoxView Grid.Row="0" Grid.Column="0" 
-                 BackgroundColor="#80000000" />
-        <BoxView Grid.Row="2" Grid.Column="0" 
-                 BackgroundColor="#80000000" />
+        <BoxView Grid.Row="0" BackgroundColor="#CC000000" />
+        <BoxView Grid.Row="2" BackgroundColor="#CC000000" />
 
-        <Border Grid.Row="1" Grid.Column="0"
+        <Border Grid.Row="1"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 HeightRequest="350"
                 WidthRequest="280"
-                Stroke="White"
-                StrokeThickness="2"
-                StrokeDashArray="2,2"
+                Stroke="{DynamicResource AccentColor}"
+                StrokeThickness="3"
+                StrokeDashArray="4,2"
                 BackgroundColor="Transparent">
             <Border.StrokeShape>
                 <Ellipse />
             </Border.StrokeShape>
         </Border>
 
-        <VerticalStackLayout Grid.Row="2" Grid.Column="0" 
-                             Padding="20" Spacing="10">
-
+        <VerticalStackLayout Grid.Row="2" Padding="20" Spacing="15">
             <Label x:Name="InstructionLabel"
-                   Text="Posicione seu rosto dentro da elipse"
+                   Text="Posicione seu rosto na moldura"
                    TextColor="White"
-                   FontSize="18"
+                   FontSize="20"
                    FontAttributes="Bold"
                    HorizontalTextAlignment="Center" />
 
-            <Label Text="� Fique em um lugar bem iluminado
-� Evite usar �culos ou bon�
-� Mantenha um fundo neutro"
-                   TextColor="White"
+            <Label Text="Mantenha o rosto iluminado e centralizado"
+                   TextColor="#DDDDDD"
                    FontSize="14"
                    HorizontalTextAlignment="Center" />
 
             <Button x:Name="CaptureButton"
-                    Text="Capturar Rosto"
+                    Text="Identificar"
                     Clicked="CaptureButton_Clicked"
+                    BackgroundColor="{DynamicResource AccentColor}"
+                    TextColor="White"
+                    CornerRadius="25"
+                    HeightRequest="55"
+                    FontAttributes="Bold"
                     Margin="0,20,0,0" />
 
             <ActivityIndicator x:Name="LoadingIndicator"
                                IsRunning="False"
                                IsVisible="False"
-                               Color="{StaticResource Primary}" />
+                               Color="{DynamicResource AccentColor}" />
         </VerticalStackLayout>
     </Grid>
 </ContentPage>
