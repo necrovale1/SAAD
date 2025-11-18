@@ -122,15 +122,9 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 ### SplashScreen
  <img width="385" height="894" alt="image" src="https://github.com/user-attachments/assets/682db475-b928-41c2-a9b4-5b01c1ed3a79" />  <br>
 ### Tela Inicial
- <img width="380" height="838" alt="image" src="https://github.com/user-attachments/assets/89b2ec2c-a1c9-45f2-a66c-c4157b8a73c2" />  <br>
+ <img width="4000" height="1216" alt="image" src="https://github.com/user-attachments/assets/fc70b598-742e-4f7a-8a8b-45d28c68ed69" />  <br>
 ### Camera Aberta
- <img width="387" height="883" alt="image" src="https://github.com/user-attachments/assets/829b8dcb-290c-45c5-b75e-c3eab7a8b5c6" />  <br>
-### Foto Capturada
- <img width="390" height="877" alt="image" src="https://github.com/user-attachments/assets/64dbb153-41a5-4afb-8379-86520a5db852" />  <br>
-### Erro ao Detectar Rosto Apos Captura
- <img width="383" height="836" alt="image" src="https://github.com/user-attachments/assets/1d570766-60e4-496d-9be0-38ab3ba56d5f" />  <br>
-### Erro ao Acessar a Camera
- <img width="382" height="835" alt="image" src="https://github.com/user-attachments/assets/d44d9a75-af03-4f45-8daa-c97422457bd9" />  <br>
+<img width="380" height="885" alt="image" src="https://github.com/user-attachments/assets/e111efe4-53fe-4bad-b180-26d670d1f8c8" />  <br>
 
 ---
 ## Criação de Dados Fake para o Banco via script node.js 
