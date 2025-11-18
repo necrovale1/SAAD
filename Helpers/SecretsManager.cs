@@ -50,7 +50,7 @@ namespace SAAD.Helpers
         public static string FaceApiKey => _configuration["FacePlusPlusApiKey"] ?? "";
         public static string FaceApiSecret => _configuration["FacePlusPlusApiSecret"] ?? "";
 
-        public const string PersonGroupId = "alunos_etec_3dsn_2025";
+        public const string PersonGroupId = "alunos-etec-3dsn-2025";
     }
 
     public class SecretsMarker { }
