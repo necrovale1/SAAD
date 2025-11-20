@@ -1,37 +1,104 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:SAAD.Helpers"
              x:Class="SAAD.Views.CadastroAlunoPage"
-             Title="Cadastro de Aluno">
+             Title="Novo Aluno"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <ScrollView>
-        <StackLayout Padding="20" Spacing="20">
-            <Label Text="Cadastro de Aluno"
-                   FontSize="24"
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Label Text="Dados do Aluno" 
+                   FontSize="22" 
+                   FontAttributes="Bold" 
+                   TextColor="{DynamicResource PrimaryTextColor}" 
                    HorizontalOptions="Center" />
 
-            <Entry x:Name="NomeEntry"
-                   Placeholder="Nome completo" />
+            <Border BackgroundColor="{DynamicResource CardBackgroundColor}" 
+                    Stroke="Transparent"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="15">
 
-            <Entry x:Name="EmailEntry"
-                   Placeholder="Email" />
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="5" Opacity="0.1" />
+                </Border.Shadow>
 
-            <Image x:Name="FotoPreview"
-                   HeightRequest="200"
-                   Aspect="AspectFill"
-                   IsVisible="False"
-                   BackgroundColor="#E0E0E0" />
+                <VerticalStackLayout Spacing="15">
+                    <Entry x:Name="NomeEntry"
+                           Placeholder="Nome Completo"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           PlaceholderColor="{DynamicResource SecondaryTextColor}"
+                           BackgroundColor="{DynamicResource InputBackgroundColor}" />
+
+                    <Entry x:Name="EmailEntry"
+                           Placeholder="Email"
+                           Keyboard="Email"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           PlaceholderColor="{DynamicResource SecondaryTextColor}"
+                           BackgroundColor="{DynamicResource InputBackgroundColor}" />
+
+                    <Entry x:Name="RaEntry"
+                           Placeholder="Registro Acadêmico (RA)"
+                           Keyboard="Numeric"
+                           TextColor="{DynamicResource PrimaryTextColor}"
+                           PlaceholderColor="{DynamicResource SecondaryTextColor}"
+                           BackgroundColor="{DynamicResource InputBackgroundColor}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Foto para Reconhecimento" 
+                   FontSize="18" 
+                   TextColor="{DynamicResource PrimaryTextColor}" 
+                   HorizontalOptions="Center" 
+                   Margin="0,10,0,0"/>
+
+            <Border Stroke="{DynamicResource SecondaryTextColor}" 
+                    StrokeThickness="1" 
+                    StrokeDashArray="4,4"
+                    StrokeShape="RoundRectangle 10"
+                    HeightRequest="200" 
+                    WidthRequest="200"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{DynamicResource CardBackgroundColor}">
+
+                <Grid>
+                    <Image x:Name="FotoPreview" 
+                           Aspect="AspectFill" 
+                           IsVisible="False"/>
+
+                    <Label Text="&#xf030;" 
+                           FontFamily="FASolid"
+                           FontSize="40"
+                           IsVisible="{Binding Source={x:Reference FotoPreview}, Path=IsVisible, Converter={StaticResource InvertedBoolConverter}}"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Center"
+                           TextColor="{DynamicResource SecondaryTextColor}"/>
+                </Grid>
+            </Border>
 
             <Button Text="Capturar Foto"
                     Clicked="OnCapturarFotoClicked"
-                    BackgroundColor="#2196F3"
-                    TextColor="White"
-                    CornerRadius="10" />
+                    BackgroundColor="{DynamicResource AccentColor}"
+                    TextColor="{DynamicResource ButtonTextColor}"
+                    HeightRequest="50"
+                    CornerRadius="10"
+                    FontAttributes="Bold" />
 
-            <Button Text="Salvar Aluno"
+            <Button x:Name="BtnSalvar"
+                    Text="Salvar Aluno"
                     Clicked="OnSalvarAlunoClicked"
                     BackgroundColor="#4CAF50"
                     TextColor="White"
-                    CornerRadius="10" />
-        </StackLayout>
+                    HeightRequest="50"
+                    CornerRadius="10"
+                    FontAttributes="Bold"
+                    Margin="0,10,0,0" />
+
+            <ActivityIndicator x:Name="LoadingIndicator" 
+                               IsVisible="False" 
+                               Color="{DynamicResource AccentColor}" />
+
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
