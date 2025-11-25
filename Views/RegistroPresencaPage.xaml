@@ -6,7 +6,7 @@
              BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*, Auto" Padding="0,0,0,0" BackgroundColor="{DynamicResource AccentColor}">
+        <Grid ColumnDefinitions="*, Auto" Padding="0,24,0,0" BackgroundColor="{DynamicResource AccentColor}">
             <Label Text="Registro de Presença"
                    FontSize="20"
                    FontAttributes="Bold"

@@ -5,7 +5,7 @@
              xmlns:helpers="clr-namespace:SAAD.Helpers"
              x:Class="SAAD.Views.CameraCapturePage"
              Title="Reconhecimento"
-             BackgroundColor="Black">
+             BackgroundColor="{DynamicResource AccentColor}">
 
     <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
 
@@ -14,8 +14,8 @@
                        AutoStartPreview="True"
                        VerticalOptions="Fill" />
 
-        <BoxView Grid.Row="0" BackgroundColor="#CC000000" />
-        <BoxView Grid.Row="2" BackgroundColor="#CC000000" />
+        <BoxView Grid.Row="0" BackgroundColor="{DynamicResource PrimaryTextColor}" />
+        <BoxView Grid.Row="2" BackgroundColor="{DynamicResource PrimaryTextColor}" />
 
         <Border Grid.Row="1"
                 HorizontalOptions="Center"
@@ -34,13 +34,13 @@
         <VerticalStackLayout Grid.Row="2" Padding="20" Spacing="15">
             <Label x:Name="InstructionLabel"
                    Text="Posicione seu rosto na moldura"
-                   TextColor="White"
+                   TextColor="{DynamicResource CardBackgroundColor}"
                    FontSize="20"
                    FontAttributes="Bold"
                    HorizontalTextAlignment="Center" />
 
             <Label Text="Mantenha o rosto iluminado e centralizado"
-                   TextColor="#DDDDDD"
+                   TextColor="{DynamicResource CardBackgroundColor}"
                    FontSize="14"
                    HorizontalTextAlignment="Center" />
 
@@ -48,7 +48,7 @@
                     Text="Identificar"
                     Clicked="CaptureButton_Clicked"
                     BackgroundColor="{DynamicResource AccentColor}"
-                    TextColor="White"
+                    TextColor="{DynamicResource CardBackgroundColor}"
                     CornerRadius="25"
                     HeightRequest="55"
                     FontAttributes="Bold"

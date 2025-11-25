@@ -32,18 +32,26 @@ namespace SAAD.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+
+            // 1. Verifica Permissão
             var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
             if (status != PermissionStatus.Granted)
             {
                 status = await Permissions.RequestAsync<Permissions.Camera>();
                 if (status != PermissionStatus.Granted)
                 {
-                    await DisplayAlert("Erro", "A permissão da câmera é necessária.", "OK");
+                    await DisplayAlert("Erro", "Precisamos da câmera para o reconhecimento facial.", "OK");
                     await Navigation.PopAsync();
                     return;
                 }
             }
+
+            // 2. Inicializa a Câmera (Com um pequeno delay para garantir que a UI carregou)
             cameraView.Camera = cameraView.Cameras.FirstOrDefault(c => c.Position == CameraPosition.Front);
+
+            // DICA: Se estiver usando a biblioteca Camera.MAUI, às vezes é necessário forçar o início:
+            // await Task.Delay(200); // Pequeno delay para estabilidade
+            // await cameraView.StartCameraAsync(); 
         }
 
         private async void CaptureButton_Clicked(object sender, EventArgs e)
