@@ -22,7 +22,7 @@
                 VerticalOptions="Center"
                 HeightRequest="350"
                 WidthRequest="280"
-                Stroke="{DynamicResource AccentColor}"
+                Stroke="{DynamicResource PrimaryTextColor}"
                 StrokeThickness="3"
                 StrokeDashArray="4,2"
                 BackgroundColor="Transparent">
