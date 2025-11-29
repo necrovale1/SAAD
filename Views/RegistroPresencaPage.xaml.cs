@@ -69,19 +69,19 @@ namespace SAAD.Views
         {
             if (!await VerificarPermissaoCamera()) return;
             _proximaCapturaEEntrada = true;
-            await Navigation.PushAsync(new CameraCapturePage());
+            await Shell.Current.GoToAsync($"{nameof(CameraCapturePage)}?isEntrada=true");
         }
 
         private async void OnRegistrarSaidaClicked(object sender, EventArgs e)
         {
             if (!await VerificarPermissaoCamera()) return;
             _proximaCapturaEEntrada = false;
-            await Navigation.PushAsync(new CameraCapturePage());
+            await Shell.Current.GoToAsync($"{nameof(CameraCapturePage)}?isEntrada=false");
         }
 
         private async void OnCadastrarAlunoClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CadastroAlunoPage());
+            await Shell.Current.GoToAsync(nameof(CadastroAlunoPage));
         }
 
         // --- 3. LÓGICA DE TROCA DE TEMA (FontAwesome Atualizado) ---
@@ -111,7 +111,7 @@ namespace SAAD.Views
             }
         }
 
-        // --- LÓGICA DE REGISTRO (MANTIDA) ---
+        // --- LÓGICA DE REGISTRO ---
         private async Task HandlePresenceRegistration(UserModel aluno, bool isEntrada)
         {
             LoadingIndicator.IsVisible = true;

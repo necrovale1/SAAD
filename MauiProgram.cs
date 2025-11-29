@@ -1,8 +1,8 @@
 ﻿using Camera.MAUI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SAAD.Services; // 👈 Adicione este 'using'
-using SAAD.Views;   // 👈 Adicione este 'using'
+using SAAD.Services; 
+using SAAD.Views;   
 
 namespace SAAD
 {
@@ -16,6 +16,7 @@ namespace SAAD
                 .UseMauiCameraView()
                 .ConfigureFonts(fonts =>
                 {
+                    // Fontes e Emojis
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
@@ -26,7 +27,7 @@ namespace SAAD
     		builder.Logging.AddDebug();
 #endif
 
-            // 🔑 Carrega secrets.json
+            //  Carrega secrets.json
             builder.Configuration.AddUserSecrets<App>();
 
             // Serviços
@@ -35,7 +36,10 @@ namespace SAAD
 
             // Páginas
             builder.Services.AddTransient<SplashPage>();
-            // builder.Services.AddTransient<CadastroFacialPage>();
+            builder.Services.AddTransient<CadastroAlunoPage>();
+            builder.Services.AddTransient<CameraCapturePage>();
+            builder.Services.AddTransient<CadastroAlunoPage>();
+            builder.Services.AddTransient<ListagemFacialPage>();
 
             return builder.Build();
         }

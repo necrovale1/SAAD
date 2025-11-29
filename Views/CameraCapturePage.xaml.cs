@@ -9,14 +9,17 @@ using SAAD.Services;
 
 namespace SAAD.Views
 {
+    [QueryProperty(nameof(IsEntrada), "isEntrada")]
     public partial class CameraCapturePage : ContentPage
     {
+        private readonly FaceRecognitionService _faceService;
         private FirebaseClient firebaseClient;
         private FaceRecognitionService faceService;
-
+        public bool IsEntrada { get; set; }
         public CameraCapturePage()
         {
             InitializeComponent();
+            _faceService = faceService;
 
             firebaseClient = new FirebaseClient(
                 SecretsManager.FirebaseUrl,
@@ -33,25 +36,45 @@ namespace SAAD.Views
         {
             base.OnAppearing();
 
-            // 1. Verifica Permissão
+            this.Title = IsEntrada ? "Registrar Entrada" : "Registrar Saída"; // define o título com base na query
+
+            // 1. Verificar Permissões
             var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
             if (status != PermissionStatus.Granted)
             {
                 status = await Permissions.RequestAsync<Permissions.Camera>();
                 if (status != PermissionStatus.Granted)
                 {
-                    await DisplayAlert("Erro", "Precisamos da câmera para o reconhecimento facial.", "OK");
+                    await DisplayAlert("Erro", "É necessária permissão da câmara.", "OK");
                     await Navigation.PopAsync();
                     return;
                 }
             }
 
-            // 2. Inicializa a Câmera (Com um pequeno delay para garantir que a UI carregou)
-            cameraView.Camera = cameraView.Cameras.FirstOrDefault(c => c.Position == CameraPosition.Front);
+            // NÃO tente definir a câmara aqui. O componente CameraView ainda pode estar a carregar.
+            // Apenas aguarde o evento CamerasLoaded disparar.
+        }
 
-            // DICA: Se estiver usando a biblioteca Camera.MAUI, às vezes é necessário forçar o início:
-            // await Task.Delay(200); // Pequeno delay para estabilidade
-            // await cameraView.StartCameraAsync(); 
+        private async void CameraView_CamerasLoaded(object sender, EventArgs e)
+        {
+            // Este método é chamado automaticamente quando o plugin termina de listar as câmaras
+            if (cameraView.Cameras.Count > 0)
+            {
+                // Tenta pegar a frontal, senão pega a primeira disponível
+                cameraView.Camera = cameraView.Cameras.FirstOrDefault(c => c.Position == CameraPosition.Front)
+                                    ?? cameraView.Cameras.First();
+
+                // Inicia a câmara explicitamente
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    await cameraView.StopCameraAsync(); // Garante que não há nada pendente
+                    await cameraView.StartCameraAsync();
+                });
+            }
+            else
+            {
+                await DisplayAlert("Erro", "Nenhuma câmara detetada no dispositivo.", "OK");
+            }
         }
 
         private async void CaptureButton_Clicked(object sender, EventArgs e)

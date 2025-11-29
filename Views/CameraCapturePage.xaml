@@ -5,14 +5,14 @@
              xmlns:helpers="clr-namespace:SAAD.Helpers"
              x:Class="SAAD.Views.CameraCapturePage"
              Title="Reconhecimento"
-             BackgroundColor="{DynamicResource AccentColor}">
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <Grid RowDefinitions="Auto, *, Auto" ColumnDefinitions="*">
 
         <cv:CameraView x:Name="cameraView"
-                       Grid.RowSpan="3"
-                       AutoStartPreview="True"
-                       VerticalOptions="Fill" />
+               Grid.RowSpan="3"
+               AutoStartPreview="False"  CamerasLoaded="CameraView_CamerasLoaded" 
+               VerticalOptions="Fill" />
 
         <BoxView Grid.Row="0" BackgroundColor="{DynamicResource PrimaryTextColor}" />
         <BoxView Grid.Row="2" BackgroundColor="{DynamicResource PrimaryTextColor}" />
