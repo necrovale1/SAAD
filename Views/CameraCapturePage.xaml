@@ -11,8 +11,8 @@
 
         <cv:CameraView x:Name="cameraView"
                Grid.RowSpan="3"
-               AutoStartPreview="False"  CamerasLoaded="CameraView_CamerasLoaded" 
-               VerticalOptions="Fill" />
+               CamerasLoaded="CameraView_CamerasLoaded" 
+               AutoStartPreview="False"/>
 
         <BoxView Grid.Row="0" BackgroundColor="{DynamicResource PrimaryTextColor}" />
         <BoxView Grid.Row="2" BackgroundColor="{DynamicResource PrimaryTextColor}" />

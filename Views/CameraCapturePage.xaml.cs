@@ -57,23 +57,33 @@ namespace SAAD.Views
 
         private async void CameraView_CamerasLoaded(object sender, EventArgs e)
         {
-            // Este método é chamado automaticamente quando o plugin termina de listar as câmaras
             if (cameraView.Cameras.Count > 0)
             {
-                // Tenta pegar a frontal, senão pega a primeira disponível
-                cameraView.Camera = cameraView.Cameras.FirstOrDefault(c => c.Position == CameraPosition.Front)
-                                    ?? cameraView.Cameras.First();
+                // 1. Seleciona a câmera frontal
+                var camera = cameraView.Cameras.FirstOrDefault(c => c.Position == CameraPosition.Front)
+                             ?? cameraView.Cameras.First();
+                cameraView.Camera = camera;
 
-                // Inicia a câmara explicitamente
+                // 2. Tenta pegar a melhor resolução (opcional)
+                // Nota: O StartCameraAsync aceita um objeto Size como parâmetro
+                Size melhorResolucao = new Size(1280, 720); // Valor padrão seguro
+
+                if (cameraView.Camera.AvailableResolutions?.Count > 0)
+                {
+                    // Pega a maior resolução disponível
+                    melhorResolucao = cameraView.Camera.AvailableResolutions
+                        .OrderByDescending(r => r.Width)
+                        .First();
+                }
+
+                // 3. Inicia a câmera PASSANDO A RESOLUÇÃO AQUI
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await cameraView.StopCameraAsync(); // Garante que não há nada pendente
-                    await cameraView.StartCameraAsync();
+                    await cameraView.StopCameraAsync();
+
+                    // AQUI ESTÁ A CORREÇÃO: Passamos a resolução como argumento
+                    await cameraView.StartCameraAsync(melhorResolucao);
                 });
-            }
-            else
-            {
-                await DisplayAlert("Erro", "Nenhuma câmara detetada no dispositivo.", "OK");
             }
         }
 
