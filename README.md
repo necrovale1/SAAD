@@ -117,20 +117,22 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 - [ ] Otimização de performance
       
 ---
-# Telas Atuais - 31/10 18:30 hrs - Carolina
+# Telas Atuais - 29/11 00:26 hrs - Carolina
 
 ### SplashScreen
- <img width="385" height="894" alt="image" src="https://github.com/user-attachments/assets/682db475-b928-41c2-a9b4-5b01c1ed3a79" />  <br>
-### Tela Inicial
- <img width="380" height="838" alt="image" src="https://github.com/user-attachments/assets/89b2ec2c-a1c9-45f2-a66c-c4157b8a73c2" />  <br>
-### Camera Aberta
- <img width="387" height="883" alt="image" src="https://github.com/user-attachments/assets/829b8dcb-290c-45c5-b75e-c3eab7a8b5c6" />  <br>
-### Foto Capturada
- <img width="390" height="877" alt="image" src="https://github.com/user-attachments/assets/64dbb153-41a5-4afb-8379-86520a5db852" />  <br>
-### Erro ao Detectar Rosto Apos Captura
- <img width="383" height="836" alt="image" src="https://github.com/user-attachments/assets/1d570766-60e4-496d-9be0-38ab3ba56d5f" />  <br>
-### Erro ao Acessar a Camera
- <img width="382" height="835" alt="image" src="https://github.com/user-attachments/assets/d44d9a75-af03-4f45-8daa-c97422457bd9" />  <br>
+ <img width="385" height="894" alt="image" src="https://github.com/user-attachments/assets/682db475-b928-41c2-a9b4-5b01c1ed3a79" /> <br>
+### Tela Inicial - Claro
+<img width="386" height="892" alt="image" src="https://github.com/user-attachments/assets/daf93e7d-c541-4095-a9ae-c8da9557fa62" /> <br>
+### Tela Inicial - Escuro
+<img width="388" height="895" alt="image" src="https://github.com/user-attachments/assets/1596282d-ba02-4335-8ff5-07752361201f" /> <br>
+### Registro Erro
+ <img width="394" height="890" alt="image" src="https://github.com/user-attachments/assets/876858ec-8508-4ca4-b0a1-038d4d66e71e" /> <br>
+### Registro Entrada - Claro
+<img width="379" height="886" alt="image" src="https://github.com/user-attachments/assets/1f2eba68-1a31-4f86-b6c1-c6eb8e1cb1c6" /> <br>
+### Regostrp Emtrada - Escuro
+<img width="387" height="884" alt="image" src="https://github.com/user-attachments/assets/3505fe51-26e0-4412-ba75-28a47be583f1" /> <br>
+
+
 
 ---
 ## Criação de Dados Fake para o Banco via script node.js 
@@ -138,8 +140,7 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
  <img width="1043" height="590" alt="image" src="https://github.com/user-attachments/assets/4cfd7eaa-4d33-484d-a044-319bcaf1546b" /> <br>
  
 ### Staff 15/11 18:44
- <img width="1100" height="582" alt="image" src="https://github.com/user-attachments/assets/f0302898-c081-45fc-a045-460346eb87ba" />
-
+ <img width="1100" height="582" alt="image" src="https://github.com/user-attachments/assets/f0302898-c081-45fc-a045-460346eb87ba" /> <br>
 
 ---
 
