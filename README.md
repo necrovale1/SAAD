@@ -142,7 +142,7 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen√
 ### Staff 15/11 18:44
  <img width="1100" height="582" alt="image" src="https://github.com/user-attachments/assets/f0302898-c081-45fc-a045-460346eb87ba" /> <br>
 
-- scripts em **[`/arquivos_gerados/`](/arquivos_gerados)** 
+- scripts em **[`/dados_gerados/`](/dados_gerados)** 
 
 ---
 
