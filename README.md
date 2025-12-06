@@ -206,4 +206,4 @@ Informação ainda a ser INSERIDA
 
 ---
 
-**🌟 Juntos venceremos! 🌟**
+~~**🌟 Juntos venceremos! 🌟**~~
