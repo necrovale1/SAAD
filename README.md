@@ -135,7 +135,7 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 
 
 ---
-## Criação de Dados Fake para o Banco via script node.js 
+## Criação de Dados para o Banco via script node.js 
 ### Alunos - 15/11 15:03 
  <img width="1043" height="590" alt="image" src="https://github.com/user-attachments/assets/4cfd7eaa-4d33-484d-a044-319bcaf1546b" /> <br>
  
