@@ -142,7 +142,7 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presen�
 ### Staff 15/11 18:44
  <img width="1100" height="582" alt="image" src="https://github.com/user-attachments/assets/f0302898-c081-45fc-a045-460346eb87ba" /> <br>
 
-- arquivos em /dados_gerados
+- scripts em **[`/arquivos_gerados/`](/arquivos_gerados)** 
 
 ---
 
@@ -197,7 +197,6 @@ Uma Issue é um cartão de tarefa digital que descreve o que precisa ser feito, 
 > **"Se não está no GitHub, não existe."**
 > 
 > Antes de perguntar "o que fazer?" ou "quais as pendências?", verifique a aba de Issues. A proatividade de todos em consultar e atualizar as Issues é fundamental para o sucesso do projeto.
-
 ---
 
 ## 📄 Licença
