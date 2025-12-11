@@ -150,8 +150,8 @@ O SAAD permite que alunos se cadastrem via aplicativo mobile e registrem presenÃ
 
 ### ðŸŽ“ Colaboradores
 - **Carolina Rodrigues de Mattos**
-- **Claudio Baptista** 
-- **Matheus Ramos**
+~~- **Claudio Baptista**~~
+~~- **Matheus Ramos**~~
 
 ---
 
